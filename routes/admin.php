@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\FeatureController;
+use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,13 @@ Route::group(['prefix'  =>  'admin'], function () {
 			Route::post('/feature-show', [FeatureController::class, 'show']);
 			Route::post('/update-feature', [FeatureController::class, 'update']);
 			Route::post('/delete', [FeatureController::class, 'delete']);
+		});
+		Route::group(['prefix'  =>  'types'], function () {
+			Route::get('/', [TypeController::class, 'index']);
+			Route::post('/store', [TypeController::class, 'store']);
+			Route::post('/type-show', [TypeController::class, 'show']);
+			Route::post('/update-type', [TypeController::class, 'update']);
+			Route::post('/delete', [TypeController::class, 'delete']);
 		});
 	});
 });

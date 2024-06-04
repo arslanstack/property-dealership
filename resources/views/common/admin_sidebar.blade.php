@@ -24,6 +24,9 @@
             <li class="{{ Request::is('admin/users') ? 'active' : '' }} {{ Request::is('admin/users/detail*') ? 'active' : '' }}">
                 <a href="{{ url('admin/users') }}"><i class="fa-solid fa-users"></i> <span class="nav-label">Users Management</span></a>
             </li>
+            <li class="{{ Request::is('admin/types') ? 'active' : '' }} {{ Request::is('admin/types/detail*') ? 'active' : '' }}">
+                <a href="{{ url('admin/types') }}"><i class="fa-solid fa-tags"></i> <span class="nav-label">Property Types</span></a>
+            </li>
             <li class="{{ Request::is('admin/features') ? 'active' : '' }} {{ Request::is('admin/features/detail*') ? 'active' : '' }}">
                 <a href="{{ url('admin/features') }}"><i class="fa-solid fa-tasks"></i> <span class="nav-label">Property Features</span></a>
             </li>

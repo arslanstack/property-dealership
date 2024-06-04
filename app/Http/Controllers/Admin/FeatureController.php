@@ -11,17 +11,6 @@ class FeatureController extends Controller
 {
     public function index(Request $request)
     {
-        // $query = Feature::query();
-        // $search_query = $request->input('search_query');
-        // if ($request->has('search_query') && !empty($search_query)) {
-        //     $query->where(function ($query) use ($search_query) {
-        //         $query->where('title', 'like', '%' . $search_query . '%');
-        //     });
-        // }
-        // $data['features'] = $query->orderBy('id', 'DESC')->paginate(50);
-        // $data['searchParams'] = $request->all();
-        // return view('admin/features/manage_features', $data);
-
         $query = Feature::query();
         $search_type = $request->input('search_type');
         $search_query = $request->input('search_query');
