@@ -11,6 +11,10 @@ class FeatureController extends Controller
 {
     public function index(Request $request)
     {
+        // Neighborhood ID
+        // Listing Status
+        // Development Level
+        // Rent Cycle
         $query = Feature::query();
         $search_type = $request->input('search_type');
         $search_query = $request->input('search_query');
