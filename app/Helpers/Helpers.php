@@ -213,3 +213,43 @@ if (!function_exists('find_records')) {
 		}
 	}
 }
+
+if (!function_exists('mapfeaturetype')) {
+	function mapfeaturetype($tinyint)
+	{
+		if ($tinyint == 1) {
+			return 'Interior Feature';
+		} elseif ($tinyint == 2) {
+			return 'Exterior Finish';
+		} elseif ($tinyint == 3) {
+			return 'Featured Amenities';
+		} elseif ($tinyint == 4) {
+			return 'Appliances';
+		} elseif ($tinyint == 5) {
+			return 'Views';
+		} elseif ($tinyint == 6) {
+			return 'Heating';
+		} elseif ($tinyint == 7) {
+			return 'Cooling';
+		} elseif ($tinyint == 8) {
+			return 'Roof';
+		} elseif ($tinyint == 9) {
+			return 'Sewer-Water Systems';
+		} elseif ($tinyint == 10) {
+			return 'Extra Features';
+		}
+	}
+}
+if (!function_exists('slugify')) {
+	function slugify($title)
+	{
+		$slug = mb_strtolower(trim($title), 'UTF-8');
+		// Replace non-alphanumeric characters with dashes.
+		$slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+		// Remove leading and trailing dashes.
+		$slug = trim($slug, '-');
+		// Replace multiple consecutive dashes with a single dash.
+		$slug = preg_replace('/-+/', '-', $slug);
+		return $slug;
+	}
+}
