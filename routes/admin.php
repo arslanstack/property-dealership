@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\FeatureController;
+use App\Http\Controllers\Admin\NeighborhoodController;
 use App\Http\Controllers\Admin\PropertyListingController;
 use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\Admin\UserController;
@@ -38,6 +39,14 @@ Route::group(['prefix'  =>  'admin'], function () {
 			Route::post('/type-show', [TypeController::class, 'show']);
 			Route::post('/update-type', [TypeController::class, 'update']);
 			Route::post('/delete', [TypeController::class, 'delete']);
+		});
+		Route::group(['prefix'  =>  'neighborhoods'], function () {
+			Route::get('/', [NeighborhoodController::class, 'index']);
+			Route::get('/add', [NeighborhoodController::class, 'add']);
+			Route::post('/store', [NeighborhoodController::class, 'store']);
+			Route::post('/type-show', [NeighborhoodController::class, 'show']);
+			Route::post('/update-type', [NeighborhoodController::class, 'update']);
+			Route::post('/delete', [NeighborhoodController::class, 'delete']);
 		});
 		Route::group(['prefix'  =>  'property-listings'], function () {
 			Route::get('/', [PropertyListingController::class, 'index']);

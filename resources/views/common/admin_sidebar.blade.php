@@ -30,6 +30,9 @@
             <li class="{{ Request::is('admin/features') ? 'active' : '' }} {{ Request::is('admin/features/detail*') ? 'active' : '' }}">
                 <a href="{{ url('admin/features') }}"><i class="fa-solid fa-tasks"></i> <span class="nav-label">Property Features</span></a>
             </li>
+            <li class="{{ Request::is('admin/neighborhoods') ? 'active' : '' }} {{ Request::is('admin/neighborhoods/detail*') ? 'active' : '' }}">
+                <a href="{{ url('admin/neighborhoods') }}"><i class="fa-solid fa-location-arrow"></i> <span class="nav-label">Neighborhoods</span></a>
+            </li>
             <li class="{{ Request::is('admin/property-listings') ? 'active' : '' }} {{ Request::is('admin/property-listings/detail*') ? 'active' : '' }}">
                 <a href="{{ url('admin/property-listings') }}"><i class="fa-solid fa-th"></i> <span class="nav-label">Property Listings</span></a>
             </li>
