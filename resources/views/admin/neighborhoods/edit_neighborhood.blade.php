@@ -121,7 +121,7 @@
                                 </div>
                                 <div class="form-group row">
                                     <label class="form-label"><strong>Banner Image</strong></label>
-                                    <input type="file" name="banner" id="Bannerimage" required class="form-control" accept="image/*">
+                                    <input type="file" name="banner" id="Bannerimage" class="form-control" accept="image/*">
                                 </div>
                                 <div class="form-group row">
                                     <label class="form-label"><strong>Zip/Postal Code</strong></label>
@@ -135,7 +135,7 @@
                             <div class="col-md-6">
                                 <label for="Bannerimage" style="cursor: pointer;" class="form-label float-right float-end">
                                     <div id="my-auto">
-                                        <img id="imageView" src="{{asset('/uploads/neighborhoods/'. $neighborhood->banner)}}" class="img-fluid" style="max-width: 100%; height: auto; overflow: contain;" alt="Image View">
+                                        <img id="imageView" src="{{asset('/uploads/neighborhoods/'. $neighborhood->banner)}}" class="img-fluid" style="width: 450px; height: 310px; overflow: contain;" alt="Image View">
                                     </div>
                                 </label>
                             </div>
@@ -174,18 +174,17 @@
                                                 @foreach($neighborhood->images as $image)
                                                 <div class="col-md-2 col-sm-6 my-2" id="img-gallery">
                                                     <img src="{{$image}}" class="img-fluid images-img" style="max-width: 100%; height: auto; overflow: contain; border-radius: 5%;" alt="Image View">
+                                                    <!-- if more than one image then show delete icon else don't -->
+                                                    @if(count($neighborhood->images) > 1)
                                                     <div class="delete-icon" onclick="deleteImage(this)" data-url="{{$image}}" data-id="{{$neighborhood->id}}"><i class="fa fa-trash trash-icon"></i></div>
+                                                    @endif
                                                 </div>
-
                                                 @endforeach
-                                                <div class="col-md-2 col-sm-6 my-2" id="add-more">
-                                                    <div class="plus-icon"><i class="fa fa-plus add-icon"></i></div>
-                                                </div>
                                                 @endif
                                             </div>
                                         </div>
                                     </div>
-                                    <input type="file" name="images[]" id="image-gal-input" required class="form-control" accept="image/*" multiple>
+                                    <input type="file" name="images[]" {{empty($neighborhood->images) ? 'required' : ''}} id="image-gal-input" class="form-control" accept="image/*" multiple>
                                 </div>
                             </div>
                         </div>
@@ -232,18 +231,12 @@
         </div>
     </div>
 </div>
-
 @endsection
 @push('scripts')
 <script>
-    $('#add-more').click(function() {
-        $('#image-gal-input').click();
-    });
-
     function deleteImage(e) {
         var id = $(e).data('id');
         var url = $(e).data('url');
-        // ajax request to deleteimage
         $.ajax({
             url: "{{url('admin/neighborhoods/delete-image')}}",
             type: 'POST',
@@ -255,17 +248,24 @@
             success: function(data) {
                 if (data.msg == 'success') {
                     $(e).parent().remove();
+                    toastr.options = {
+                        "closeButton": true,
+                        "progressBar": true,
+                        "positionClass": "toast-top-right"
+                    }
+                    toastr.success(data.response);
+                    setTimeout(() => {
+                        location.reload();
+                    }, 500);
+                } else {
+                    toastr.options = {
+                        "closeButton": true,
+                        "progressBar": true,
+                        "positionClass": "toast-top-right"
+                    }
+                    toastr.error(data.response);
                 }
-                // show toastr
-                toastr.options = {
-                    "closeButton": true,
-                    "progressBar": true,
-                    "positionClass": "toast-top-right"
-                }
-                toastr.success(data.response);
-                setTimeout(() => {
-                    location.reload();
-                }, 1000);
+
             },
             error: function(data) {
                 // show toastr
