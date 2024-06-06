@@ -253,3 +253,17 @@ if (!function_exists('slugify')) {
 		return $slug;
 	}
 }
+if (!function_exists('NHCodes')) {
+	function NHCodes($title, $state, $country)
+	{
+		$code = '';
+		// first letter of each word in $title
+		$words = explode(' ', $title);
+		foreach ($words as $word) {
+			$code .= strtoupper(substr($word, 0, 1));
+		}
+		$code .= strtoupper(substr($state, 0, 1));
+		$code .= strtoupper(substr($country, 0, 1));
+		return $code;
+	}
+}

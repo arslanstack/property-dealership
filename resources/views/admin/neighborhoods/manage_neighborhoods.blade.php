@@ -63,7 +63,7 @@
                                     <td>{{ $item->state  }}</td>
                                     <td> {{ $item->country  }}</td>
                                     <td>
-                                        <button class="btn btn-primary btn-sm btn_neighborhood_edit" data-id="{{$item->id}}" type="button"><i class="fa-solid fa-edit"></i> Edit</button>
+                                        <a class="btn btn-primary btn-sm btn_neighborhood_edit" href="{{url('admin/neighborhoods/details/' . $item->id)}}"><i class="fa-solid fa-edit"></i> Edit</a>
                                         <button class="btn btn-danger btn-sm btn_delete" data-id="{{$item->id}}" data-text="you want to delete this feature?" type="button" data-placement="top" title="Delete">Delete</button>
                                     </td>
                                 </tr>
@@ -88,6 +88,16 @@
 @endsection
 @push('scripts')
 <script>
+    var session = "{{Session::has('success') ? 'true' : 'false'}}";
+    if (session == 'true') {
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right"
+        }
+        toastr.success("{{Session::get('success')}}");
+
+    }
     $('#manage_tbl').dataTable({
         "paging": false,
         "searching": false,
@@ -121,7 +131,7 @@
                 if (isConfirm) {
                     $(".confirm").prop("disabled", true);
                     $.ajax({
-                        url: "{{ url('admin/features/delete') }}",
+                        url: "{{ url('admin/neighborhoods/delete') }}",
                         type: 'post',
                         data: {
                             "_token": "{{ csrf_token() }}",

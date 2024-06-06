@@ -44,7 +44,7 @@ Route::group(['prefix'  =>  'admin'], function () {
 			Route::get('/', [NeighborhoodController::class, 'index']);
 			Route::get('/add', [NeighborhoodController::class, 'add']);
 			Route::post('/store', [NeighborhoodController::class, 'store']);
-			Route::post('/type-show', [NeighborhoodController::class, 'show']);
+			Route::get('/details/{id}', [NeighborhoodController::class, 'show']);
 			Route::post('/update-type', [NeighborhoodController::class, 'update']);
 			Route::post('/delete', [NeighborhoodController::class, 'delete']);
 		});

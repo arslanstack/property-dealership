@@ -26,11 +26,6 @@ class Neighborhood extends Model
         'status',
     ];
 
-    public function getBannerAttribute($value)
-    {
-        return $value ? asset('uploads/neighborhoods/' . $value) : null;
-    }
-
     public function getImagesAttribute($value)
     {
         return $value ? json_decode($value) : null;
