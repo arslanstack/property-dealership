@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 04, 2024 at 11:46 AM
+-- Generation Time: Jun 06, 2024 at 01:23 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -68,12 +68,11 @@ CREATE TABLE `features` (
 --
 
 INSERT INTO `features` (`id`, `title`, `slug`, `type`, `status`, `created_at`, `updated_at`) VALUES
-(2, 'Alarm System', 'alarm-system', 1, 1, '2024-06-04 02:47:27', '2024-06-04 02:47:27'),
 (3, 'Breakfast Nook', 'breakfast-nook', 1, 1, '2024-06-04 02:49:09', '2024-06-04 02:49:09'),
 (4, 'Brick', 'brick', 2, 1, '2024-06-04 02:49:25', '2024-06-04 02:49:25'),
 (5, 'Stucco', 'stucco', 2, 1, '2024-06-04 02:49:37', '2024-06-04 02:49:37'),
 (6, 'Laundry Room', 'laundry-room', 1, 1, '2024-06-04 02:49:51', '2024-06-04 02:49:51'),
-(7, 'Landscaped', 'landscaped', 3, 1, '2024-06-04 02:50:01', '2024-06-04 03:12:45');
+(7, 'Landscaped', 'landscaped', 3, 1, '2024-06-04 02:50:01', '2024-06-04 06:39:04');
 
 -- --------------------------------------------------------
 
@@ -98,7 +97,9 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (5, '2024_06_03_122537_create_types_table', 3),
 (6, '2024_06_03_122834_create_properties_table', 4),
 (7, '2024_06_04_053629_create_property_features_table', 5),
-(8, '2024_06_04_053907_create_property_types_table', 6);
+(8, '2024_06_04_053907_create_property_types_table', 6),
+(9, '2024_06_04_111142_add_code_field_to_neighborhoods_table', 7),
+(10, '2024_06_04_115901_add_fields_to_neighborhoods_table', 8);
 
 -- --------------------------------------------------------
 
@@ -110,8 +111,12 @@ CREATE TABLE `neighborhoods` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `title` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
+  `code` varchar(10) DEFAULT NULL,
   `banner` varchar(255) DEFAULT NULL,
   `zip` varchar(255) DEFAULT NULL,
+  `country` varchar(255) DEFAULT NULL,
+  `state` varchar(255) DEFAULT NULL,
+  `city` varchar(255) DEFAULT NULL,
   `map` varchar(255) DEFAULT NULL,
   `images` varchar(255) DEFAULT NULL,
   `description` mediumtext DEFAULT NULL,
@@ -119,6 +124,13 @@ CREATE TABLE `neighborhoods` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `neighborhoods`
+--
+
+INSERT INTO `neighborhoods` (`id`, `title`, `slug`, `code`, `banner`, `zip`, `country`, `state`, `city`, `map`, `images`, `description`, `status`, `created_at`, `updated_at`) VALUES
+(7, 'La Jolla Excellence', 'la-jolla-excellence28', 'LJEBM', 'LJEBM1717672949.webp', '11501', 'Mexico', 'Baja California', 'Rosarito', 'https://maps.app.goo.gl/csQgnFBzaKadEs947', '\"[\\\"LJEBM74.webp\\\",\\\"LJEBM761.webp\\\",\\\"LJEBM425.webp\\\",\\\"LJEBM455.webp\\\"]\"', '<p>La Jolla Excellence is a premier residential development situated in Playas de Rosarito, Baja California, Mexico.</p><p>This opulent community boasts an extensive selection of premium villas and condos for sale that ensure unparalleled comfort and convenience for homeowners.</p><p>With breathtaking ocean vistas, top-of-the-line amenities, and convenient access to local attractions, La Jolla Excellence stands out as the ideal destination for those seeking a sophisticated lifestyle in a stunning seaside location.</p><p>Explore our range of Rosarito Real Estate options today!</p>', 1, '2024-06-06 06:07:35', '2024-06-06 06:22:29');
 
 -- --------------------------------------------------------
 
@@ -376,13 +388,13 @@ ALTER TABLE `features`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `neighborhoods`
 --
 ALTER TABLE `neighborhoods`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`

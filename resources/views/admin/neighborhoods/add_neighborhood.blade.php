@@ -1,5 +1,6 @@
 @extends('admin.admin_app')
 @push('styles')
+<!-- <link href="https://transloadit.edgly.net/releases/uppy/v1.6.0/uppy.min.css" rel="stylesheet"> -->
 <style>
     .ck.ck-reset.ck-editor.ck-rounded-corners {
         box-sizing: border-box;
@@ -325,6 +326,9 @@
                                 <div class="form-group row">
                                     <label for="images" class="form-label"><strong>Images</strong></label>
                                     <input type="file" name="images[]" required class="form-control" accept="image/*" multiple>
+                                    <!-- <div id="drag-drop-area">
+
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -374,6 +378,24 @@
 
 @endsection
 @push('scripts')
+<!-- <script src="https://transloadit.edgly.net/releases/uppy/v1.6.0/uppy.min.js"></script>
+<script>
+    var uppy = Uppy.Core()
+        .use(Uppy.Dashboard, {
+            inline: true,
+            target: '#drag-drop-area'
+        })
+        .use(Uppy.Tus, {
+            endpoint: '{{url("admin/neighborhoods/uploadImages")}}',
+            headers: {
+                'X-CSRF-Token': " {{ csrf_token() }} "
+            }
+        })
+
+    uppy.on('complete', (result) => {
+        console.log('Upload complete! We’ve uploaded these files:', result.successful)
+    })
+</script> -->
 <script>
 </script>
 <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/super-build/ckeditor.js"></script>
