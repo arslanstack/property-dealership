@@ -33,7 +33,7 @@
             <li class="{{ Request::is('admin/neighborhoods') ? 'active' : '' }} {{ Request::is('admin/neighborhoods/*') ? 'active' : '' }}">
                 <a href="{{ url('admin/neighborhoods') }}"><i class="fa-solid fa-location-arrow"></i> <span class="nav-label">Neighborhoods</span></a>
             </li>
-            <li class="{{ Request::is('admin/property-listings') ? 'active' : '' }} {{ Request::is('admin/property-listings/detail*') ? 'active' : '' }}">
+            <li class="{{ Request::is('admin/property-listings') ? 'active' : '' }} {{ Request::is('admin/property-listings/*') ? 'active' : '' }}">
                 <a href="{{ url('admin/property-listings') }}"><i class="fa-solid fa-th"></i> <span class="nav-label">Property Listings</span></a>
             </li>
         </ul>

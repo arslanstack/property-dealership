@@ -76,7 +76,7 @@
                                     <td>{{$item->price}}</td>
                                     <td>{{$item->size}}</td>
                                     <td>
-                                        <a href="{{ url('admin/property-listings/detail') }}/{{ $item->id }}" class="btn btn-primary btn-sm" data-placement="top" title="Details"> <i class="fa fa-edit"></i> Edit Details </a>
+                                        <a href="{{ url('admin/property-listings/details') }}/{{ $item->id }}" class="btn btn-primary btn-sm" data-placement="top" title="Details"> <i class="fa fa-edit"></i> Edit Details </a>
                                         <button class="btn btn-danger btn-sm btn_delete" data-id="{{$item->id}}" data-text="You want to delete this listing!" type="button" data-placement="top" title="Delete">Delete</button>
                                     </td>
                                 </tr>
