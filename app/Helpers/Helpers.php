@@ -262,9 +262,35 @@ if (!function_exists('NHCodes')) {
 		foreach ($words as $word) {
 			$code .= strtoupper(substr($word, 0, 1));
 		}
-		$code .= strtoupper(substr($state, 0, 1));
-		$code .= strtoupper(substr($country, 0, 1));
-		return $code;
+		$code .= rand(1, 99);
+		$check = DB::table('neighborhoods')->where('code', $code)->first();
+		if ($check) {
+			NHCodes($title, $state, $country);
+		} else {
+			return $code;
+		}
+	}
+}
+if (!function_exists('PropertyCode')) {
+	function PropertyCode($neighbor_code, $listing_type)
+	{
+		// dd($neighbor_code, $listing_type);
+		$listing = '';
+		if ($listing_type == 1) {
+			$listing = 'S';
+		} elseif ($listing_type == 2) {
+			$listing = 'R';
+		} else {
+			$listing = 'L';
+		}
+		$property_code = $neighbor_code . $listing . mt_rand(1000, 9999);
+		// check if $property_code already exists as code column in neighborhoods table
+		$check = DB::table('properties')->where('code', $property_code)->first();
+		if ($check) {
+			PropertyCode($neighbor_code, $listing_type);
+		} else {
+			return $property_code;
+		}
 	}
 }
 

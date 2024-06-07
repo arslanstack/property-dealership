@@ -14,6 +14,12 @@
             </li>
         </ol>
     </div>
+
+    <div class="col-lg-4 col-sm-4 col-xs-4 text-right">
+        <a class="btn btn-primary text-white t_m_25" href="{{ url('admin/property-listings/add') }}">
+            <i class="fa fa-plus" aria-hidden="true"></i> Add New Property Listing
+        </a>
+    </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -22,7 +28,7 @@
                 <div class="ibox-content">
                     <form id="search_form" action="{{url('admin/property-listings')}}" method="GET" enctype="multipart/form-data">
                         <div class="form-group row justify-content-end">
-                            <div class="col-sm-6">
+                            <div class="col-sm-8">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="search_query" placeholder="Search by Title, Property Code, Country, State, City or Leave Blank" value="{{ old('search_query', $searchParams['search_query'] ?? '') }}">
                                     <span class="input-group-append">
@@ -32,8 +38,8 @@
                             </div>
                         </div>
                     </form>
-                    <div class="table-responsive">
-                        <table id="manage_tbl" class="table table-striped table-bordered dt-responsive" style="width:100%">
+                    <div class="table" style="overflow-x: auto;">
+                        <table id="manage_tbl" class="table table-striped table-bordered dt-responsive">
                             <thead>
                                 <tr>
                                     <th>Sr #</th>
@@ -41,9 +47,9 @@
                                     <th>Title</th>
                                     <th>Neighborhood</th>
                                     <th>Status</th>
+                                    <th>Price (USD)</th>
                                     <th>Size (Sq.ft)</th>
-                                    <th>Location</th>
-                                    <th>Action</th>
+                                    <th style="width: 200px;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -53,7 +59,7 @@
                                     <td>{{ $i++ }}</td>
                                     <td>{{ $item->code  }}</td>
                                     <td>{{ $item->title  }}</td>
-                                    <td>{{$item->Neighborhood}}</td>
+                                    <td>{{$item->Neighborhood->title}}</td>
                                     <td>
                                         @if ($item->listing_status ==1)
                                         <label class="label label-warning"> For Sale </label>
@@ -62,17 +68,16 @@
                                         @elseif($item->listing_status ==3)
                                         <label class="label label-dark"> Rented </label>
                                         @elseif($item->listing_status ==4)
+                                        <label class="label label-danger"> Sale Pending </label>
+                                        @else
                                         <label class="label label-success"> Sold </label>
                                         @endif
                                     </td>
-                                    <td>{{ $item->city . ', ' . $item->state . ', ' . $item->country }}</td>
+                                    <td>{{$item->price}}</td>
+                                    <td>{{$item->size}}</td>
                                     <td>
-                                        <a href="{{ url('admin/users/detail') }}/{{ $item->id }}" class="btn btn-primary btn-sm" data-placement="top" title="Details"> Details </a>
-                                        @if ($item->is_blocked==1)
-                                        <button class="btn btn-success btn-sm btn_update_status" data-id="{{$item->id}}" data-status="0" data-text="You want to unblock this user!" type="button" data-placement="top" title="Inactivate">Unblock</button>
-                                        @else
-                                        <button class="btn btn-danger btn-sm btn_update_status" data-id="{{$item->id}}" data-status="1" data-text="You want to block this user!" type="button" data-placement="top" title="Activate">Block</button>
-                                        @endif
+                                        <a href="{{ url('admin/property-listings/detail') }}/{{ $item->id }}" class="btn btn-primary btn-sm" data-placement="top" title="Details"> <i class="fa fa-edit"></i> Edit Details </a>
+                                        <button class="btn btn-danger btn-sm btn_delete" data-id="{{$item->id}}" data-text="You want to delete this listing!" type="button" data-placement="top" title="Delete">Delete</button>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -95,27 +100,46 @@
 @endsection
 @push('scripts')
 <script>
-    $('#manage_tbl').dataTable({
-        "paging": false,
-        "searching": false,
-        "bInfo": false,
-        "responsive": true,
-        "columnDefs": [{
-                "responsivePriority": 1,
-                "targets": 0
-            },
-            {
-                "responsivePriority": 2,
-                "targets": -1
-            },
-        ]
-    });
-    $(document).on("click", ".btn_update_status", function() {
+    // $('#manage_tbl').dataTable({
+    //     "paging": false,
+    //     "searching": false,
+    //     "bInfo": false,
+    //     "responsive": true,
+    //     "columnDefs": [{
+    //             "responsivePriority": 1,
+    //             "targets": 0
+    //         },
+    //         {
+    //             "responsivePriority": 2,
+    //             "targets": -1
+    //         },
+    //     ]
+    // });
+    var session = "{{Session::has('success') ? 'true' : 'false'}}";
+    if (session == 'true') {
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right"
+        }
+        toastr.success("{{Session::get('success')}}");
+
+    }
+    var erroring = "{{Session::has('error') ? 'true' : 'false'}}";
+    if (erroring == 'true') {
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right"
+        }
+        toastr.error("{{Session::get('error')}}");
+
+    }
+    $(document).on("click", ".btn_delete", function() {
         var id = $(this).attr('data-id');
-        var status = $(this).attr('data-status');
         var show_text = $(this).attr('data-text');
         swal({
-                title: "Are you sure?",
+                title: "Are you sure",
                 text: show_text,
                 type: "warning",
                 showCancelButton: true,
@@ -129,12 +153,11 @@
                 if (isConfirm) {
                     $(".confirm").prop("disabled", true);
                     $.ajax({
-                        url: "{{ url('admin/users/update_statuses') }}",
+                        url: "{{ url('admin/property-listings/delete') }}",
                         type: 'post',
                         data: {
                             "_token": "{{ csrf_token() }}",
                             'id': id,
-                            'status': status
                         },
                         dataType: 'json',
                         success: function(status) {

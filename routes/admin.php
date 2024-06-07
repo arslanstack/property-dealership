@@ -51,8 +51,9 @@ Route::group(['prefix'  =>  'admin'], function () {
 		});
 		Route::group(['prefix'  =>  'property-listings'], function () {
 			Route::get('/', [PropertyListingController::class, 'index']);
+			Route::get('/add', [PropertyListingController::class, 'add']);
 			Route::post('/store', [PropertyListingController::class, 'store']);
-			Route::post('/type-show', [PropertyListingController::class, 'show']);
+			Route::get('/details/{id}', [PropertyListingController::class, 'show']);
 			Route::post('/update-type', [PropertyListingController::class, 'update']);
 			Route::post('/delete', [PropertyListingController::class, 'delete']);
 		});

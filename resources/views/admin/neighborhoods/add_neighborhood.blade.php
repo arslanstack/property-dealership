@@ -73,7 +73,7 @@
                             <div class="col-md-6">
                                 <label for="Bannerimage" style="cursor: pointer;" class="form-label float-right float-end">
                                     <div id="my-auto">
-                                        <img id="imageView" src="{{asset('/assets/img/banner.png')}}" class="img-fluid" style="max-width: 100%; height: auto; overflow: contain;" alt="Image View">
+                                        <img id="imageView" src="{{asset('/assets/img/banner.png')}}" class="img-fluid" style="width: 450px; height: 310px; overflow: contain;" alt="Image View">
                                     </div>
                                 </label>
                             </div>
@@ -378,26 +378,6 @@
 
 @endsection
 @push('scripts')
-<!-- <script src="https://transloadit.edgly.net/releases/uppy/v1.6.0/uppy.min.js"></script>
-<script>
-    var uppy = Uppy.Core()
-        .use(Uppy.Dashboard, {
-            inline: true,
-            target: '#drag-drop-area'
-        })
-        .use(Uppy.Tus, {
-            endpoint: '{{url("admin/neighborhoods/uploadImages")}}',
-            headers: {
-                'X-CSRF-Token': " {{ csrf_token() }} "
-            }
-        })
-
-    uppy.on('complete', (result) => {
-        console.log('Upload complete! We’ve uploaded these files:', result.successful)
-    })
-</script> -->
-<script>
-</script>
 <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/super-build/ckeditor.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {

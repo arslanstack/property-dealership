@@ -37,6 +37,9 @@ class Property extends Model
         'rent_cycle',
         'date_available',
         'status',
+        'listing_type',
+        'lattitude',
+        'longitude',
     ];
 
     public function neighborhood()
