@@ -1,5 +1,6 @@
 @extends('admin.admin_app')
 @push('styles')
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 <link href="{{asset('admin_assets/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css')}}" rel="stylesheet">
 <script src="{{asset('admin_assets/js/plugins/jqueryMask/jquery.mask.min.js')}}"></script>
 
@@ -217,6 +218,28 @@
 
                         </div>
                         <div class="row mt-2">
+                            <div class="col-12">
+                                <div class="form-group row">
+                                    <label for="dev_lvl" class="form-label"><strong>Location (Select Latitude & Longitude Coordinates By Clicking The Map)</strong></label>
+                                </div>
+                                <div id="map" style="height: 100vh !important;"></div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <div class="form-group row mr-1">
+                                    <label for="latitude" class="form-label"><strong>Latitude Coordinates</strong></label>
+                                    <input type="text" name="latitude" id="latitude" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row mr-1">
+                                    <label for="longitude" class="form-label"><strong>Longitude Coordinates</strong></label>
+                                    <input type="text" name="longitude" id="longitude" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
                             <div class="col-md-12">
                                 <div class="form-group row mr-1">
                                     <label class="form-label"><strong>Property Type</strong></label>
@@ -417,25 +440,90 @@
         </div>
     </div>
 </div>
-<div class="modal fade .bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+<!-- <div class="modal fade .bd-example-modal-xl" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title"><strong>How to add google maps location</strong></h3>
+                <h3 class="modal-title"><strong>Select Location On Map To Get Latitude and Longitude</strong></h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body p-1">
-                <img src="{{asset('assets/img/mapstut.gif')}}" style="width: 100%; height:auto; overflow:contain; margin:none;" alt="">
+                <div id="map" style="height: 99vh !important;"></div>
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 @endsection
 @push('scripts')
+<script>
+    (g => {
+        var h, a, k, p = "The Google Maps JavaScript API",
+            c = "google",
+            l = "importLibrary",
+            q = "__ib__",
+            m = document,
+            b = window;
+        b = b[c] || (b[c] = {});
+        var d = b.maps || (b.maps = {}),
+            r = new Set,
+            e = new URLSearchParams,
+            u = () => h || (h = new Promise(async (f, n) => {
+                await (a = m.createElement("script"));
+                e.set("libraries", [...r] + "");
+                for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
+                e.set("callback", c + ".maps." + q);
+                a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+                d[q] = f;
+                a.onerror = () => h = n(Error(p + " could not load."));
+                a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+                m.head.append(a)
+            }));
+        d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
+    })
+    ({
+        key: "AIzaSyBy2l4KGGTm4cTqoSl6h8UAOAob87sHBsA",
+        v: "weekly"
+    });
+</script>
 
+<script>
+    async function initMap() {
+        const {
+            Map
+        } = await google.maps.importLibrary("maps");
+        const myLatlng = {
+            lat: 32.35269,
+            lng: -117.0417087
+        };
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 14,
+            center: myLatlng,
+        });
+        let infoWindow = new google.maps.InfoWindow({
+            content: "Click the map to get Lat/Lng!",
+            position: myLatlng,
+        });
+        infoWindow.open(map);
+        map.addListener("click", (mapsMouseEvent) => {
+            infoWindow.close();
+            infoWindow = new google.maps.InfoWindow({
+                position: mapsMouseEvent.latLng,
+            });
+            coordinates = mapsMouseEvent.latLng.toJSON();
+            infoWindow.setContent(
+                JSON.stringify(coordinates, null, 2),
+            );
+            infoWindow.open(map);
+            $('#latitude').val(coordinates.lat);
+            $('#longitude').val(coordinates.lng);
+        });
+    }
+
+    initMap();
+</script>
 <script>
     $(document).ready(function() {
         $('#listing_type').change(function() {
