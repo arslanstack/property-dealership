@@ -72,6 +72,7 @@ class PropertyListingController extends Controller
             'longitude' => 'required',
             'price' => 'required',
             'neighborhood' => 'required',
+            'short_description' => 'required',
             'address' => 'required',
             'size' => 'required',
             'parking_spaces' => 'required',
@@ -114,6 +115,7 @@ class PropertyListingController extends Controller
         $property->bathrooms  = $request->bathrooms;
         $property->parking_spaces = $request->parking_spaces;
         $property->description = $request->description ?? '';
+        $property->short_description = $request->short_description ?? '';
         $property->address = $request->address;
         $property->country = $neighborhood->country;
         $property->state = $neighborhood->state;
@@ -317,6 +319,7 @@ class PropertyListingController extends Controller
             'longitude' => 'required',
             'price' => 'required',
             'neighborhood' => 'required',
+            'short_description' => 'required',
             'address' => 'required',
             'size' => 'required',
             'parking_spaces' => 'required',
@@ -359,6 +362,7 @@ class PropertyListingController extends Controller
         $property->bathrooms  = $request->bathrooms;
         $property->parking_spaces = $request->parking_spaces;
         $property->description = $request->description ?? '';
+        $property->short_description = $request->short_description ?? '';
         $property->address = $request->address;
         $property->country = $neighborhood->country;
         $property->state = $neighborhood->state;

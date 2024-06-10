@@ -156,9 +156,13 @@ class PropertiesController extends Controller
                 return $found;
             });
         }
-        // count total records 
         $total = $properties->count();
+        $pages = ceil($total / 6);
+
         $properties = $properties->paginate(6);
+        foreach ($properties as $property) {
+            $this->refine($property);
+        }
         return response()->json(['message' => 'Properties retrieved successfully.', 'data' => $properties, 'records_count' => $total], 200);
     }
     public function refine($property)

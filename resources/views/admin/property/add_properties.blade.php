@@ -139,6 +139,15 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row mt-2 g-1">
+                            <div class="col-md-12">
+                                <div class="form-group row mr-1">
+                                    <label class="form-label"><strong>Short Description <small>(255 Characters)</small></strong></label>
+                                    <input type="text" name="short_description" class="form-control" maxlength="255" placeholder="Located at prime location of Rosarito..." required>
+                                </div>
+                            </div>
+
+                        </div>
                         <!-- Neighborhood and Address -->
                         <div class="row mt-2">
                             <div class="col-md-6">

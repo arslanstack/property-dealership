@@ -26,6 +26,7 @@ class Property extends Model
         'gallery',
         'map',
         'description',
+        'short_description',
         'address',
         'country',
         'state',
