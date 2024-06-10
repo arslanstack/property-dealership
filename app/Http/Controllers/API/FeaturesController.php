@@ -14,11 +14,21 @@ class FeaturesController extends Controller
     {
         $features = Feature::all();
         foreach ($features as $feature) {
-            if ($feature->type == 1) {
-                $feature->type = mapfeaturetype($feature->type);
-            }
+            $feature->type = mapfeaturetype($feature->type);
             $feature->property_count = PropertyFeature::where('feature_id', $feature->id)->count();
         }
         return response()->json(['message' => 'Features retrieved successfully.', 'data' => $features], 200);
+    }
+
+    public function show($id)
+    {
+        $feature = Feature::find($id);
+        if ($feature) {
+            $feature->type = mapfeaturetype($feature->type);
+            $feature->property_count = PropertyFeature::where('feature_id', $feature->id)->count();
+            return response()->json(['message' => 'Feature retrieved successfully.', 'data' => $feature], 200);
+        } else {
+            return response()->json(['message' => 'Feature not found.'], 404);
+        }
     }
 }

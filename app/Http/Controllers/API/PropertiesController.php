@@ -62,14 +62,6 @@ class PropertiesController extends Controller
         ];
         return response()->json(['message' => 'Filter Mapping retrieved successfully.', 'data' => $data], 200);
     }
-    public function index(Request $request)
-    {
-        $properties = Property::all();
-        foreach ($properties as $property) {
-            $this->refine($property);
-        }
-        return response()->json(['message' => 'Properties retrieved successfully.', 'data' => $properties], 200);
-    }
     public function featured(Request $request)
     {
         $properties = Property::where('is_featured', 2)->get();
@@ -86,7 +78,16 @@ class PropertiesController extends Controller
         }
         return response()->json(['message' => 'Recent Properties retrieved successfully.', 'data' => $properties], 200);
     }
-
+    public function show($id)
+    {
+        $property = Property::find($id);
+        if ($property) {
+            $property = $this->refine($property);
+            return response()->json(['message' => 'Property retrieved successfully.', 'data' => $property], 200);
+        } else {
+            return response()->json(['message' => 'Property not found.'], 404);
+        }
+    }
     public function all(Request $request)
     {
         // dd($request->all());
@@ -155,8 +156,10 @@ class PropertiesController extends Controller
                 return $found;
             });
         }
+        // count total records 
+        $total = $properties->count();
         $properties = $properties->paginate(6);
-        return response()->json(['message' => 'Properties retrieved successfully.', 'data' => $properties], 200);
+        return response()->json(['message' => 'Properties retrieved successfully.', 'data' => $properties, 'records_count' => $total], 200);
     }
     public function refine($property)
     {
@@ -223,7 +226,6 @@ class PropertiesController extends Controller
         $property->types = $property_types;
         return $property;
     }
-
     public function feature_mapping($features, $property_features)
     {
         foreach ($features as $feature) {

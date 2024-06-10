@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "bde6c2b1-7aff-47c2-bc40-e7d4f7a8cf7d",
-		"name": "Property Dealership",
+		"name": "Property Dealership Original",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "29801289"
 	},
@@ -165,6 +165,25 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get All Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/features/details/4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"features",
+								"details",
+								"4"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -188,6 +207,109 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get One",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/types/details/8",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"types",
+								"details",
+								"8"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Testimonials",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/testimonials/all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"testimonials",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/testimonials/details/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"testimonials",
+								"details",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Real Estate Agents",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/testimonials/all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"testimonials",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/agents/details/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"agents",
+								"details",
+								"3"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -207,6 +329,25 @@
 							"path": [
 								"neighborhoods",
 								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/neighborhoods/details/14",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"neighborhoods",
+								"details",
+								"14"
 							]
 						}
 					},
@@ -292,6 +433,25 @@
 					"response": []
 				},
 				{
+					"name": "Get One",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/properties/details/13",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"properties",
+								"details",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get Featured 4",
 					"request": {
 						"method": "GET",
@@ -322,6 +482,28 @@
 							"path": [
 								"properties",
 								"recent"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "Search",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/search",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"search"
 							]
 						}
 					},

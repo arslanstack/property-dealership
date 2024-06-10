@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AgentController;
 use App\Http\Controllers\Admin\FeatureController;
 use App\Http\Controllers\Admin\NeighborhoodController;
 use App\Http\Controllers\Admin\PropertyListingController;
+use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +41,20 @@ Route::group(['prefix'  =>  'admin'], function () {
 			Route::post('/type-show', [TypeController::class, 'show']);
 			Route::post('/update-type', [TypeController::class, 'update']);
 			Route::post('/delete', [TypeController::class, 'delete']);
+		});
+		Route::group(['prefix'  =>  'testimonials'], function () {
+			Route::get('/', [TestimonialController::class, 'index']);
+			Route::post('/store', [TestimonialController::class, 'store']);
+			Route::post('/show', [TestimonialController::class, 'show']);
+			Route::post('/update', [TestimonialController::class, 'update']);
+			Route::post('/delete', [TestimonialController::class, 'delete']);
+		});
+		Route::group(['prefix'  =>  'agents'], function () {
+			Route::get('/', [AgentController::class, 'index']);
+			Route::post('/store', [AgentController::class, 'store']);
+			Route::post('/show', [AgentController::class, 'show']);
+			Route::post('/update', [AgentController::class, 'update']);
+			Route::post('/delete', [AgentController::class, 'delete']);
 		});
 		Route::group(['prefix'  =>  'neighborhoods'], function () {
 			Route::get('/', [NeighborhoodController::class, 'index']);
