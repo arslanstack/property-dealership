@@ -41,7 +41,7 @@ class PropertiesController extends Controller
             ['id' => 2, 'title' => 'For Rent'],
             ['id' => 3, 'title' => 'Rented'],
             ['id' => 4, 'title' => 'Sale Pending'],
-            ['id' => 3, 'title' => 'Sold'],
+            ['id' => 5, 'title' => 'Sold'],
         ];
         $sorting = [
             ['id' => '1', 'title' => 'default'],

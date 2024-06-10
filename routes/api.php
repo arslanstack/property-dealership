@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AgentController;
+use App\Http\Controllers\API\EvaluationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserAuthController;
@@ -48,5 +49,9 @@ Route::group(['middleware' => 'api'], function ($router) {
     });
     Route::group(['prefix' => 'search'], function () {
         Route::post('/', [SearchController::class, 'index']);
+    });
+    Route::group(['prefix' => 'evaluation'], function () {
+        Route::get('/input-options', [EvaluationController::class, 'inputs']);
+        Route::post('/submit', [EvaluationController::class, 'store']);
     });
 });

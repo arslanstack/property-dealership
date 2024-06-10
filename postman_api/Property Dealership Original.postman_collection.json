@@ -280,12 +280,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/testimonials/all",
+							"raw": "{{base_url}}/agents/all",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"testimonials",
+								"agents",
 								"all"
 							]
 						}
@@ -497,6 +497,66 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "search_term",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "property_type",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "development_level",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "price_min",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "price_max",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "area_min",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "area_max",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "bed_min",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "bath_min",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "features",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
 						"url": {
 							"raw": "{{base_url}}/search",
 							"host": [
@@ -504,6 +564,152 @@
 							],
 							"path": [
 								"search"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Home Evaluation",
+			"item": [
+				{
+					"name": "Evaluation Inputs Options",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/evaluation/input-options",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"evaluation",
+								"input-options"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Evaluate Form Submit",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "fname",
+									"value": "John",
+									"type": "text"
+								},
+								{
+									"key": "lname",
+									"value": "Doe",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "johndoe@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "+19871234519",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "221 Bakers Street",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "New York City",
+									"type": "text"
+								},
+								{
+									"key": "state",
+									"value": "New York",
+									"type": "text"
+								},
+								{
+									"key": "zip",
+									"value": "10001",
+									"type": "text"
+								},
+								{
+									"key": "year_built",
+									"value": "2017",
+									"type": "text"
+								},
+								{
+									"key": "size",
+									"value": "1280",
+									"type": "text"
+								},
+								{
+									"key": "bedroom",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "bathroom",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "half_bathroom",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "has_suite",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "garage",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "garage_type",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "basement_type",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "dev_lvl",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "move_plan",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "notes",
+									"value": "Wondering what your home is worth? I would be happy to help you in whatever way I can. The articles and resources on this page are complimentary and part of the many services I offer.",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/evaluation/submit",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"evaluation",
+								"submit"
 							]
 						}
 					},

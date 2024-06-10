@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\PropertyListingController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\EvaluationController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix'  =>  'admin'], function () {
@@ -55,6 +56,11 @@ Route::group(['prefix'  =>  'admin'], function () {
 			Route::post('/show', [AgentController::class, 'show']);
 			Route::post('/update', [AgentController::class, 'update']);
 			Route::post('/delete', [AgentController::class, 'delete']);
+		});
+		Route::group(['prefix'  =>  'home-evaluation-requests'], function () {
+			Route::get('/', [EvaluationController::class, 'index']);
+			Route::post('/show', [EvaluationController::class, 'show']);
+			Route::post('/update', [EvaluationController::class, 'update']);
 		});
 		Route::group(['prefix'  =>  'neighborhoods'], function () {
 			Route::get('/', [NeighborhoodController::class, 'index']);

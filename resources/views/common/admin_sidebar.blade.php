@@ -42,6 +42,9 @@
             <li class="{{ Request::is('admin/agents') ? 'active' : '' }} {{ Request::is('admin/agents/*') ? 'active' : '' }}">
                 <a href="{{ url('admin/agents') }}"><i class="fa-solid fa-user"></i> <span class="nav-label">Real Estate Agents</span></a>
             </li>
+            <li class="{{ Request::is('admin/home-evaluation-requests') ? 'active' : '' }} {{ Request::is('admin/home-evaluation-requests/*') ? 'active' : '' }}">
+                <a href="{{ url('admin/home-evaluation-requests') }}"><i class="fa-solid fa-user"></i> <span class="nav-label">Home Evaluations</span></a>
+            </li>
         </ul>
     </div>
 </nav>

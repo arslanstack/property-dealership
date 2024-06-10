@@ -270,6 +270,98 @@ if (!function_exists('mapListingStatus')) {
 		}
 	}
 }
+if (!function_exists('mapHasSuite')) {
+	function mapHasSuite($tinyint)
+	{
+		if ($tinyint == 1) {
+			return 'No';
+		} elseif ($tinyint == 2) {
+			return 'Yes';
+		} else if ($tinyint == 3) {
+			return 'Potential';
+		}
+	}
+}
+if (!function_exists('mapGarage')) {
+	function mapGarage($tinyint)
+	{
+		// 0: N/A, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5+ 
+		if ($tinyint == 0) {
+			return 'N/A';
+		} elseif ($tinyint == 1) {
+			return '1';
+		} elseif ($tinyint == 2) {
+			return '2';
+		} elseif ($tinyint == 3) {
+			return '3';
+		} elseif ($tinyint == 4) {
+			return '4';
+		} elseif ($tinyint == 5) {
+			return '5+';
+		}
+	}
+}
+if (!function_exists('mapGarageType')) {
+	function mapGarageType($tinyint)
+	{
+		// 1: Attached, 2: Detached
+		if ($tinyint == 1) {
+			return 'Attached';
+		} elseif ($tinyint == 2) {
+			return 'Detached';
+		}
+	}
+}
+if (!function_exists('mapBaseType')) {
+	function mapBaseType($tinyint)
+	{
+		// 1: None, 2: Full, 3: Partial, 4: Crawl, 5: Walkout 
+		if ($tinyint == 1) {
+			return 'None';
+		} elseif ($tinyint == 2) {
+			return 'Full';
+		} elseif ($tinyint == 3) {
+			return 'Partial';
+		} elseif ($tinyint == 4) {
+			return 'Crawl';
+		} elseif ($tinyint == 5) {
+			return 'Walkout';
+		}
+	}
+}
+if (!function_exists('mapDevLvl')) {
+	function mapDevLvl($tinyint)
+	{
+		if ($tinyint == 1) {
+			return 'None';
+		} elseif ($tinyint == 2) {
+			return '25%';
+		} elseif ($tinyint == 3) {
+			return '50%';
+		} elseif ($tinyint == 4) {
+			return '75%';
+		} elseif ($tinyint == 5) {
+			return 'Complete';
+		}
+	}
+}
+if (!function_exists('mapMovePlan')) {
+	function mapMovePlan($tinyint)
+	{
+		// 1: 1 Month, 2: 3 Month, 3: 6 Month, 4: 1 Year, 5: 2+ Years
+		if ($tinyint == 1) {
+			return '1 Month';
+		} elseif ($tinyint == 2) {
+			return '3 Month';
+		} elseif ($tinyint == 3) {
+			return '6 Month';
+		} elseif ($tinyint == 4) {
+			return '1 Year';
+		} elseif ($tinyint == 5) {
+			return '2+ Years';
+		}
+	}
+}
 if (!function_exists('slugify')) {
 	function slugify($title)
 	{
