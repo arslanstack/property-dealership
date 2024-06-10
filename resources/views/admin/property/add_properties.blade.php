@@ -1,6 +1,7 @@
 @extends('admin.admin_app')
 @push('styles')
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
 <link href="{{asset('admin_assets/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css')}}" rel="stylesheet">
 <script src="{{asset('admin_assets/js/plugins/jqueryMask/jquery.mask.min.js')}}"></script>
 
@@ -57,7 +58,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-content">
-                    <form action="{{url('admin/property-listings/store')}}" class="m-4" id="neighborhood-form" method="post" enctype="multipart/form-data">
+                    <form action="{{url('admin/property-listings/store')}}" class="m-4" id="property-form" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
@@ -124,26 +125,19 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group row ml-1">
-                                    <label for="hoa_fee" class="form-label"><strong>HOA Fee (USD Monthly)</strong></label>
-                                    <input type="text" name="hoa_fee" id="hoa_fee" class="form-control" placeholder="200">
+                                    <label for="hoa_fees" class="form-label"><strong>HOA Fee (USD Monthly)</strong></label>
+                                    <input type="text" name="hoa_fees" id="hoa_fees" class="form-control" placeholder="200">
                                 </div>
                             </div>
 
                         </div>
                         <div class="row mt-2 g-1">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group row mr-1">
                                     <label class="form-label"><strong>Price/Rent (USD)</strong></label>
                                     <input type="text" name="price" required class="form-control" placeholder="e.g. 30000 ">
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group row ml-1">
-                                    <label class="form-label"><strong>Map Location Link</strong> <a data-toggle="modal" data-target="#exampleModal" class="" style="color: red; text-decoration: underline;">Need Help?</a> </label>
-                                    <input type="text" name="map" required class="form-control" placeholder="e.g. https://maps.app.goo.gl/4HkaWCCpbNYW64MSA">
-                                </div>
-                            </div>
-
                         </div>
                         <!-- Neighborhood and Address -->
                         <div class="row mt-2">
@@ -229,13 +223,13 @@
                             <div class="col-md-6">
                                 <div class="form-group row mr-1">
                                     <label for="latitude" class="form-label"><strong>Latitude Coordinates</strong></label>
-                                    <input type="text" name="latitude" id="latitude" class="form-control">
+                                    <input type="text" name="latitude" id="latitude" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group row mr-1">
                                     <label for="longitude" class="form-label"><strong>Longitude Coordinates</strong></label>
-                                    <input type="text" name="longitude" id="longitude" class="form-control">
+                                    <input type="text" name="longitude" id="longitude" class="form-control" required>
                                 </div>
                             </div>
                         </div>
@@ -408,7 +402,9 @@
                             <div class="col-12">
                                 <div class="form-group row">
                                     <label for="gallery" class="form-label"><strong>Image Gallery</strong></label>
-                                    <input type="file" name="gallery[]" id="gallery" class="form-control" accept="image/*" multiple required>
+                                    <!-- <input type="file" name="gallery[]" id="gallery" class="form-control" accept="image/*" multiple required> -->
+                                    <div class="dropzone col-12" id="myDropzone"></div>
+                                    <input type="text" name="gallery" id="gallery" hidden>
                                 </div>
                             </div>
                         </div>
@@ -440,24 +436,85 @@
         </div>
     </div>
 </div>
-<!-- <div class="modal fade .bd-example-modal-xl" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title"><strong>Select Location On Map To Get Latitude and Longitude</strong></h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body p-1">
-                <div id="map" style="height: 99vh !important;"></div>
-            </div>
-        </div>
-    </div>
-</div> -->
 
 @endsection
 @push('scripts')
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<script>
+    gallery_images = [];
+    let myDropzone = new Dropzone("#myDropzone", {
+        url: "{{url('/admin/property-listings/imageManagement')}}",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(file, response) {
+            if (response.status === 'success') {
+                gallery_images.push(response.image);
+                console.log(gallery_images);
+                $('#gallery').val(JSON.stringify(gallery_images));
+            } else {
+                console.error('Error uploading images');
+            }
+        }
+    });
+</script>
+<script>
+    // on form submit i want to validate request 
+    $('#property-form').submit(function() {
+
+        // if listing type selected is sale then property tax and hoa fee fields are mandatory
+        if ($('#listing_type').val() == 1) {
+            if ($('#property_tax').val() == '') {
+                toastr.options = {
+                    "closeButton": true,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right"
+                }
+                toastr.error("Please enter the property tax");
+                return false;
+            }
+            if ($('#hoa_fees').val() == '') {
+                toastr.options = {
+                    "closeButton": true,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right"
+                }
+                toastr.error("Please enter the HOA fee");
+                return false;
+            }
+        } else if ($('#listing_type').val() == 2) {
+            if ($('#date_available').val() == '') {
+                toastr.options = {
+                    "closeButton": true,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right"
+                }
+                toastr.error("Please enter the date of availability");
+                return false;
+            }
+        }
+        if (gallery_images.length < 1) {
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right"
+            }
+            toastr.error("Please upload at least one image for the gallery");
+            return false;
+        }
+
+        if ($('#latitude').val() == '' || $('#longitude').val() == '') {
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right"
+            }
+            toastr.error("Please select the latitude and longitude coordinates");
+            return false;
+        }
+        return true;
+    });
+</script>
 <script>
     (g => {
         var h, a, k, p = "The Google Maps JavaScript API",

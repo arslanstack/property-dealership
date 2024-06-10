@@ -48,14 +48,17 @@ Route::group(['prefix'  =>  'admin'], function () {
 			Route::get('/details/{id}', [NeighborhoodController::class, 'show']);
 			Route::post('/update', [NeighborhoodController::class, 'update']);
 			Route::post('/delete', [NeighborhoodController::class, 'delete']);
+			Route::post('/imageManagement', [NeighborhoodController::class, 'imageManagement']);
 		});
 		Route::group(['prefix'  =>  'property-listings'], function () {
 			Route::get('/', [PropertyListingController::class, 'index']);
 			Route::get('/add', [PropertyListingController::class, 'add']);
 			Route::post('/store', [PropertyListingController::class, 'store']);
 			Route::get('/details/{id}', [PropertyListingController::class, 'show']);
-			Route::post('/update-type', [PropertyListingController::class, 'update']);
+			Route::post('/update', [PropertyListingController::class, 'update']);
 			Route::post('/delete', [PropertyListingController::class, 'delete']);
+			Route::post('/imageManagement', [PropertyListingController::class, 'imageManagement']);
+			Route::post('/delete-image', [PropertyListingController::class, 'deleteImage']);
 		});
 	});
 });

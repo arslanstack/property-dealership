@@ -43,7 +43,6 @@ class NeighborhoodController extends Controller
             'country' => 'required',
             'state' => 'required',
             'city' => 'required',
-            'map' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -62,7 +61,9 @@ class NeighborhoodController extends Controller
         $neighborhood->country = $request->country;
         $neighborhood->state = $request->state;
         $neighborhood->city = $request->city;
-        $neighborhood->map = $request->map;
+        $neighborhood->images = $request->images;
+        $neighborhood->latitude = $request->latitude;
+        $neighborhood->longitude = $request->longitude;
         $neighborhood->description = $request->description ?? '';
         if ($request->hasFile('banner')) {
             $file = $request->file('banner');
@@ -70,16 +71,6 @@ class NeighborhoodController extends Controller
             $filename = $neighborhood->code . time() . '.' . $extension;
             $file->move('uploads/neighborhoods/', $filename);
             $neighborhood->banner = $filename;
-        }
-        if ($request->hasFile('images')) {
-            $images = [];
-            foreach ($request->file('images') as $file) {
-                $extension = $file->getClientOriginalExtension();
-                $filename = $neighborhood->code . rand(1, 999) . '.' . $extension;
-                $file->move('uploads/neighborhoods/', $filename);
-                $images[] = $filename;
-            }
-            $neighborhood->images = json_encode($images);
         }
         $query = $neighborhood->save();
         if ($query) {
@@ -101,9 +92,9 @@ class NeighborhoodController extends Controller
                     $images[$key] = asset('uploads/neighborhoods/' . $image);
                 }
             }
+            $images_array = json_encode($images);
             $neighborhood->images = $images;
-            // dd($neighborhood);
-            return view('admin/neighborhoods/edit_neighborhood', ['neighborhood' => $neighborhood]);
+            return view('admin/neighborhoods/edit_neighborhood', ['neighborhood' => $neighborhood, 'images_array' => $images_array]);
         } else {
             return back()->with('error', 'Neighborhood not found');
         }
@@ -117,11 +108,15 @@ class NeighborhoodController extends Controller
             'country' => 'required',
             'state' => 'required',
             'city' => 'required',
-            'map' => 'required',
         ]);
 
+        $images_urls = json_decode($request->images);
+        foreach ($images_urls as $key => $url) {
+            $parsedUrl = parse_url($url, PHP_URL_PATH);
+            $filename = basename($parsedUrl);
+            $images_urls[$key] = $filename;
+        }
         if ($validator->fails()) {
-            // create a list of all the required fields that are missing and return message
             $missing_fields = [];
             foreach ($validator->errors()->messages() as $key => $value) {
                 $missing_fields[] = $key;
@@ -139,8 +134,9 @@ class NeighborhoodController extends Controller
         $neighborhood->zip = $request->zip;
         $neighborhood->country = $request->country;
         $neighborhood->state = $request->state;
-        $neighborhood->city = $request->city;
-        $neighborhood->map = $request->map;
+        $neighborhood->images = json_encode($images_urls);
+        $neighborhood->latitude = $request->latitude;
+        $neighborhood->longitude = $request->longitude;
         $neighborhood->description = $request->description ?? '';
         if ($request->hasFile('banner')) {
             $file_path = public_path('uploads/neighborhoods/' . $neighborhood->banner);
@@ -152,24 +148,6 @@ class NeighborhoodController extends Controller
             $filename = $neighborhood->code . time() . '.' . $extension;
             $file->move('uploads/neighborhoods/', $filename);
             $neighborhood->banner = $filename;
-        }
-        // I want existing images to be retained and new images to be added
-        // existing:
-        // "[\"LJEBM74.webp\",\"LJEBM761.webp\",\"LJEBM425.webp\"]"
-        // new : 
-        // "[\"LJEBM74.webp\",\"LJEBM761.webp\",\"LJEBM425.webp\",\"LJEBM425.webp\"]"
-        if ($request->hasFile('images')) {
-            $images = [];
-            if (!empty($neighborhood->images)) {
-                $images = json_decode($neighborhood->images);
-            }
-            foreach ($request->file('images') as $file) {
-                $extension = $file->getClientOriginalExtension();
-                $filename = $neighborhood->code . rand(1, 999) . '.' . $extension;
-                $file->move('uploads/neighborhoods/', $filename);
-                $images[] = $filename;
-            }
-            $neighborhood->images = json_encode($images);
         }
         $query = $neighborhood->save();
         if ($query) {
@@ -233,10 +211,44 @@ class NeighborhoodController extends Controller
                     return response()->json(['msg' => 'error', 'response' => 'Something went wrong.']);
                 }
             } else {
-                return response()->json(['msg' => 'error', 'response' => 'Image not found.']);
+                // just delete the image from the folder
+                $file_path = public_path('uploads/neighborhoods/' . $filename);
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+                return response()->json(['msg' => 'success', 'response' => 'Image deleted successfully.']);
             }
         } else {
-            return response()->json(['msg' => 'error', 'response' => 'Neighborhood not found.']);
+            $file_path = public_path('uploads/neighborhoods/' . $filename);
+            if (file_exists($file_path)) {
+                unlink($file_path);
+            }
+            return response()->json(['msg' => 'success', 'response' => 'Image deleted successfully.']);
+        }
+    }
+    public function imageManagement(Request $request)
+    {
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $image_name = rand(1, 999) . time() . '.' . $file->getClientOriginalExtension();
+            if ($file->move(public_path('uploads/neighborhoods'), $image_name)) {
+                return response()->json([
+                    'status' => 'success',
+                    'image' => $image_name,
+                    'image_url' => asset('uploads/neighborhoods/' . $image_name)
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Image could not be uploaded.'
+                ], 400);
+            }
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No files uploaded.'
+            ], 400);
         }
     }
 }

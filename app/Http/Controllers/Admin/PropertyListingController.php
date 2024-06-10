@@ -14,6 +14,7 @@ use App\Models\Neighborhood;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Response;
 
 class PropertyListingController extends Controller
 {
@@ -57,6 +58,7 @@ class PropertyListingController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         if ($request->date_available != null || $request->date_available != '') {
             $date_available = Carbon::parse($request->input('date_available'))->format('Y-m-d H:i:s.u');
         } else {
@@ -66,8 +68,9 @@ class PropertyListingController extends Controller
             'title' => 'required',
             'listing_type' => 'required',
             'listing_status' => 'required',
+            'latitude' => 'required',
+            'longitude' => 'required',
             'price' => 'required',
-            'map' => 'required',
             'neighborhood' => 'required',
             'address' => 'required',
             'size' => 'required',
@@ -98,7 +101,6 @@ class PropertyListingController extends Controller
                 $type_slugs[] = $type->slug;
             }
         }
-
         $neighborhood = Neighborhood::where('id', $request->neighborhood)->first();
         $property = new Property();
         $property->code = PropertyCode($neighborhood->code, $request->listing_type);
@@ -111,7 +113,6 @@ class PropertyListingController extends Controller
         $property->bedrooms = $request->bedrooms;
         $property->bathrooms  = $request->bathrooms;
         $property->parking_spaces = $request->parking_spaces;
-        $property->map = $request->map;
         $property->description = $request->description ?? '';
         $property->address = $request->address;
         $property->country = $neighborhood->country;
@@ -124,21 +125,15 @@ class PropertyListingController extends Controller
         $property->hoa_fees  = $request->hoa_fees ?? '';
         $property->rent_cycle  = $request->rent_cycle ?? '';
         $property->date_available  = $date_available;
+        $property->gallery = $request->gallery;
+        $property->lattitude = $request->latitude;
+        $property->longitude = $request->longitude;
+
         if ($request->hasFile('banner')) {
             $image = $request->file('banner');
             $image_name = $property->code . time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('uploads/properties'), $image_name);
             $property->banner = $image_name;
-        }
-        if ($request->hasFile('gallery')) {
-            $gallery = $request->file('gallery');
-            $gallery_images = [];
-            foreach ($gallery as $image) {
-                $image_name = $property->code . rand(1, 999) . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/properties'), $image_name);
-                $gallery_images[] = $image_name;
-            }
-            $property->gallery = json_encode($gallery_images);
         }
         $query = $property->save();
         if ($query) {
@@ -284,11 +279,143 @@ class PropertyListingController extends Controller
             $data['types'] = $types;
             $data['neighborhoods'] = Neighborhood::all();
             $data['prop_neighborhood'] = Neighborhood::where('id', $property->neighborhood_id)->get();
+            $gallery = [];
+            if (!empty($property->gallery && $property->gallery != null)) {
+                $images = json_decode($property->gallery);
+                foreach ($images as $key => $image) {
+                    $images[$key] = asset('uploads/properties/' . $image);
+                }
+            } else {
+                $images = [];
+            }
+            $data['gallery_array'] = json_encode($images);
+            $data['galleries'] = $images;
             return view('admin/property/edit_properties', $data);
         } else {
             return redirect()->back()->with('error', 'Property Listing not found');
         }
     }
+
+    public function update(Request $request)
+    {
+        $gallery = json_decode($request->gallery);
+        foreach ($gallery as $key => $url) {
+            $parsedUrl = parse_url($url, PHP_URL_PATH);
+            $filename = basename($parsedUrl);
+            $gallery[$key] = $filename;
+        }
+        if ($request->date_available != null || $request->date_available != '') {
+            $date_available = Carbon::parse($request->input('date_available'))->format('Y-m-d H:i:s.u');
+        } else {
+            $date_available = Carbon::today()->format('Y-m-d H:i:s.u');
+        }
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'listing_type' => 'required',
+            'listing_status' => 'required',
+            'latitude' => 'required',
+            'longitude' => 'required',
+            'price' => 'required',
+            'neighborhood' => 'required',
+            'address' => 'required',
+            'size' => 'required',
+            'parking_spaces' => 'required',
+            'bedrooms' => 'required',
+            'bathrooms' => 'required',
+            'year_built' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $missing_fields = [];
+            foreach ($validator->errors()->messages() as $key => $value) {
+                $missing_fields[] = $key;
+            }
+            return back()->with('error', 'The following fields are required: ' . implode(', ', $missing_fields));
+        }
+        $features = Feature::all();
+        $feature_slugs = [];
+        foreach ($features as $feature) {
+            if ($request->has($feature->slug)) {
+                $feature_slugs[] = $feature->slug;
+            }
+        }
+        $types = Types::all();
+        $type_slugs = [];
+        foreach ($types as $type) {
+            if ($request->has($type->slug)) {
+                $type_slugs[] = $type->slug;
+            }
+        }
+        $neighborhood = Neighborhood::where('id', $request->neighborhood)->first();
+        $property = Property::where('id', $request->id)->first();
+        $property->code = PropertyCode($neighborhood->code, $request->listing_type);
+        $property->title = $request->title;
+        $property->slug = slugify($request->title) . rand(1, 99);
+        $property->price = $request->price;
+        $property->neighborhood_id  = $neighborhood->id;
+        $property->listing_status = $request->listing_status;
+        $property->size  = $request->size;
+        $property->bedrooms = $request->bedrooms;
+        $property->bathrooms  = $request->bathrooms;
+        $property->parking_spaces = $request->parking_spaces;
+        $property->description = $request->description ?? '';
+        $property->address = $request->address;
+        $property->country = $neighborhood->country;
+        $property->state = $neighborhood->state;
+        $property->city = $neighborhood->city;
+        $property->dev_lvl = $request->dev_lvl;
+        $property->year_built = $request->year_built;
+        $property->listing_type = $request->listing_type;
+        $property->property_tax  = $request->property_tax ?? '';
+        $property->hoa_fees  = $request->hoa_fees ?? '';
+        $property->rent_cycle  = $request->rent_cycle ?? '';
+        $property->date_available  = $date_available;
+        $property->gallery = $gallery;
+        $property->lattitude = $request->latitude;
+        $property->longitude = $request->longitude;
+
+        if ($request->hasFile('banner')) {
+            if ($property->banner != null) {
+                $banner = public_path('uploads/properties/' . $property->banner);
+                if (file_exists($banner)) {
+                    unlink($banner);
+                }
+            }
+            $image = $request->file('banner');
+            $image_name = $property->code . time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('uploads/properties'), $image_name);
+            $property->banner = $image_name;
+        }
+        $query = $property->save();
+        if ($query) {
+            $property_features = PropertyFeature::where('property_id', $property->id)->get();
+            foreach ($property_features as $property_feature) {
+                $property_feature->delete();
+            }
+            $property_types = PropertyType::where('property_id', $property->id)->get();
+            foreach ($property_types as $property_type) {
+                $property_type->delete();
+            }
+            foreach ($feature_slugs as $feature_slug) {
+                $feature = Feature::where('slug', $feature_slug)->first();
+                $property_feature = new PropertyFeature();
+                $property_feature->property_id = $property->id;
+                $property_feature->feature_id = $feature->id;
+                $property_feature->save();
+            }
+            foreach ($type_slugs as $type_slug) {
+                $type = Types::where('slug', $type_slug)->first();
+                $property_type = new PropertyType();
+                $property_type->property_id = $property->id;
+                $property_type->type_id = $type->id;
+                $property_type->save();
+            }
+            return redirect()->back()->with('success', 'Property Listing updated successfully');
+        } else {
+            return redirect()->back()->with('error', 'Something went wrong. Couldn\'t update property.');
+        }
+    }
+
     public function delete(Request $request)
     {
         $property = Property::where('id', $request->id)->first();
@@ -327,119 +454,68 @@ class PropertyListingController extends Controller
         }
     }
 
+    public function imageManagement(Request $request)
+    {
 
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $image_name = rand(1, 999) . time() . '.' . $file->getClientOriginalExtension();
+            if ($file->move(public_path('uploads/properties'), $image_name)) {
+                return response()->json([
+                    'status' => 'success',
+                    'image' => $image_name,
+                    'image_url' => asset('uploads/properties/' . $image_name)
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Image could not be uploaded.'
+                ], 400);
+            }
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No files uploaded.'
+            ], 400);
+        }
+    }
+    public function deleteImage(Request $request)
+    {
+        $url = $request->url;
+        $parsedUrl = parse_url($url, PHP_URL_PATH);
+        $filename = basename($parsedUrl);
+        $property = Property::where('id', $request->id)->first();
 
-
-    // function findLatLong($longUrl)
-    // {
-    //     dd($longUrl);
-    //     $simplePattern = '/\/([\d\.\+\,]+)\?/';
-    //     $placeNamePattern = '/@(-?\d+\.\d+),(-?\d+\.\d+)/';
-    //     $placeSearchPattern = '/\/@(-?\d+\.\d+),(-?\d+\.\d+)/';
-
-    //     // Initialize latitude and longitude variables
-    //     $latitude = null;
-    //     $longitude = null;
-
-    //     // Check each pattern against the provided URL
-    //     if (preg_match($simplePattern, $longUrl, $matches)) {
-    //         $coordinates = explode(',', $matches[1]);
-    //         $latitude = $coordinates[0];
-    //         $longitude = $coordinates[1];
-    //     } elseif (preg_match($placeNamePattern, $longUrl, $matches)) {
-    //         $latitude = $matches[1];
-    //         $longitude = $matches[2];
-    //     } elseif (preg_match($placeSearchPattern, $longUrl, $matches)) {
-    //         $latitude = $matches[1];
-    //         $longitude = $matches[2];
-    //     }
-
-    //     // Return latitude and longitude as an associative array
-    //     return [
-    //         'latitude' => $latitude,
-    //         'longitude' => $longitude
-    //     ];
-    // }
-    // function findLatLong($longUrl)
-    // {
-    //     if (preg_match('/@(-?\d+\.\d+),(-?\d+\.\d+)/', $longUrl, $matches)) {
-    //         return [
-    //             'latitude' => $matches[1],
-    //             'longitude' => $matches[2]
-    //         ];
-    //     }
-
-    //     // Try to extract coordinates from URLs like /place/latitude,longitude
-    //     if (preg_match('/\/place\/.*?\/(-?\d+\.\d+),(-?\d+\.\d+)/', $longUrl, $matches)) {
-    //         return [
-    //             'latitude' => $matches[1],
-    //             'longitude' => $matches[2]
-    //         ];
-    //     }
-
-    //     // Try to extract coordinates from URLs with data parameters
-    //     if (preg_match('/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/', $longUrl, $matches)) {
-    //         return [
-    //             'latitude' => $matches[1],
-    //             'longitude' => $matches[2]
-    //         ];
-    //     }
-
-    //     // Try to extract coordinates from URLs with encoded coordinates
-    //     if (preg_match('/3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/', $longUrl, $matches)) {
-    //         return [
-    //             'latitude' => $matches[1],
-    //             'longitude' => $matches[2]
-    //         ];
-    //     }
-
-    //     // Handle URLs with degrees, minutes, and seconds (DMS) format
-    //     if (preg_match('/\b([+-]?[0-9]{1,2}\.[0-9]+)\b.*?\b([+-]?[0-9]{1,3}\.[0-9]+)\b/', $longUrl, $matches)) {
-    //         return [
-    //             'latitude' => $matches[1],
-    //             'longitude' => $matches[2]
-    //         ];
-    //     }
-    //     // Handle Google Maps place format:
-    //     if (preg_match('/\/place\/([+-]?\d+\.\d+)%2C([+-]?\d+\.\d+)/', $longUrl, $matches)) {
-    //         return [
-    //             'latitude' => $matches[1],
-    //             'longitude' => $matches[2]
-    //         ];
-    //     }
-
-    //     // Handle Degrees, Minutes, Seconds (DMS) format
-    //     if (preg_match('/\b([+-]?[0-9]{1,2}\.[0-9]+)\b.*?\b([+-]?[0-9]{1,3}\.[0-9]+)\b/', $longUrl, $matches)) {
-    //         return [
-    //             'latitude' => $matches[1],
-    //             'longitude' => $matches[2]
-    //         ];
-    //     }
-    //     dd("not working");
-    // }
-    // function fetchLongUrl($shortUrl)
-    // {
-    //     $client = new Client();
-    //     $response = $client->request('GET', $shortUrl, [
-    //         'allow_redirects' => false // Disable automatic redirects
-    //     ]);
-    //     if ($response->hasHeader('Location')) {
-    //         return $response->getHeader('Location')[0];
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
-
-    // $parts = explode('/', $longUrl);
-    // $coordinatePart = end($parts);
-    // $coords = explode(',', str_replace(['@', 'z', '?entry=tts&g_ep=EgoyMDI0MDYwNC4wKgBIAVAD'], '', $coordinatePart));
-    // // dd($coords);
-    // if (count($coords) === 2) {
-    //     $latitude = trim($coords[0]);
-    //     $longitude = trim($coords[1]);
-    //     return ['latitude' => $latitude, 'longitude' => $longitude];
-    // } else {
-    //     return false;
-    // }
+        if (!empty($property)) {
+            $gallery = json_decode($property->gallery);
+            $key = array_search($filename, $gallery);
+            if ($key !== false) {
+                unset($gallery[$key]);
+                $gallery = array_values($gallery);
+                $property->gallery = json_encode($gallery);
+                $query = $property->save();
+                if ($query) {
+                    $file_path = public_path('uploads/properties/' . $filename);
+                    if (file_exists($file_path)) {
+                        unlink($file_path);
+                    }
+                    return response()->json(['msg' => 'success', 'response' => 'Image deleted successfully.']);
+                } else {
+                    return response()->json(['msg' => 'error', 'response' => 'Something went wrong.']);
+                }
+            } else {
+                $file_path = public_path('uploads/properties/' . $filename);
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+                return response()->json(['msg' => 'success', 'response' => 'Image deleted successfully.']);
+            }
+        } else {
+            $file_path = public_path('uploads/properties/' . $filename);
+            if (file_exists($file_path)) {
+                unlink($file_path);
+            }
+            return response()->json(['msg' => 'success', 'response' => 'Image deleted successfully.']);
+        }
+    }
 }

@@ -1,5 +1,7 @@
 @extends('admin.admin_app')
 @push('styles')
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
 <style>
     .ck.ck-reset.ck-editor.ck-rounded-corners {
         box-sizing: border-box;
@@ -127,9 +129,10 @@
                                     <label class="form-label"><strong>Zip/Postal Code</strong></label>
                                     <input type="text" name="zip" required class="form-control" value="{{$neighborhood->zip}}">
                                 </div>
+
                                 <div class="form-group row">
-                                    <label class="form-label"><strong>Google Maps Link</strong> <a data-toggle="modal" data-target="#exampleModal" class="" style="color: red; text-decoration: underline;">Need Help?</a> </label>
-                                    <input type="text" name="map" required class="form-control" value="{{$neighborhood->map}}">
+                                    <label class="form-label"><strong>City/Town</strong></label>
+                                    <input type="text" name="city" required value="{{$neighborhood->city}}" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -141,26 +144,49 @@
                             </div>
                         </div>
                         <div class="row mt-2">
-                            <div class="col-md-4 pl-0">
-                                <label class="form-label"><strong>City/Town</strong></label>
-                                <input type="text" name="city" required value="{{$neighborhood->city}}" class="form-control">
+                            <div class="col-md-6">
+                                <div class="form-group row mr-1">
+                                    <label class="form-label"><strong>State/Province</strong></label>
+                                    <input type="text" name="state" required value="{{$neighborhood->state}}" class="form-control">
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label"><strong>State/Province</strong></label>
-                                <input type="text" name="state" required value="{{$neighborhood->state}}" class="form-control">
+                            <div class="col-md-6">
+                                <div class="form-group row ml-1">
+                                    <label class="form-label"><strong>Country</strong></label>
+                                    <select name="country" required class="form-control" style="height: 2.22rem !important;" id="">
+                                        @php
+                                        $countries = country_select();
+                                        @endphp
+
+                                        @foreach($countries as $country)
+                                        <option value="{{$country}}" {{$neighborhood->country == $country ? 'selected' : ''}}>{{$country}}</option>
+                                        @endforeach
+
+                                    </select>
+
+                                </div>
                             </div>
-                            <div class="col-md-4 pr-0">
-                                <label class="form-label"><strong>Country</strong></label>
-                                <select name="country" required class="form-control" style="height: 2.22rem !important;" id="">
-                                    @php
-                                    $countries = country_select();
-                                    @endphp
-
-                                    @foreach($countries as $country)
-                                    <option value="{{$country}}" {{$neighborhood->country == $country ? 'selected' : ''}}>{{$country}}</option>
-                                    @endforeach
-
-                                </select>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <div class="form-group row">
+                                    <label for="" class="form-label"><strong>Location (Select Latitude & Longitude Coordinates By Clicking The Map)</strong></label>
+                                </div>
+                                <div id="map" style="height: 100vh !important;"></div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <div class="form-group row mr-1">
+                                    <label for="latitude" class="form-label"><strong>Latitude Coordinates</strong></label>
+                                    <input type="text" name="latitude" id="latitude" class="form-control" value="{{$neighborhood->latitude}}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row mr-1">
+                                    <label for="longitude" class="form-label"><strong>Longitude Coordinates</strong></label>
+                                    <input type="text" name="longitude" id="longitude" class="form-control" value="{{$neighborhood->longitude}}" required>
+                                </div>
                             </div>
                         </div>
                         <div class="row mt-2">
@@ -169,22 +195,20 @@
                                     <label for="images" class="form-label"><strong>Images</strong></label>
                                     <div class="row">
                                         <div class="col-12">
-                                            <div class="row">
+                                            <div class="row" id="showImgGal">
                                                 @if(!empty($neighborhood->images))
                                                 @foreach($neighborhood->images as $image)
                                                 <div class="col-md-2 col-sm-6 my-2" id="img-gallery">
                                                     <img src="{{$image}}" class="img-fluid images-img" style="max-width: 100%; height: auto; overflow: contain; border-radius: 5%;" alt="Image View">
-                                                    <!-- if more than one image then show delete icon else don't -->
-                                                    @if(count($neighborhood->images) > 1)
                                                     <div class="delete-icon" onclick="deleteImage(this)" data-url="{{$image}}" data-id="{{$neighborhood->id}}"><i class="fa fa-trash trash-icon"></i></div>
-                                                    @endif
                                                 </div>
                                                 @endforeach
                                                 @endif
                                             </div>
                                         </div>
                                     </div>
-                                    <input type="file" name="images[]" {{empty($neighborhood->images) ? 'required' : ''}} id="image-gal-input" class="form-control" accept="image/*" multiple>
+                                    <div class="dropzone col-12" id="myDropzone"></div>
+                                    <input type="text" name="images" id="images" hidden value="{{$images_array}}">
                                 </div>
                             </div>
                         </div>
@@ -216,23 +240,147 @@
         </div>
     </div>
 </div>
-<div class="modal fade .bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title"><strong>How to add google maps location</strong></h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body p-1">
-                <img src="{{asset('assets/img/mapstut.gif')}}" style="width: 100%; height:auto; overflow:contain; margin:none;" alt="">
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 @push('scripts')
+
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<script>
+    images_array_string = $('#images').val();
+    images_array = images_array_string ? JSON.parse(images_array_string) : [];
+    console.log(images_array);
+    let myDropzone = new Dropzone("#myDropzone", {
+        url: "{{url('/admin/neighborhoods/imageManagement')}}",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(file, response) {
+            if (response.status === 'success') {
+                images_array.push(response.image_url);
+                console.log(images_array);
+                $('#images').val(JSON.stringify(images_array));
+                console.log("input: " + $('#images').val());
+                var img = document.createElement('img');
+                img.src = response.image_url;
+                img.className = 'img-fluid images-img';
+                img.style = 'max-width: 100%; height: auto; overflow: contain; border-radius: 5%;';
+                img.alt = 'Image View';
+                var deleteIcon = document.createElement('div');
+                deleteIcon.className = 'delete-icon';
+                deleteIcon.onclick = function() {
+                    deleteImage(this);
+                };
+                deleteIcon.setAttribute('data-url', response.image_url);
+                deleteIcon.setAttribute('data-id', '{{$neighborhood->id}}');
+                var icon = document.createElement('i');
+                icon.className = 'fa fa-trash trash-icon';
+                deleteIcon.appendChild(icon);
+                var div = document.createElement('div');
+                div.className = 'col-md-2 col-sm-6 my-2';
+                div.id = 'img-gallery';
+                div.appendChild(img);
+                div.appendChild(deleteIcon);
+                document.getElementById('showImgGal').appendChild(div);
+                myDropzone.removeFile(file);
+            } else {
+                console.error('Error uploading images');
+            }
+        }
+    });
+</script>
+<script>
+    // on form submit i want to validate request 
+    $('#neighborhood-form').submit(function() {
+        // if images array is empty then show toastr
+        if (images_array.length == 0) {
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right"
+            }
+            toastr.error("Please upload at least one image for gallery");
+            return false;
+        }
+
+        if ($('#latitude').val() == '' || $('#longitude').val() == '') {
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right"
+            }
+            toastr.error("Please select the latitude and longitude coordinates");
+            return false;
+        }
+        return true;
+    });
+</script>
+<script>
+    (g => {
+        var h, a, k, p = "The Google Maps JavaScript API",
+            c = "google",
+            l = "importLibrary",
+            q = "__ib__",
+            m = document,
+            b = window;
+        b = b[c] || (b[c] = {});
+        var d = b.maps || (b.maps = {}),
+            r = new Set,
+            e = new URLSearchParams,
+            u = () => h || (h = new Promise(async (f, n) => {
+                await (a = m.createElement("script"));
+                e.set("libraries", [...r] + "");
+                for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
+                e.set("callback", c + ".maps." + q);
+                a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+                d[q] = f;
+                a.onerror = () => h = n(Error(p + " could not load."));
+                a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+                m.head.append(a)
+            }));
+        d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
+    })
+    ({
+        key: "AIzaSyBy2l4KGGTm4cTqoSl6h8UAOAob87sHBsA",
+        v: "weekly"
+    });
+</script>
+
+<script>
+    async function initMap() {
+        const {
+            Map
+        } = await google.maps.importLibrary("maps");
+        latitude = Number($('#latitude').val());
+        longitude = Number($('#longitude').val());
+        const myLatlng = {
+            lat: latitude,
+            lng: longitude
+        };
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 14,
+            center: myLatlng,
+        });
+        let infoWindow = new google.maps.InfoWindow({
+            content: "Click the map to get Lat/Lng!",
+            position: myLatlng,
+        });
+        infoWindow.open(map);
+        map.addListener("click", (mapsMouseEvent) => {
+            infoWindow.close();
+            infoWindow = new google.maps.InfoWindow({
+                position: mapsMouseEvent.latLng,
+            });
+            coordinates = mapsMouseEvent.latLng.toJSON();
+            infoWindow.setContent(
+                JSON.stringify(coordinates, null, 2),
+            );
+            infoWindow.open(map);
+            $('#latitude').val(coordinates.lat);
+            $('#longitude').val(coordinates.lng);
+        });
+    }
+
+    initMap();
+</script>
 <script>
     function deleteImage(e) {
         var id = $(e).data('id');
@@ -246,18 +394,20 @@
                 id: id
             },
             success: function(data) {
+                console.log(data);
                 if (data.msg == 'success') {
                     $(e).parent().remove();
+                    images_array = images_array.filter(image => image !== url);
+                    $('#images').val(JSON.stringify(images_array));
+                    console.log(images_array);
                     toastr.options = {
                         "closeButton": true,
                         "progressBar": true,
                         "positionClass": "toast-top-right"
                     }
                     toastr.success(data.response);
-                    setTimeout(() => {
-                        location.reload();
-                    }, 500);
                 } else {
+                    console.log(data);
                     toastr.options = {
                         "closeButton": true,
                         "progressBar": true,
@@ -268,6 +418,7 @@
 
             },
             error: function(data) {
+                console.log(data);
                 // show toastr
                 toastr.options = {
                     "closeButton": true,

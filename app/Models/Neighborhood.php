@@ -21,6 +21,8 @@ class Neighborhood extends Model
         'state',
         'country',
         'map',
+        'latitude',
+        'longitude',
         'images',
         'description',
         'status',
