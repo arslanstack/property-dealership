@@ -14,6 +14,7 @@ class Types extends Model
     protected $fillable = [
         'title',
         'slug',
+        'banner',
         'status',
     ];
 }

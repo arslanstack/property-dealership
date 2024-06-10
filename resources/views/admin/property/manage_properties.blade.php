@@ -49,7 +49,7 @@
                                     <th>Status</th>
                                     <th>Price (USD)</th>
                                     <th>Size (Sq.ft)</th>
-                                    <th style="width: 200px;">Action</th>
+                                    <th style="width: 300px;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -78,6 +78,11 @@
                                     <td>
                                         <a href="{{ url('admin/property-listings/details') }}/{{ $item->id }}" class="btn btn-primary btn-sm" data-placement="top" title="Details"> <i class="fa fa-edit"></i> Edit Details </a>
                                         <button class="btn btn-danger btn-sm btn_delete" data-id="{{$item->id}}" data-text="You want to delete this listing!" type="button" data-placement="top" title="Delete">Delete</button>
+                                        @if($item->is_featured == 1)
+                                        <button class="btn btn-success btn-sm btn_feature" data-id="{{$item->id}}" data-featured_status="2" data-text="You want to feature this listing!" type="button" data-placement="top" title="Feature">Feature</button>
+                                        @else
+                                        <button class="btn btn-warning btn-sm btn_feature" data-id="{{$item->id}}" data-featured_status="1" data-text="You want to unfeature this listing!" type="button" data-placement="top" title="Unfeature">Unfeature</button>
+                                        @endif
                                     </td>
                                 </tr>
                                 @endforeach
@@ -158,6 +163,54 @@
                         data: {
                             "_token": "{{ csrf_token() }}",
                             'id': id,
+                        },
+                        dataType: 'json',
+                        success: function(status) {
+                            $(".confirm").prop("disabled", false);
+                            if (status.msg == 'success') {
+                                swal({
+                                        title: "Success!",
+                                        text: status.response,
+                                        type: "success"
+                                    },
+                                    function(data) {
+                                        location.reload();
+                                    });
+                            } else if (status.msg == 'error') {
+                                swal("Error", status.response, "error");
+                            }
+                        }
+                    });
+                } else {
+                    swal("Cancelled", "", "error");
+                }
+            });
+    });
+    $(document).on("click", ".btn_feature", function() {
+        var id = $(this).attr('data-id');
+        var featured_status = $(this).attr('data-featured_status');
+        var show_text = $(this).attr('data-text');
+        swal({
+                title: "Are you sure",
+                text: show_text,
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, please!",
+                cancelButtonText: "No, cancel please!",
+                closeOnConfirm: false,
+                closeOnCancel: true
+            },
+            function(isConfirm) {
+                if (isConfirm) {
+                    $(".confirm").prop("disabled", true);
+                    $.ajax({
+                        url: "{{ url('admin/property-listings/updateFeatureStatus') }}",
+                        type: 'post',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            'id': id,
+                            'featured_status': featured_status,
                         },
                         dataType: 'json',
                         success: function(status) {

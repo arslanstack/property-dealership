@@ -453,6 +453,21 @@ class PropertyListingController extends Controller
             return response()->json(['msg' => 'error', 'response' => 'Something Went Wrong!']);
         }
     }
+    public function updateFeatureStatus(Request $request)
+    {
+        $property = Property::where('id', $request->id)->first();
+        if ($property) {
+            $property->is_featured = $request->featured_status;
+            $query = $property->save();
+            if ($query) {
+                return response()->json(['msg' => 'success', 'response' => 'Property Listing featured successfully.']);
+            } else {
+                return response()->json(['msg' => 'error', 'response' => 'Property Listing Could Not Be Featured. Try Again!']);
+            }
+        } else {
+            return response()->json(['msg' => 'error', 'response' => 'Something Went Wrong!']);
+        }
+    }
 
     public function imageManagement(Request $request)
     {

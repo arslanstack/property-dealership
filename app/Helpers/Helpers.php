@@ -240,6 +240,36 @@ if (!function_exists('mapfeaturetype')) {
 		}
 	}
 }
+if (!function_exists('developmentlvl')) {
+	function developmentlvl($tinyint)
+	{
+		if ($tinyint == 1) {
+			return 'Under Construction';
+		} elseif ($tinyint == 2) {
+			return 'Built';
+		} elseif ($tinyint == 3) {
+			return 'Under Renovation';
+		} elseif ($tinyint == 4) {
+			return 'Renovated';
+		}
+	}
+}
+if (!function_exists('mapListingStatus')) {
+	function mapListingStatus($tinyint)
+	{
+		if ($tinyint == 1) {
+			return 'For Sale';
+		} elseif ($tinyint == 2) {
+			return 'For Rent';
+		} elseif ($tinyint == 3) {
+			return 'Rented';
+		} elseif ($tinyint == 4) {
+			return 'Sale Pending';
+		} elseif ($tinyint == 4) {
+			return 'Sold';
+		}
+	}
+}
 if (!function_exists('slugify')) {
 	function slugify($title)
 	{

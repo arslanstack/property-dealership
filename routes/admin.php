@@ -56,6 +56,7 @@ Route::group(['prefix'  =>  'admin'], function () {
 			Route::post('/store', [PropertyListingController::class, 'store']);
 			Route::get('/details/{id}', [PropertyListingController::class, 'show']);
 			Route::post('/update', [PropertyListingController::class, 'update']);
+			Route::post('/updateFeatureStatus', [PropertyListingController::class, 'updateFeatureStatus']);
 			Route::post('/delete', [PropertyListingController::class, 'delete']);
 			Route::post('/imageManagement', [PropertyListingController::class, 'imageManagement']);
 			Route::post('/delete-image', [PropertyListingController::class, 'deleteImage']);

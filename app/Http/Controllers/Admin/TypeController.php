@@ -27,6 +27,7 @@ class TypeController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required',
+            'banner' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -41,6 +42,13 @@ class TypeController extends Controller
         $type = new Types();
         $type->title = $request->title;
         $type->slug = slugify($request->title);
+        if ($request->hasFile('banner')) {
+            $file = $request->file('banner');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $extension;
+            $file->move('uploads/types/', $filename);
+            $type->banner = $filename;
+        }
         $type->save();
 
         if ($type->id > 0) {
@@ -84,6 +92,13 @@ class TypeController extends Controller
         if (!empty($type)) {
             $type->title = $request->title;
             $type->slug = slugify($request->title);
+            if ($request->hasFile('banner')) {
+                $file = $request->file('banner');
+                $extension = $file->getClientOriginalExtension();
+                $filename = time() . '.' . $extension;
+                $file->move('uploads/types/', $filename);
+                $type->banner = $filename;
+            }
             $type->save();
             return response()->json(['msg' => 'success', 'response' => 'Property type updated successfully.']);
         } else {
@@ -94,6 +109,13 @@ class TypeController extends Controller
     {
         $type = Types::find($request->id);
         if (!empty($type)) {
+            // delete banner first 
+            if (!empty($type->banner)) {
+                $file_path = public_path() . '/uploads/types/' . $type->banner;
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+            }
             $type->delete();
             return response()->json(['msg' => 'success', 'response' => 'Property type deleted successfully.']);
         } else {

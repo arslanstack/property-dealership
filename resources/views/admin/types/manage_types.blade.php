@@ -87,12 +87,18 @@
                 <h5 class="modal-title">Add New Property Type</h5>
             </div>
             <div class="modal-body">
-                <form id="add_type_form" method="post">
+                <form id="add_type_form" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label"><strong>Title</strong></label>
                         <div class="col-sm-8">
                             <input type="text" name="title" class="form-control" placeholder="Add a title">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label"><strong>Banner Image</strong></label>
+                        <div class="col-sm-8">
+                            <input type="file" name="banner" class="form-control" required>
                         </div>
                     </div>
                 </form>
@@ -113,6 +119,15 @@
 @endsection
 @push('scripts')
 <script>
+    $(document).on("change", "#type_img_input", function() {
+        var file = this.files[0];
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $("#previewImage").attr('src', e.target.result);
+        };
+        reader.readAsDataURL(this.files[0]);
+
+    });
     $('#manage_tbl').dataTable({
         "paging": false,
         "searching": false,
