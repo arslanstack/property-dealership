@@ -155,7 +155,7 @@ class PropertiesController extends Controller
                 return $found;
             });
         }
-        $properties = $properties->paginate(1);
+        $properties = $properties->paginate(6);
         return response()->json(['message' => 'Properties retrieved successfully.', 'data' => $properties], 200);
     }
     public function refine($property)
