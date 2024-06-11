@@ -4,13 +4,13 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
 	<div class="col-lg-8 col-sm-8 col-xs-8">
-		<h2> Users Details </h2>
+		<h2> User Details </h2>
 		<ol class="breadcrumb">
 			<li class="breadcrumb-item">
 				<a href="{{ url('admin') }}">Dashboard</a>
 			</li>
 			<li class="breadcrumb-item active">
-				<strong> Users Details </strong>
+				<strong> User Details </strong>
 			</li>
 		</ol>
 	</div>
@@ -31,7 +31,9 @@
 						</div>
 						<div>
 							<div class="ibox-content p-4 border-left-right text-center">
-								<img alt="image" class="img-fluid" src="{{ asset('assets/upload_images') }}/{{$user->image_name}}" style="width: 250px; height: 250px; object-fit:contain;">
+								<label for="image" class="">
+									<img alt="image" class="img-fluid" id="perviewImg" src="{{$user->image}}" style="width: 250px; height: 250px; object-fit:contain;">
+								</label>
 							</div>
 						</div>
 					</div>
@@ -42,46 +44,67 @@
 							</div>
 							<div class="ibox-content">
 								<div>
-									<div class="feed-activity-list">
-										<div class="row">
-											<div class="col-lg-12">
-												<div class="row">
-													<strong class="col-sm-2 col-form-label">User Name</strong>
-													<div class="col-sm-4 col-form-label text-danger">
-														{{ $user->fname . ' ' . $user->lname  }}
-													</div>
-													<strong class="col-sm-2 col-form-label">Email</strong>
-													<div class="col-sm-4 col-form-label">
-														{{ $user->email }}
-													</div>
-												</div>
-												<div class="row">
-													<strong class="col-sm-2 col-form-label">Phone No</strong>
-													<div class="col-sm-4 col-form-label">
-														{{ $user->phone_no }}
+									<form action="{{url('admin/users/update')}}" method="post" enctype="multipart/form-data">
+										@csrf
+										<input type="text" name="id" value="{{$user->id}}" hidden>
+										<div class="feed-activity-list">
+											<div class="row mt-4">
+												<div class="col-lg-12">
+													<div class="row">
+														<strong class="col-sm-2 col-form-label">First Name</strong>
+														<div class="col-sm-4">
+															<input type="text" class="form-control" name="fname" id="fname" value="{{$user->fname}}" required>
+														</div>
+														<strong class="col-sm-2 col-form-label">Last Name</strong>
+														<div class="col-sm-4">
+															<input type="text" class="form-control" name="lname" id="lname" value="{{$user->lname}}" required>
+														</div>
 													</div>
 												</div>
-												<div class="row">
-													<strong class="col-sm-2 col-form-label">Joining Date</strong>
-													<div class="col-sm-4 col-form-label">
-														{{ date_formated($user->created_at) }}
+											</div>
+											<div class="row mt-4">
+												<div class="col-lg-12">
+													<div class="row">
+														<strong class="col-sm-2 col-form-label">Email</strong>
+														<div class="col-sm-4">
+															<input type="text" class="form-control" name="email" id="email" value="{{$user->email}}" required>
+														</div>
+														<strong class="col-sm-2 col-form-label">Invitation</strong>
+														<div class="col-sm-4">
+															@if($user->status == 0)
+															<label class="label label-warning text-dark"> Not Accepted </label>
+															@else
+															<label class="label label-success"> Accepted </label>
+															@endif
+														</div>
 													</div>
-													<strong class="col-sm-2 col-form-label">Status</strong>
-													<div class="col-sm-4 col-form-label">
-														@if($user->is_blocked == 1)
-														<label class="label label-danger"> Blocked </label>
-														@else
-														@if ($user->status==1)
-														<label class="label label-primary"> Active </label>
-														@else
-														<label class="label label-warning"> Inactive </label>
-														@endif
+												</div>
+											</div>
+											<div class="row mt-4">
+												<div class="col-lg-12">
+													<div class="row">
+														<strong class="col-sm-2 col-form-label">Phone</strong>
+														<div class="col-sm-4">
+															<input type="text" class="form-control" name="phone_no" id="phone_no" value="{{$user->phone_no ?? ''}}">
+														</div>
+														<strong class="col-sm-2 col-form-label">Image</strong>
+														<div class="col-sm-4">
+															<input type="file" class="form-control" name="image" id="image">
+														</div>
 													</div>
-													@endif
+												</div>
+											</div>
+											<div class="row mt-4">
+												<div class="col-lg-12">
+													<div class="row">
+														<div class="col-sm-12 text-right">
+															<button type="submit" class="btn btn-primary">Save</button>
+														</div>
+													</div>
 												</div>
 											</div>
 										</div>
-									</div>
+									</form>
 								</div>
 							</div>
 						</div>
@@ -94,101 +117,35 @@
 @endsection
 @push('scripts')
 <script>
-	$(document).on("click", ".btn_update_status", function() {
-		var id = $(this).attr('data-id');
-		var status = $(this).attr('data-status');
-		var show_text = $(this).attr('data-text');
-		swal({
-				title: "Are you sure?",
-				text: show_text,
-				type: "warning",
-				showCancelButton: true,
-				confirmButtonColor: "#DD6B55",
-				confirmButtonText: "Yes, Please!",
-				cancelButtonText: "No, Cancel Please!",
-				closeOnConfirm: false,
-				closeOnCancel: true
-			},
-			function(isConfirm) {
-				if (isConfirm) {
-					$(".confirm").prop("disabled", true);
-					$.ajax({
-						url: "{{ url('admin/product-posts/update_statuses') }}",
-						type: 'post',
-						data: {
-							"_token": "{{ csrf_token() }}",
-							'id': id,
-							'status': status
-						},
-						dataType: 'json',
-						success: function(status) {
-							$(".confirm").prop("disabled", false);
-							if (status.msg == 'success') {
-								swal({
-										title: "Success!",
-										text: status.response,
-										type: "success"
-									},
-									function(data) {
-										location.reload();
-									});
-							} else if (status.msg == 'error') {
-								swal("Error", status.response, "error");
-							}
-						}
-					});
-				} else {
-					swal("Cancelled", "", "error");
-				}
-			});
+	$(document).ready(function() {
+		$('#image').change(function() {
+			var file = this.files[0];
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				$('#perviewImg').attr('src', e.target.result);
+			}
+			reader.readAsDataURL(file);
+		});
 	});
-	$(document).on("click", ".btn_update_status_requests", function() {
-		var id = $(this).attr('data-id');
-		var status = $(this).attr('data-status');
-		var show_text = $(this).attr('data-text');
-		swal({
-				title: "Are you sure?",
-				text: show_text,
-				type: "warning",
-				showCancelButton: true,
-				confirmButtonColor: "#DD6B55",
-				confirmButtonText: "Yes, Please!",
-				cancelButtonText: "No, Cancel Please!",
-				closeOnConfirm: false,
-				closeOnCancel: true
-			},
-			function(isConfirm) {
-				if (isConfirm) {
-					$(".confirm").prop("disabled", true);
-					$.ajax({
-						url: "{{ url('admin/product-requests/update_statuses') }}",
-						type: 'post',
-						data: {
-							"_token": "{{ csrf_token() }}",
-							'id': id,
-							'status': status
-						},
-						dataType: 'json',
-						success: function(status) {
-							$(".confirm").prop("disabled", false);
-							if (status.msg == 'success') {
-								swal({
-										title: "Success!",
-										text: status.response,
-										type: "success"
-									},
-									function(data) {
-										location.reload();
-									});
-							} else if (status.msg == 'error') {
-								swal("Error", status.response, "error");
-							}
-						}
-					});
-				} else {
-					swal("Cancelled", "", "error");
-				}
-			});
-	});
+
+	var session = "{{Session::has('error') ? 'true' : 'false'}}";
+	if (session == 'true') {
+		toastr.options = {
+			"closeButton": true,
+			"progressBar": true,
+			"positionClass": "toast-top-right"
+		}
+		toastr.error("{{Session::get('error')}}");
+	}
+	var session = "{{Session::has('success') ? 'true' : 'false'}}";
+	if (session == 'true') {
+		toastr.options = {
+			"closeButton": true,
+			"progressBar": true,
+			"positionClass": "toast-top-right"
+		}
+		toastr.success("{{Session::get('success')}}");
+
+	}
 </script>
 @endpush

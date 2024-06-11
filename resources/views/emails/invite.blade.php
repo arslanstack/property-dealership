@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>My Baja Property | Contact Request</title>
+    <title>My Baja Property | Invite To Join</title>
 </head>
 
 <body>
@@ -39,37 +39,19 @@
                                             </tr>
                                             <tr>
                                                 <td style="text-align:start;padding:0 35px">
-                                                    <p>Hi , <br><strong style="color: #83AE3E;"> {{$data['name']}} </strong>is
-                                                        interested to get more info about this property:
+                                                    <p>Hi, an admin has invited you to join <strong style="color: #83AE3E;">My Baja Property</strong>
                                                     </p>
-                                                    <strong>Property Details:</strong>
+                                                    <strong>Credentials</strong>
                                                     <p style="margin:8px 10px">
-                                                        Property Code : <strong> {{$property->code}} </strong> <br>
-                                                        Property Title : <a href="{{url('admin/property-listings/details/' . $property->id )}}"><strong> {{$property->title}} </strong></a> <br>
-                                                        Property Neighborhood : <strong> {{$property->neighborhood->title}} </strong> <br>
+                                                        Email : <strong> {{$credentials['email']}} </strong> <br>
+                                                        Password : <strong> {{$credentials['password']}} </strong> <br>
                                                     </p>
                                                     <br>
 
-                                                    <strong>Client Details:</strong>
+                                                    <strong>Use the following link to login to your account</strong>
                                                     <p style="margin:8px 10px">
-
-                                                        <span class="im">
-
-                                                            <strong>Email: </strong>
-                                                            <a href="mailto:{{$data['email']}}" target="_blank" style="color: #EF5A00;">{{$data['email']}}</a>
-                                                            <br>
-                                                        </span>
-                                                        <strong>Phone:</strong>
-                                                        <a href="tel:033141252122" target="_blank" style="color: #EF5A00;">
-                                                            {{$data['phone']}}
-                                                        </a>
-                                                        <br> <br>
+                                                        <a href="https://mybajaproperty.com/login">Click Here To Login</a>
                                                     </p>
-                                                    <strong>Client Message:</strong>
-                                                    <p style="margin:8px 10px">
-                                                        {{$data['message']}}
-                                                    </p>
-                                                    <br>
 
                                                 </td>
                                             </tr>

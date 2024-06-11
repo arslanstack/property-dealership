@@ -19,13 +19,13 @@ class User extends Authenticatable implements JWTSubject
      * @var array<int, string>
      */
     protected $fillable = ['fname', 'lname', 'email', 'password', 'phone_no', 'image_name', 'status', 'is_blocked', 'created_at', 'updated_at'];
-    protected $appends = ['image_path'];
+    // protected $appends = ['image_path'];
 
-    public function getImagePathAttribute()
-    {
-        $basePath = config('app.asset_url') . 'assets/upload_images/';
-        return $basePath . $this->attributes['image_name'];
-    }
+    // public function getImagePathAttribute()
+    // {
+    //     $basePath = config('app.asset_url') . 'assets/upload_images/';
+    //     return $basePath . $this->attributes['image_name'];
+    // }
     /**
      * The attributes that should be hidden for serialization.
      *

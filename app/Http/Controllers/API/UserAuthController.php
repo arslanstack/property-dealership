@@ -43,18 +43,24 @@ class UserAuthController extends Controller
             if ($user->is_blocked == 1) {
                 auth()->logout();
                 session()->flush();
-                return response()->json(['msg' => 'error', 'response' => 'Your account has been blocked by admin due to violation. Please contact support team.'], 401);
+                return response()->json(['msg' => 'error', 'response' => 'Your account has been blocked by admin. Please contact support team.'], 401);
             } else if ($user->status == 0) {
-                auth()->logout();
-                session()->flush();
-                return response()->json(['msg' => 'error', 'response' => 'You have inactivated your account. Please contact support team to get it reactivated.'], 401);
+                $user->status = 1;
+                $user->save();
             }
             $response = 'User Logged In Successfully';
+            $user = auth()->user();
+            if ($user->image_name != null && $user->image_name != 'user.png') {
+                $user->image = asset('uploads/users/' . $user->image_name);
+            } else {
+                $user->image = asset('assets/upload_images/user.png');
+            }
+            unset($user->image_name);
             return response()->json([
-                'msg' => 'success',
+                'message' => 'success',
                 'response' => $response,
                 'token' => $this->respondWithToken(JWTAuth::fromUser(auth()->user())),
-                'user' => auth()->user(),
+                'data' => $user,
             ]);
         }
 
@@ -64,6 +70,12 @@ class UserAuthController extends Controller
     public function user_profile()
     {
         $user = auth()->user();
+        if ($user->image_name != null && $user->image_name != 'user.png') {
+            $user->image = asset('uploads/users/' . $user->image_name);
+        } else {
+            $user->image = asset('assets/upload_images/user.png');
+        }
+        unset($user->image_name);
         return response()->json(['msg' => 'success', 'response' => 'success', 'data' => $user]);
     }
 

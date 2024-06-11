@@ -14,6 +14,11 @@
             </li>
         </ol>
     </div>
+    <div class="col-lg-4 col-sm-4 col-xs-4 text-right">
+        <a class="btn btn-primary text-white t_m_25" href="{{ url('admin/users/add') }}">
+            <i class="fa fa-plus" aria-hidden="true"></i> Add New Users
+        </a>
+    </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -39,8 +44,7 @@
                                     <th>Sr #</th>
                                     <th>User</th>
                                     <th>Email</th>
-                                    <th>Phone No</th>
-                                    <th>Joining Date</th>
+                                    <th>Invitation</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -52,17 +56,18 @@
                                     <td>{{ $i++ }}</td>
                                     <td>{{ $item->fname . ' ' . $item->lname  }}</td>
                                     <td>{{$item->email}}</td>
-                                    <td>{{ $item->phone_no }}</td>
-                                    <td>{{ date_formated($item->created_at)}}</td>
+                                    <td>
+                                        @if($item->status == 0)
+                                        <label class="label label-warning"> Not Accepted </label>
+                                        @else
+                                        <label class="label label-success"> Accepted </label>
+                                        @endif
+                                    </td>
                                     <td>
                                         @if($item->is_blocked == 1)
-                                        <label class="label label-danger"> Blocked </label>
+                                        <label class="label label-warning text-dark"> Blocked </label>
                                         @else
-                                        @if ($item->status==1)
                                         <label class="label label-primary"> Active </label>
-                                        @else
-                                        <label class="label label-warning"> Inactive </label>
-                                        @endif
                                         @endif
                                     </td>
                                     <td>
@@ -70,8 +75,9 @@
                                         @if ($item->is_blocked==1)
                                         <button class="btn btn-success btn-sm btn_update_status" data-id="{{$item->id}}" data-status="0" data-text="You want to unblock this user!" type="button" data-placement="top" title="Inactivate">Unblock</button>
                                         @else
-                                        <button class="btn btn-danger btn-sm btn_update_status" data-id="{{$item->id}}" data-status="1" data-text="You want to block this user!" type="button" data-placement="top" title="Activate">Block</button>
+                                        <button class="btn btn-warning text-dark btn-sm btn_update_status" data-id="{{$item->id}}" data-status="1" data-text="You want to block this user!" type="button" data-placement="top" title="Activate">Block</button>
                                         @endif
+                                        <button class="btn btn-danger btn-sm btn_delete" data-id="{{$item->id}}" data-text="You want to delete this user!" type="button" data-placement="top" title="Delete">Delete</button>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -157,5 +163,60 @@
                 }
             });
     });
+    $(document).on("click", ".btn_delete", function() {
+        var id = $(this).attr('data-id');
+        var show_text = $(this).attr('data-text');
+        swal({
+                title: "Are you sure?",
+                text: show_text,
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, Delete!",
+                cancelButtonText: "No, Cancel!",
+                closeOnConfirm: false,
+                closeOnCancel: true
+            },
+            function(isConfirm) {
+                if (isConfirm) {
+                    $(".confirm").prop("disabled", true);
+                    $.ajax({
+                        url: "{{ url('admin/users/delete') }}",
+                        type: 'post',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            'id': id,
+                        },
+                        dataType: 'json',
+                        success: function(status) {
+                            $(".confirm").prop("disabled", false);
+                            if (status.msg == 'success') {
+                                swal({
+                                        title: "Success!",
+                                        text: status.response,
+                                        type: "success"
+                                    },
+                                    function(data) {
+                                        location.reload();
+                                    });
+                            } else if (status.msg == 'error') {
+                                swal("Error", status.response, "error");
+                            }
+                        }
+                    });
+                } else {
+                    swal("Cancelled", "", "error");
+                }
+            });
+    });
+    var session = "{{Session::has('success') ? 'true' : 'false'}}";
+    if (session == 'true') {
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right"
+        }
+        toastr.success("{{Session::get('success')}}");
+    }
 </script>
 @endpush

@@ -27,7 +27,11 @@ Route::group(['prefix'  =>  'admin'], function () {
 
 		Route::group(['prefix'  =>  'users'], function () {
 			Route::get('/', [UserController::class, 'index']);
+			Route::get('/add', [UserController::class, 'add']);
+			Route::post('/store', [UserController::class, 'store']);
+			Route::post('/update', [UserController::class, 'update']);
 			Route::post('update_statuses', [UserController::class, 'update_statuses']);
+			Route::post('delete', [UserController::class, 'delete']);
 			Route::get('detail/{id}', [UserController::class, 'user_details']);
 		});
 		Route::group(['prefix'  =>  'features'], function () {
