@@ -82,6 +82,8 @@ class PropertiesController extends Controller
     {
         $property = Property::find($id);
         if ($property) {
+            $property->views = $property->views + 1;
+            $property->save();
             $property = $this->refine($property);
             return response()->json(['message' => 'Property retrieved successfully.', 'data' => $property], 200);
         } else {

@@ -16,6 +16,7 @@ class Property extends Model
         'title',
         'slug',
         'price',
+        'views',
         'neighborhood_id',
         'listing_status',
         'size',
