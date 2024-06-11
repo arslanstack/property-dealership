@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AgentController;
+use App\Http\Controllers\Admin\CitiesController;
 use App\Http\Controllers\Admin\FeatureController;
 use App\Http\Controllers\Admin\NeighborhoodController;
 use App\Http\Controllers\Admin\PropertyListingController;
@@ -50,6 +51,13 @@ Route::group(['prefix'  =>  'admin'], function () {
 			Route::post('/update', [TestimonialController::class, 'update']);
 			Route::post('/delete', [TestimonialController::class, 'delete']);
 		});
+		Route::group(['prefix'  =>  'cities'], function () {
+			Route::get('/', [CitiesController::class, 'index']);
+			Route::post('/store', [CitiesController::class, 'store']);
+			Route::post('/show', [CitiesController::class, 'show']);
+			Route::post('/update', [CitiesController::class, 'update']);
+			Route::post('/delete', [CitiesController::class, 'delete']);
+		});
 		Route::group(['prefix'  =>  'agents'], function () {
 			Route::get('/', [AgentController::class, 'index']);
 			Route::post('/store', [AgentController::class, 'store']);
@@ -71,6 +79,7 @@ Route::group(['prefix'  =>  'admin'], function () {
 			Route::post('/update', [NeighborhoodController::class, 'update']);
 			Route::post('/delete', [NeighborhoodController::class, 'delete']);
 			Route::post('/imageManagement', [NeighborhoodController::class, 'imageManagement']);
+			Route::post('/addCity', [NeighborhoodController::class, 'addCity']);
 		});
 		Route::group(['prefix'  =>  'property-listings'], function () {
 			Route::get('/', [PropertyListingController::class, 'index']);

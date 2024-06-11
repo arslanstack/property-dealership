@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\City;
 use App\Models\Feature;
 use Illuminate\Http\Request;
 use App\Models\Property;
@@ -157,6 +158,48 @@ class PropertiesController extends Controller
                 return $found;
             });
         }
+        $total = $properties->count();
+        $pages = ceil($total / 6);
+
+        $properties = $properties->paginate(6);
+        foreach ($properties as $property) {
+            $this->refine($property);
+        }
+        return response()->json(['message' => 'Properties retrieved successfully.', 'data' => $properties, 'records_count' => $total], 200);
+    }
+    public function allWithCities(Request $request)
+    {
+
+        $city_id = $request->city_id;
+        $sorting = $request->sorting ?? null;
+        $listing_status = $request->listing_status ?? null;
+        $listing_type = $request->listing_type ?? null;
+        $is_featured = $request->is_featured ?? null;
+        $feature = $request->feature ?? null;
+        $type = $request->type ?? null;
+        $city = City::where('id', $city_id)->first();
+        if (!$city) {
+            return response()->json(['message' => 'City not found.'], 404);
+        }
+        $properties = Property::query();
+        $properties = $properties->where('city', $city->name);
+
+        if ($sorting) {
+            if ($sorting == 2) {
+                $properties = $properties->orderBy('is_featured', 'desc');
+            } else if ($sorting == 3) {
+                $properties = $properties->orderBy('views', 'desc');
+            } else if ($sorting == 4) {
+                $properties = $properties->orderBy('price'); // Ascending order
+            } else if ($sorting == 5) {
+                $properties = $properties->orderBy('price', 'desc'); // Descending order
+            } else if ($sorting == 6) {
+                $properties = $properties->orderBy('created_at'); // Ascending order
+            } else if ($sorting == 7) {
+                $properties = $properties->orderBy('created_at', 'desc'); // Descending order
+            }
+        }
+
         $total = $properties->count();
         $pages = ceil($total / 6);
 

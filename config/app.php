@@ -57,8 +57,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
-    // 'asset_url' => env('ASSET_URL'),
-    'asset_url' => 'http://localhost/property-dealership/public/',
+    'asset_url' => env('ASSET_URL'),
+    // 'asset_url' => 'http://localhost/property-dealership/public/',
 
     /*
     |--------------------------------------------------------------------------

@@ -45,6 +45,9 @@
             <li class="{{ Request::is('admin/home-evaluation-requests') ? 'active' : '' }} {{ Request::is('admin/home-evaluation-requests/*') ? 'active' : '' }}">
                 <a href="{{ url('admin/home-evaluation-requests') }}"><i class="fa-solid fa-home"></i> <span class="nav-label">Home Evaluations</span></a>
             </li>
+            <li class="{{ Request::is('admin/cities') ? 'active' : '' }} {{ Request::is('admin/cities/*') ? 'active' : '' }}">
+                <a href="{{ url('admin/cities') }}"><i class="fa-solid fa-city"></i> <span class="nav-label">Cities of Operation</span></a>
+            </li>
         </ul>
     </div>
 </nav>

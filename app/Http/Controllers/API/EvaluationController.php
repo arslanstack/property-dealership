@@ -70,33 +70,29 @@ class EvaluationController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'fname' => 'required|string',
-            'lname' => 'required|string',
-            'email' => 'required|email',
-            'phone' => 'required|string',
-            'address' => 'required|string',
-            'city' => 'required|string',
-            'state' => 'required|string',
-            'zip' => 'required|string',
-            'year_built' => 'required|integer',
-            'size' => 'required|integer',
-            'bedroom' => 'required|integer',
-            'bathroom' => 'required|integer',
-            'half_bathroom' => 'required|integer',
-            'has_suite' => 'required|integer',
-            'garage' => 'required|integer',
-            'garage_type' => 'required|integer',
-            'basement_type' => 'required|integer',
-            'dev_lvl' => 'required|integer',
-            'move_plan' => 'required|integer',
-            'notes' => 'required|string',
+            'fname' => 'required',
+            'lname' => 'required',
+            'email' => 'required',
+            'phone' => 'required',
+            'address' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+            'zip' => 'required',
+            'year_built' => 'required',
+            'size' => 'required',
+            'bedroom' => 'required',
+            'bathroom' => 'required',
+            'half_bathroom' => 'required',
+            'has_suite' => 'required',
+            'garage' => 'required',
+            'garage_type' => 'required',
+            'basement_type' => 'required',
+            'dev_lvl' => 'required',
+            'move_plan' => 'required',
+            'notes' => 'required',
         ]);
         if ($validator->fails()) {
-            $missing_fields = [];
-            foreach ($validator->errors()->messages() as $key => $value) {
-                $missing_fields[] = $key;
-            }
-            return back()->with('error', 'The following fields are required: ' . implode(', ', $missing_fields));
+            return response()->json(['message' => $validator->errors()], 422);
         }
 
         $homeEval = new HomeEval();

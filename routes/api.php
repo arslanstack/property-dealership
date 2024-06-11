@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AgentController;
+use App\Http\Controllers\API\CitiesController;
 use App\Http\Controllers\API\ContactController;
 use App\Http\Controllers\API\EvaluationController;
 use Illuminate\Http\Request;
@@ -37,6 +38,10 @@ Route::group(['middleware' => 'api'], function ($router) {
         Route::get('all', [TestimonialController::class, 'index']);
         Route::get('details/{id}', [TestimonialController::class, 'show']);
     });
+    Route::group(['prefix' => 'cities'], function () {
+        Route::get('all', [CitiesController::class, 'index']);
+        Route::get('details/{id}', [CitiesController::class, 'show']);
+    });
     Route::group(['prefix' => 'agents'], function () {
         Route::get('all', [AgentController::class, 'index']);
         Route::get('details/{id}', [AgentController::class, 'show']);
@@ -46,10 +51,12 @@ Route::group(['middleware' => 'api'], function ($router) {
         Route::get('recent', [PropertiesController::class, 'recent']);
         Route::get('filters', [PropertiesController::class, 'filters']);
         Route::post('all-filtered', [PropertiesController::class, 'all']);
+        Route::post('all-city-filtered', [PropertiesController::class, 'allWithCities']);
         Route::get('details/{id}', [PropertiesController::class, 'show']);
     });
     Route::group(['prefix' => 'search'], function () {
-        Route::post('/', [SearchController::class, 'index']);
+        Route::get('/input-options', [SearchController::class, 'input']);
+        Route::post('/submit', [SearchController::class, 'index']);
     });
     Route::group(['prefix' => 'evaluation'], function () {
         Route::get('/input-options', [EvaluationController::class, 'inputs']);

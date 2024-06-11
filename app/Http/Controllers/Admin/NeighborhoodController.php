@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\City;
 use Illuminate\Http\Request;
 use App\Models\Neighborhood;
 use Illuminate\Support\Facades\Validator;
@@ -31,7 +32,8 @@ class NeighborhoodController extends Controller
 
     public function add()
     {
-        return view('admin/neighborhoods/add_neighborhood');
+        $cities = City::all();
+        return view('admin/neighborhoods/add_neighborhood', compact('cities'));
     }
 
     public function store(Request $request)
@@ -40,8 +42,6 @@ class NeighborhoodController extends Controller
             'title' => 'required',
             'banner' => 'required',
             'zip' => 'required',
-            'country' => 'required',
-            'state' => 'required',
             'city' => 'required',
         ]);
 
@@ -53,14 +53,15 @@ class NeighborhoodController extends Controller
             }
             return back()->with('error', 'The following fields are required: ' . implode(', ', $missing_fields));
         };
+        $city = City::where('name', $request->city)->first();
         $neighborhood = new Neighborhood();
         $neighborhood->title = $request->title;
         $neighborhood->slug = slugify($request->title) . rand(1, 99);
         $neighborhood->code = NHCodes($request->title, $request->state, $request->country);
         $neighborhood->zip = $request->zip;
-        $neighborhood->country = $request->country;
-        $neighborhood->state = $request->state;
-        $neighborhood->city = $request->city;
+        $neighborhood->country = $city->country ?? '';
+        $neighborhood->state = $city->state ?? '';
+        $neighborhood->city = $city->name;
         $neighborhood->images = $request->images;
         $neighborhood->latitude = $request->latitude;
         $neighborhood->longitude = $request->longitude;
@@ -85,6 +86,7 @@ class NeighborhoodController extends Controller
 
         $neighborhood = Neighborhood::where('id', $id)->first();
         if (!empty($neighborhood)) {
+            $cities = City::all();
             $images = [];
             if (!empty($neighborhood->images)) {
                 $images = json_decode($neighborhood->images);
@@ -94,7 +96,7 @@ class NeighborhoodController extends Controller
             }
             $images_array = json_encode($images);
             $neighborhood->images = $images;
-            return view('admin/neighborhoods/edit_neighborhood', ['neighborhood' => $neighborhood, 'images_array' => $images_array]);
+            return view('admin/neighborhoods/edit_neighborhood', ['neighborhood' => $neighborhood, 'cities' => $cities, 'images_array' => $images_array]);
         } else {
             return back()->with('error', 'Neighborhood not found');
         }
@@ -105,8 +107,6 @@ class NeighborhoodController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'zip' => 'required',
-            'country' => 'required',
-            'state' => 'required',
             'city' => 'required',
         ]);
 
@@ -128,12 +128,14 @@ class NeighborhoodController extends Controller
         if (empty($neighborhood)) {
             return back()->with('error', 'Neighborhood not found');
         }
+        $city = City::where('name', $request->city)->first();
         $neighborhood->title = $request->title;
         $neighborhood->slug = slugify($request->title) . rand(1, 99);
         $neighborhood->code = NHCodes($request->title, $request->state, $request->country);
         $neighborhood->zip = $request->zip;
-        $neighborhood->country = $request->country;
-        $neighborhood->state = $request->state;
+        $neighborhood->country = $city->country ?? '';
+        $neighborhood->state = $city->state ?? '';
+        $neighborhood->city = $city->name;
         $neighborhood->images = json_encode($images_urls);
         $neighborhood->latitude = $request->latitude;
         $neighborhood->longitude = $request->longitude;
@@ -249,6 +251,31 @@ class NeighborhoodController extends Controller
                 'status' => 'error',
                 'message' => 'No files uploaded.'
             ], 400);
+        }
+    }
+
+    public function addCity(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['msg' => 'error', 'response' => 'City Name is required!']);
+        }
+        $city = new City();
+        $city->name = $request->name;
+        $city->state = $request->state ?? '';
+        $city->country = $request->country ?? '';
+        $city->slug = slugify($request->name);
+        $city->save();
+
+        if ($city->id > 0) {
+            $finalResult = response()->json(['msg' => 'success', 'response' => 'City added successfully.', 'city' => $city]);
+            return $finalResult;
+        } else {
+            $finalResult = response()->json(['msg' => 'error', 'response' => 'Something went wrong!']);
+            return $finalResult;
         }
     }
 }

@@ -1,48 +1,22 @@
 @extends('admin.admin_app')
 @push('styles')
-<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
-<!-- <link href="https://transloadit.edgly.net/releases/uppy/v1.6.0/uppy.min.css" rel="stylesheet"> -->
-<style>
-    .ck.ck-reset.ck-editor.ck-rounded-corners {
-        box-sizing: border-box;
-        height: auto;
-        position: static;
-        width: 100%;
-    }
-
-    .switch-container {
-        display: flex;
-        flex-direction: column;
-        align-items: start;
-        margin-top: 29px;
-        margin-left: -118px;
-    }
-
-    .ck-editor__editable_inline {
-        min-height: 100px;
-    }
-</style>
 @endpush
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-8 col-sm-8 col-xs-8">
-        <h2> Add New Neighborhood </h2>
+        <h2> Cities of Operation </h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="{{ url('admin') }}">Dashboard</a>
             </li>
-            <li class="breadcrumb-item">
-                <a href="{{ url('admin/neighborhoods') }}"> Neighborhoods </a>
-            </li>
             <li class="breadcrumb-item active">
-                <strong> Add New Neighborhood </strong>
+                <strong> Cities of Operation </strong>
             </li>
         </ol>
     </div>
     <div class="col-lg-4 col-sm-4 col-xs-4 text-right">
-        <a class="btn btn-primary text-white t_m_25" href="{{url('admin/neighborhoods')}}">
-            <i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Neighborhoods
+        <a class="btn btn-primary text-white t_m_25" data-toggle="modal" data-target="#add_modalbox">
+            <i class="fa fa-plus" aria-hidden="true"></i> Add New City
         </a>
     </div>
 </div>
@@ -51,99 +25,60 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-content">
-                    <form action="{{url('admin/neighborhoods/store')}}" class="m-4" id="neighborhood-form" method="post" enctype="multipart/form-data">
-                        @csrf
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group row">
-                                    <label class="form-label"><strong>Title</strong></label>
-                                    <input type="text" name="title" id="title-content" placeholder="e.g. Downtown Los Angeles" required class="form-control">
-                                </div>
-                                <div class="form-group row">
-                                    <label class="form-label"><strong>Banner Image</strong></label>
-                                    <input type="file" name="banner" id="Bannerimage" required class="form-control" accept="image/*">
-                                </div>
-                                <div class="form-group row">
-                                    <label class="form-label"><strong>Zip/Postal Code</strong></label>
-                                    <input type="text" name="zip" required class="form-control" placeholder="e.g. 90012">
-                                </div>
-                                <div class="form-group row">
-                                    <label class="form-label"><strong>City/Town <a data-toggle="modal" data-target="#add_modalbox" style="color: red; text-decoration: underline;" type="button">Add New City</a></strong></label>
-                                    <select name="city" id="cities_select" required class="form-control" style="height: 2.22rem !important;" id="">
-                                        @foreach($cities as $city)
-                                        <option value="{{$city->name}}" {{$city->name == "Rosarito" ? 'selected' : ''}}>{{$city->name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="Bannerimage" style="cursor: pointer;" class="form-label float-right float-end">
-                                    <div id="my-auto">
-                                        <img id="imageView" src="{{asset('/assets/img/banner.png')}}" class="img-fluid" style="width: 450px; height: 310px; overflow: contain;" alt="Image View">
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-12">
-                                <div class="form-group row">
-                                    <label for="" class="form-label"><strong>Location (Select Latitude & Longitude Coordinates By Clicking The Map)</strong></label>
-                                </div>
-                                <div id="map" style="height: 100vh !important;"></div>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-md-6">
-                                <div class="form-group row mr-1">
-                                    <label for="latitude" class="form-label"><strong>Latitude Coordinates</strong></label>
-                                    <input type="text" name="latitude" id="latitude" class="form-control" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group row mr-1">
-                                    <label for="longitude" class="form-label"><strong>Longitude Coordinates</strong></label>
-                                    <input type="text" name="longitude" id="longitude" class="form-control" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-12">
-                                <div class="form-group row">
-                                    <label for="images" class="form-label"><strong>Images</strong></label>
-                                    <!-- <input type="file" name="images[]" required class="form-control" accept="image/*" multiple> -->
-                                    <div class="dropzone col-12" id="myDropzone"></div>
-                                    <input type="text" name="images" id="images" hidden>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group row">
-                                    <label for="description" class="form-label"><strong>Description</strong></label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group row">
-                                    <div id="loader" class="text-center">
-                                        <div class="spinner-border" role="status">
-                                            <span class="visually-hidden"></span>
-                                        </div>
-                                    </div>
-                                    <textarea class="form-control" id="description" name="description" hidden placeholder="Enter the Description" rows="10"></textarea>
-                                </div>
-                            </div>
-                        </div>
+                    <form id="search_form" action="{{url('admin/cities')}}" method="GET" enctype="multipart/form-data">
                         <div class="form-group row justify-content-end">
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <div class="col-sm-6">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="search_query" placeholder="Search by City, State, or Country" value="{{ old('search_query', $searchParams['search_query'] ?? '') }}">
+                                    <span class="input-group-append">
+                                        <button type="submit" class="btn btn-primary">Search</button>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </form>
+                    <div class="table-responsive">
+                        <table id="manage_tbl" class="table table-striped table-bordered dt-responsive" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Sr #</th>
+                                    <th>City</th>
+                                    <th>State</th>
+                                    <th>Country</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php($i = 1)
+                                @foreach($cities as $item)
+                                <tr class="gradeX">
+                                    <td>{{ $i++ }}</td>
+                                    <td>{{ $item->name  }}</td>
+                                    <td>{{ $item->state  }}</td>
+                                    <td>{{ $item->country  }}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm btn_city_edit" data-id="{{$item->id}}" type="button"><i class="fa-solid fa-edit"></i> Edit</button>
+                                        <button class="btn btn-danger btn-sm btn_delete" data-id="{{$item->id}}" data-text="you want to delete this city?" type="button" data-placement="top" title="Delete">Delete</button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <p>Showing {{ $cities->firstItem() }} to {{ $cities->lastItem() }} of {{ $cities->total() }} entries</p>
+                        </div>
+                        <div class="col-md-3 text-right">
+                            {{ $cities->links('pagination::bootstrap-4') }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <div class="modal inmodal show fade" id="add_modalbox" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md" role="document">
         <div class="modal-content animated flipInY">
@@ -413,270 +348,92 @@
         </div>
     </div>
 </div>
+<div class="modal inmodal show fade" id="edit_modalbox" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content animated flipInY" id="edit_modalbox_body">
+        </div>
+    </div>
+</div>
 @endsection
 @push('scripts')
-<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
 <script>
-    gallery_images = [];
-    let myDropzone = new Dropzone("#myDropzone", {
-        url: "{{url('/admin/neighborhoods/imageManagement')}}",
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function(file, response) {
-            if (response.status === 'success') {
-                gallery_images.push(response.image);
-                console.log(gallery_images);
-                $('#images').val(JSON.stringify(gallery_images));
-            } else {
-                console.error('Error uploading images');
-            }
-        }
-    });
-</script>
-<script>
-    // on form submit i want to validate request 
-    $('#neighborhood-form').submit(function() {
-        if (gallery_images.length < 1) {
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true,
-                "positionClass": "toast-top-right"
-            }
-            toastr.error("Please upload at least one image for the gallery");
-            return false;
-        }
-
-        if ($('#latitude').val() == '' || $('#longitude').val() == '') {
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true,
-                "positionClass": "toast-top-right"
-            }
-            toastr.error("Please select the latitude and longitude coordinates");
-            return false;
-        }
-        return true;
-    });
-</script>
-<script>
-    (g => {
-        var h, a, k, p = "The Google Maps JavaScript API",
-            c = "google",
-            l = "importLibrary",
-            q = "__ib__",
-            m = document,
-            b = window;
-        b = b[c] || (b[c] = {});
-        var d = b.maps || (b.maps = {}),
-            r = new Set,
-            e = new URLSearchParams,
-            u = () => h || (h = new Promise(async (f, n) => {
-                await (a = m.createElement("script"));
-                e.set("libraries", [...r] + "");
-                for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
-                e.set("callback", c + ".maps." + q);
-                a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
-                d[q] = f;
-                a.onerror = () => h = n(Error(p + " could not load."));
-                a.nonce = m.querySelector("script[nonce]")?.nonce || "";
-                m.head.append(a)
-            }));
-        d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
-    })
-    ({
-        key: "AIzaSyBy2l4KGGTm4cTqoSl6h8UAOAob87sHBsA",
-        v: "weekly"
-    });
-</script>
-
-<script>
-    async function initMap() {
-        const {
-            Map
-        } = await google.maps.importLibrary("maps");
-        const myLatlng = {
-            lat: 32.35269,
-            lng: -117.0417087
+    $(document).on("change", "#testimonial_img_input", function() {
+        var file = this.files[0];
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $("#previewImage").attr('src', e.target.result);
         };
-        const map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 14,
-            center: myLatlng,
-        });
-        let infoWindow = new google.maps.InfoWindow({
-            content: "Click the map to get Lat/Lng!",
-            position: myLatlng,
-        });
-        infoWindow.open(map);
-        map.addListener("click", (mapsMouseEvent) => {
-            infoWindow.close();
-            infoWindow = new google.maps.InfoWindow({
-                position: mapsMouseEvent.latLng,
-            });
-            coordinates = mapsMouseEvent.latLng.toJSON();
-            infoWindow.setContent(
-                JSON.stringify(coordinates, null, 2),
-            );
-            infoWindow.open(map);
-            $('#latitude').val(coordinates.lat);
-            $('#longitude').val(coordinates.lng);
-        });
-    }
+        reader.readAsDataURL(this.files[0]);
 
-    initMap();
-</script>
-<script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/super-build/ckeditor.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var loader = document.getElementById('loader');
-        CKEDITOR.ClassicEditor.create(document.getElementById("description"), {
-            ckfinder: {},
-            toolbar: {
-                items: [
-                    'selectAll', '|',
-                    'heading', '|',
-                    'bold', 'italic', 'underline', 'code', 'removeFormat', '|',
-                    'bulletedList', 'numberedList', '|',
-                    'outdent', 'indent', '|',
-                    'undo', 'redo',
-                    '-',
-                    'fontSize', '|',
-                    'link', '|',
-                    'specialCharacters', '|',
-                ],
+    });
+    $('#manage_tbl').dataTable({
+        "paging": false,
+        "searching": false,
+        "bInfo": false,
+        "responsive": true,
+        "columnDefs": [{
+                "responsivePriority": 1,
+                "targets": 0
             },
-            list: {
-                properties: {
-                    styles: true,
-                    startIndex: true,
-                    reversed: true
-                }
+            {
+                "responsivePriority": 2,
+                "targets": -1
             },
-            heading: {
-                options: [{
-                        model: 'paragraph',
-                        title: 'Paragraph',
-                        class: 'ck-heading_paragraph'
-                    },
-                    {
-                        model: 'heading1',
-                        view: 'h1',
-                        title: 'Heading 1',
-                        class: 'ck-heading_heading1'
-                    },
-                    {
-                        model: 'heading2',
-                        view: 'h2',
-                        title: 'Heading 2',
-                        class: 'ck-heading_heading2'
-                    },
-                    {
-                        model: 'heading3',
-                        view: 'h3',
-                        title: 'Heading 3',
-                        class: 'ck-heading_heading3'
-                    },
-                    {
-                        model: 'heading4',
-                        view: 'h4',
-                        title: 'Heading 4',
-                        class: 'ck-heading_heading4'
-                    },
-                    {
-                        model: 'heading5',
-                        view: 'h5',
-                        title: 'Heading 5',
-                        class: 'ck-heading_heading5'
-                    },
-                    {
-                        model: 'heading6',
-                        view: 'h6',
-                        title: 'Heading 6',
-                        class: 'ck-heading_heading6'
-                    }
-                ]
+        ]
+    });
+    $(document).on("click", ".btn_delete", function() {
+        var id = $(this).attr('data-id');
+        var show_text = $(this).attr('data-text');
+        swal({
+                title: "Are you sure",
+                text: show_text,
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, please!",
+                cancelButtonText: "No, cancel please!",
+                closeOnConfirm: false,
+                closeOnCancel: true
             },
-            minHeight: '100px',
-            placeholder: 'Enter the Description',
-
-            fontSize: {
-                options: [10, 12, 14, 'default', 18, 20, 22],
-                supportAllValues: true
-            },
-            link: {
-                decorators: {
-                    addTargetToExternalLinks: true,
-                    defaultProtocol: 'https://',
-                    toggleDownloadable: {
-                        mode: 'manual',
-                        label: 'Downloadable',
-                        attributes: {
-                            download: 'file'
+            function(isConfirm) {
+                if (isConfirm) {
+                    $(".confirm").prop("disabled", true);
+                    $.ajax({
+                        url: "{{ url('admin/cities/delete') }}",
+                        type: 'post',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            'id': id,
+                        },
+                        dataType: 'json',
+                        success: function(status) {
+                            $(".confirm").prop("disabled", false);
+                            if (status.msg == 'success') {
+                                swal({
+                                        title: "Success!",
+                                        text: status.response,
+                                        type: "success"
+                                    },
+                                    function(data) {
+                                        location.reload();
+                                    });
+                            } else if (status.msg == 'error') {
+                                swal("Error", status.response, "error");
+                            }
                         }
-                    }
+                    });
+                } else {
+                    swal("Cancelled", "", "error");
                 }
-            },
-            contentLanguageDirection: 'rtl',
-
-            removePlugins: [
-                // These two are commercial, but you can try them out without registering to a trial.
-                // 'ExportPdf',
-                // 'ExportWord',
-                'AIAssistant',
-                'CKBox',
-                'CKFinder',
-                'RealTimeCollaborativeComments',
-                'RealTimeCollaborativeTrackChanges',
-                'RealTimeCollaborativeRevisionHistory',
-                'PresenceList',
-                'Comments',
-                'TrackChanges',
-                'TrackChangesData',
-                'RevisionHistory',
-                'Pagination',
-                'WProofreader',
-                // Careful, with the Mathtype plugin CKEditor will not load when loading this sample
-                // from a local file system (file://) - load this site via HTTP server if you enable MathType.
-                'MathType',
-                // The following features are part of the Productivity Pack and require additional license.
-                'SlashCommand',
-                'Template',
-                'DocumentOutline',
-                'FormatPainter',
-                'TableOfContents',
-                'PasteFromOfficeEnhanced'
-            ]
-        }).then(editor => {
-            loader.style.display = 'none';
-        }).catch(error => {
-            console.error('Error initializing CKEditor:', error);
-            loader.style.display = 'none';
-        });
+            });
     });
-</script>
-<script>
-    var session = "{{Session::has('error') ? 'true' : 'false'}}";
-    if (session == 'true') {
-        toastr.options = {
-            "closeButton": true,
-            "progressBar": true,
-            "positionClass": "toast-top-right"
-        }
-        toastr.error("{{Session::get('error')}}");
 
-    }
-    $('#Bannerimage').change(function() {
-        $('#imageView').show();
-        $('#imageView').attr('src', URL.createObjectURL(event.target.files[0]));
-    });
-</script>
-<script>
     $(document).on("click", "#save_city_button", function() {
         var btn = $(this).ladda();
         btn.ladda('start');
         var formData = new FormData($("#add_city_form")[0]);
         $.ajax({
-            url: "{{ url('admin/neighborhoods/addCity') }}",
+            url: "{{ url('admin/cities/store') }}",
             type: 'POST',
             data: formData,
             dataType: 'json',
@@ -689,9 +446,57 @@
                     $("#add_city_form")[0].reset();
                     btn.ladda('stop');
                     toastr.success(status.response, "Success");
-                    console.log(status)
-                    $('#cities_select').append(new Option(status.city.name, status.city.name, true, true)).trigger('change');
-                    $('#add_modalbox').modal('hide');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 500);
+                } else if (status.msg == 'error') {
+                    btn.ladda('stop');
+                    toastr.error(status.response, "Error");
+                } else if (status.msg == 'lvl_error') {
+                    btn.ladda('stop');
+                    var message = "";
+                    $.each(status.response, function(key, value) {
+                        message += value + "<br>";
+                    });
+                    toastr.error(message, "Error");
+                }
+            }
+        });
+    });
+    $(document).on("click", ".btn_city_edit", function() {
+        var id = $(this).attr('data-id');
+        $.ajax({
+            url: "{{ url('admin/cities/show') }}",
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                'id': id
+            },
+            success: function(status) {
+                $("#edit_modalbox_body").html(status.response);
+                $("#edit_modalbox").modal('show');
+            }
+        });
+    });
+    $(document).on("click", "#update_city_button", function() {
+        var btn = $(this).ladda();
+        btn.ladda('start');
+        var formData = new FormData($("#edit_city_form")[0]);
+        $.ajax({
+            url: "{{ url('admin/cities/update') }}",
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(status) {
+                if (status.msg == 'success') {
+                    toastr.success(status.response, "Success");
+                    setTimeout(function() {
+                        location.reload();
+                    }, 500);
                 } else if (status.msg == 'error') {
                     btn.ladda('stop');
                     toastr.error(status.response, "Error");
