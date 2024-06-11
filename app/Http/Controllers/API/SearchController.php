@@ -17,12 +17,60 @@ class SearchController extends Controller
 {
     public function input()
     {
+        $sorting = [
+            ['id' => '1', 'title' => 'default'],
+            ['id' => '2', 'title' => 'Featured'],
+            ['id' => '3', 'title' => 'Most Viewed'],
+            ['id' => '4', 'title' => 'Price (Low to High)'],
+            ['id' => '5', 'title' => 'Price (High to Low)'],
+            ['id' => '6', 'title' => 'Date (Old to New)'],
+            ['id' => '7', 'title' => 'Date (New to Old)'],
+        ];
+        $min_bed = [
+            ['0' => 'Any'],
+            ['1' => '1'],
+            ['2' => '2'],
+            ['3' => '3'],
+            ['4' => '4'],
+            ['5' => '5'],
+            ['6' => '6'],
+            ['7' => '7'],
+            ['8' => '8'],
+            ['9' => '9'],
+            ['10' => '10'],
+            ['11' => 'More than 10'],
+        ];
+
+        $min_bath = [
+            ['0' => 'Any'],
+            ['1' => '1'],
+            ['2' => '2'],
+            ['3' => '3'],
+            ['4' => '4'],
+            ['5' => '5'],
+            ['6' => '6'],
+            ['7' => '7'],
+            ['8' => '8'],
+            ['9' => '9'],
+            ['10' => '10'],
+            ['11' => 'More than 10'],
+        ];
+
+        $listing_status = [
+            ['id' => 1, 'title' => 'For Sale'],
+            ['id' => 2, 'title' => 'For Rent'],
+            ['id' => 3, 'title' => 'Rented'],
+            ['id' => 4, 'title' => 'Sale Pending'],
+            ['id' => 5, 'title' => 'Sold']
+        ];
+
         $neighborhoods = Neighborhood::all();
         $property_neighborhoods = [];
         foreach ($neighborhoods as $neighborhood) {
             $property_neighborhoods[] = [
                 'id' => $neighborhood->id,
-                'title' => $neighborhood->title
+                'title' => $neighborhood->title,
+                'code' => $neighborhood->code
             ];
         }
 
@@ -44,19 +92,252 @@ class SearchController extends Controller
             ];
         }
 
-        $features = Feature::all();
+        $interior_features = Feature::where('type', 1)->get();
+        $exterior_finish = Feature::where('type', 2)->get();
+        $featured_amenities = Feature::where('type', 3)->get();
+        $appliances = Feature::where('type', 4)->get();
+        $views = Feature::where('type', 5)->get();
+        $heatings = Feature::where('type', 6)->get();
+        $coolings = Feature::where('type', 7)->get();
+        $roofs = Feature::where('type', 8)->get();
+        $sewer_water_systems = Feature::where('type', 9)->get();
+        $extra_features = Feature::where('type', 10)->get();
         $property_features = [];
-        foreach ($features as $feature) {
-            $property_features[] = [
+        foreach ($interior_features as $feature) {
+            $property_features['interior_features'][] = [
                 'id' => $feature->id,
                 'title' => $feature->title,
-                'feature_type' => mapfeaturetype($feature->type)
+                'slug' => $feature->slug
             ];
         }
-        return response()->json(['message' => 'Search input options retreived successfully', 'cities' => $property_cities], 200);
+        foreach ($exterior_finish as $feature) {
+            $property_features['exterior_finish'][] = [
+                'id' => $feature->id,
+                'title' => $feature->title,
+                'slug' => $feature->slug
+            ];
+        }
+        foreach ($featured_amenities as $feature) {
+            $property_features['featured_amenities'][] = [
+                'id' => $feature->id,
+                'title' => $feature->title,
+                'slug' => $feature->slug
+            ];
+        }
+        foreach ($appliances as $feature) {
+            $property_features['appliances'][] = [
+                'id' => $feature->id,
+                'title' => $feature->title,
+                'slug' => $feature->slug
+            ];
+        }
+        foreach ($views as $feature) {
+            $property_features['views'][] = [
+                'id' => $feature->id,
+                'title' => $feature->title,
+                'slug' => $feature->slug
+            ];
+        }
+        foreach ($heatings as $feature) {
+            $property_features['heatings'][] = [
+                'id' => $feature->id,
+                'title' => $feature->title,
+                'slug' => $feature->slug
+            ];
+        }
+        foreach ($coolings as $feature) {
+            $property_features['coolings'][] = [
+                'id' => $feature->id,
+                'title' => $feature->title,
+                'slug' => $feature->slug
+            ];
+        }
+        foreach ($roofs as $feature) {
+            $property_features['roofs'][] = [
+                'id' => $feature->id,
+                'title' => $feature->title,
+                'slug' => $feature->slug
+            ];
+        }
+        foreach ($sewer_water_systems as $feature) {
+            $property_features['sewer_water_systems'][] = [
+                'id' => $feature->id,
+                'title' => $feature->title,
+                'slug' => $feature->slug
+            ];
+        }
+        foreach ($extra_features as $feature) {
+            $property_features['extra_features'][] = [
+                'id' => $feature->id,
+                'title' => $feature->title,
+                'slug' => $feature->slug
+            ];
+        }
+        $data = [
+            'sorting' => $sorting,
+            'min_bed' => $min_bed,
+            'min_bath' => $min_bath,
+            'listing_status' => $listing_status,
+            'neighborhoods' => $property_neighborhoods,
+            'cities' => $property_cities,
+            'types' => $property_types,
+            'features' => $property_features
+        ];
+        return response()->json(['message' => 'Search input options retreived successfully', 'data' => $data], 200);
     }
-    public function index(Request $requst)
+    public function index(Request $request)
     {
-        dd($requst->all());
+        $properties = Property::query();
+        $properties = $properties->where('price', '>=', intval($request->min_price));
+        $properties = $properties->where('price', '<=', intval($request->max_price));
+        $properties = $properties->where('size', '>=', intval($request->min_size));
+        $properties = $properties->where('size', '<=', intval($request->max_size));
+        $properties = $properties->where('bedrooms', '>=', intval($request->min_bed));
+        $properties = $properties->where('bathrooms', '>=', intval($request->min_bath));
+        if ($request->sorting) {
+            if ($request->sorting == 2) {
+                $properties = $properties->orderBy('is_featured', 'desc');
+            } elseif ($request->sorting == 3) {
+                $properties = $properties->orderBy('views', 'desc');
+            } elseif ($request->sorting == 4) {
+                $properties = $properties->orderBy('price', 'asc');
+            } elseif ($request->sorting == 5) {
+                $properties = $properties->orderBy('price', 'desc');
+            } elseif ($request->sorting == 6) {
+                $properties = $properties->orderBy('created_at', 'asc');
+            } elseif ($request->sorting == 7) {
+                $properties = $properties->orderBy('created_at', 'desc');
+            }
+        }
+        if ($request->listing_status) {
+            $properties = $properties->where('listing_status', $request->listing_status);
+        }
+        if ($request->city_id) {
+            $city = City::where('id', $request->city_id)->first();
+            if (!$city) {
+                return response()->json(['message' => 'City not found.'], 404);
+            }
+            $properties = $properties->where('city', $city->name);
+        }
+        if ($request->neighborhood_id) {
+            $neighborhood = Neighborhood::where('id', $request->neighborhood_id)->first();
+            if (!$neighborhood) {
+                return response()->json(['message' => 'Neighborhood not found.'], 404);
+            }
+            $properties = $properties->where('neighborhood_id', $neighborhood->id);
+        }
+        if ($request->type_id) {
+            $type = Types::where('id', $request->type_id)->first();
+            if (!$type) {
+                return response()->json(['message' => 'Type not found.'], 404);
+            }
+            $property_types = PropertyType::where('type_id', $type->id)->get();
+            $property_ids = [];
+            foreach ($property_types as $property_type) {
+                $property_ids[] = $property_type->property_id;
+            }
+            $properties = $properties->whereIn('id', $property_ids);
+        }
+        if ($request->features_id_array) {
+            // features_id_array input is like [1,56,12]
+            $features_id_array = json_decode($request->features_id_array);
+            $property_features = PropertyFeature::whereIn('feature_id', $features_id_array)->get();
+            $property_ids = [];
+            foreach ($property_features as $property_feature) {
+                $property_ids[] = $property_feature->property_id;
+            }
+            $properties = $properties->whereIn('id', $property_ids);
+        }
+        if ($request->title) {
+            $properties = $properties->where('title', 'like', '%' . $request->title . '%');
+        }
+
+        $properties->paginate(6);
+        $properties = $properties->get();
+        $properties = $properties->map(function ($property) {
+            return $this->refine($property);
+        });
+        return response()->json(['message' => 'Search results retreived successfully', 'data' => $properties], 200);
+    }
+    public function refine($property)
+    {
+
+        $property->banner = asset('uploads/properties/' . $property->banner);
+        $gallery = json_decode($property->gallery);
+        foreach ($gallery as $key => $image) {
+            $gallery[$key] = asset('uploads/properties/' . $image);
+        }
+        $property->gallery = $gallery;
+        $property->neighborhood = $property->neighborhood;
+        $property->neighborhood->banner = asset('uploads/neighborhoods/' . $property->neighborhood->banner);
+        unset($property->neighborhood->map);
+        unset($property->neighborhood->images);
+        unset($property->neighborhood->description);
+        $property->development_level = developmentlvl($property->dev_lvl);
+        unset($property->map);
+        unset($property->neighborhood_id);
+        unset($property->dev_lvl);
+        if ($property->listing_type == 1) {
+            $property->listing_type = 'buy';
+            unset($property->rent_cycle);
+            unset($property->date_available);
+        } else if ($property->listing_type == 2) {
+            $property->listing_type = 'rent';
+            unset($property->property_tax);
+            unset($property->hoa_fees);
+        }
+        if ($property->is_featured == 2) {
+            $property->is_featured = true;
+        } elseif ($property->is_featured == 1) {
+            $property->is_featured = false;
+        }
+
+
+        $property->listing_status = mapListingStatus($property->listing_status);
+        $interior_features = Feature::where('type', 1)->get();
+        $exterior_finish = Feature::where('type', 2)->get();
+        $featured_amenities = Feature::where('type', 3)->get();
+        $appliances = Feature::where('type', 4)->get();
+        $views = Feature::where('type', 5)->get();
+        $heatings = Feature::where('type', 6)->get();
+        $coolings = Feature::where('type', 7)->get();
+        $roofs = Feature::where('type', 8)->get();
+        $sewer_water_systems = Feature::where('type', 9)->get();
+        $extra_features = Feature::where('type', 10)->get();
+        $property_features = PropertyFeature::where('property_id', $property->id)->get();
+        $features['interior_features'] = $this->feature_mapping($interior_features, $property_features);
+        $features['exterior_finish'] = $this->feature_mapping($exterior_finish, $property_features);
+        $features['featured_amenities'] = $this->feature_mapping($featured_amenities, $property_features);
+        $features['appliances'] = $this->feature_mapping($appliances, $property_features);
+        $features['views'] = $this->feature_mapping($views, $property_features);
+        $features['heatings'] = $this->feature_mapping($heatings, $property_features);
+        $features['coolings'] = $this->feature_mapping($coolings, $property_features);
+        $features['roofs'] = $this->feature_mapping($roofs, $property_features);
+        $features['sewer_water_systems'] = $this->feature_mapping($sewer_water_systems, $property_features);
+        $features['extra_features'] = $this->feature_mapping($extra_features, $property_features);
+        $property->features = $features;
+        $types = Types::all();
+        $property_types = PropertyType::where('property_id', $property->id)->get();
+        $property_types = $property_types->map(function ($property_type) use ($types) {
+            return $types->where('id', $property_type->type_id)->first();
+        });
+        $property->types = $property_types;
+        return $property;
+    }
+    public function feature_mapping($features, $property_features)
+    {
+        foreach ($features as $feature) {
+            $found = false;
+            foreach ($property_features as $property_feature) {
+                if ($property_feature->feature_id == $feature->id) {
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $features = $features->except($feature->id);
+            }
+        }
+        return $features;
     }
 }

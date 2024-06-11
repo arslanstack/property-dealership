@@ -272,6 +272,48 @@
 			]
 		},
 		{
+			"name": "Cities",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/cities/all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cities",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/cities/details/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cities",
+								"details",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Real Estate Agents",
 			"item": [
 				{
@@ -386,24 +428,26 @@
 							"formdata": [
 								{
 									"key": "sorting",
-									"value": "1",
-									"type": "text"
+									"value": "2",
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "listing_status",
 									"value": "1",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "listing_type",
 									"value": "1",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "is_featured",
-									"value": "1",
-									"type": "text",
-									"disabled": true
+									"value": "0",
+									"type": "text"
 								},
 								{
 									"key": "feature",
@@ -433,19 +477,52 @@
 					"response": []
 				},
 				{
+					"name": "Get All  From City With Filter",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "city_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "sorting",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/properties/all-city-filtered",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"properties",
+								"all-city-filtered"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get One",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/properties/details/13",
+							"raw": "{{base_url}}/properties/details/2",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"properties",
 								"details",
-								"13"
+								"2"
 							]
 						}
 					},
@@ -493,7 +570,25 @@
 			"name": "Search",
 			"item": [
 				{
-					"name": "Search",
+					"name": "Form Input Options",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/search/input-options",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"search",
+								"input-options"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Form Submit",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -501,69 +596,80 @@
 							"mode": "formdata",
 							"formdata": [
 								{
-									"key": "search_term",
-									"value": "",
+									"key": "title",
+									"value": "Excellence villa",
 									"type": "text"
 								},
 								{
-									"key": "city",
-									"value": "",
+									"key": "type_id",
+									"value": "1",
 									"type": "text"
 								},
 								{
-									"key": "property_type",
-									"value": "",
+									"key": "min_bed",
+									"value": "3",
 									"type": "text"
 								},
 								{
-									"key": "development_level",
-									"value": "",
+									"key": "min_bath",
+									"value": "1",
 									"type": "text"
 								},
 								{
-									"key": "price_min",
-									"value": "",
+									"key": "min_price",
+									"value": "500",
 									"type": "text"
 								},
 								{
-									"key": "price_max",
-									"value": "",
+									"key": "max_price",
+									"value": "1001",
 									"type": "text"
 								},
 								{
-									"key": "area_min",
-									"value": "",
+									"key": "min_size",
+									"value": "1288",
 									"type": "text"
 								},
 								{
-									"key": "area_max",
-									"value": "",
+									"key": "max_size",
+									"value": "1290",
 									"type": "text"
 								},
 								{
-									"key": "bed_min",
-									"value": "",
+									"key": "neighborhood_id",
+									"value": "1",
 									"type": "text"
 								},
 								{
-									"key": "bath_min",
-									"value": "",
+									"key": "city_id",
+									"value": "2",
 									"type": "text"
 								},
 								{
-									"key": "features",
-									"value": "",
+									"key": "listing_status",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "features_id_array",
+									"value": "[1,56,91]",
+									"type": "text"
+								},
+								{
+									"key": "sorting",
+									"value": "2",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "{{base_url}}/search",
+							"raw": "{{base_url}}/search/submit",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"search"
+								"search",
+								"submit"
 							]
 						}
 					},
@@ -703,12 +809,87 @@
 							]
 						},
 						"url": {
-							"raw": "{{base_url}}/evaluation/submit",
+							"raw": "https://property.arslanstack.com/api/evaluation/submit",
+							"protocol": "https",
+							"host": [
+								"property",
+								"arslanstack",
+								"com"
+							],
+							"path": [
+								"api",
+								"evaluation",
+								"submit"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Contact Form",
+			"item": [
+				{
+					"name": "Properties Drop Down Options",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/contact/property-options",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"evaluation",
+								"contact",
+								"property-options"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Contact Form Submission",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "John Doe",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "+14567821281",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "johndoe@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "property_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "message",
+									"value": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/contact/submit",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contact",
 								"submit"
 							]
 						}
