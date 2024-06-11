@@ -46,7 +46,7 @@ class TypeController extends Controller
             $file = $request->file('banner');
             $extension = $file->getClientOriginalExtension();
             $filename = time() . '.' . $extension;
-            $file->move('uploads/types/', $filename);
+            $file->move(public_path('uploads/types/'), $filename);
             $type->banner = $filename;
         }
         $type->save();
@@ -96,7 +96,7 @@ class TypeController extends Controller
                 $file = $request->file('banner');
                 $extension = $file->getClientOriginalExtension();
                 $filename = time() . '.' . $extension;
-                $file->move('uploads/types/', $filename);
+                $file->move(public_path('uploads/types/'), $filename);
                 $type->banner = $filename;
             }
             $type->save();

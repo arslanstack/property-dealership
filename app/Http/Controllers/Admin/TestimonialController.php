@@ -51,7 +51,7 @@ class TestimonialController extends Controller
             $file = $request->file('image');
             $extension = $file->getClientOriginalExtension();
             $filename = time() . '.' . $extension;
-            $file->move('uploads/testimonials/', $filename);
+            $file->move(public_path('uploads/testimonials/'), $filename);
             $testimonial->image = $filename;
         }
         $testimonial->save();
@@ -103,7 +103,7 @@ class TestimonialController extends Controller
                 $file = $request->file('image');
                 $extension = $file->getClientOriginalExtension();
                 $filename = time() . '.' . $extension;
-                $file->move('uploads/testimonials/', $filename);
+                $file->move(public_path('uploads/testimonials/'), $filename);
                 $testimonial->image = $filename;
             }
             $testimonial->save();

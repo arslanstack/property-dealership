@@ -52,7 +52,7 @@ class AgentController extends Controller
             $file = $request->file('image');
             $extension = $file->getClientOriginalExtension();
             $filename = time() . '.' . $extension;
-            $file->move('uploads/agents/', $filename);
+            $file->move(public_path('uploads/agents/'), $filename);
             $agent->image = $filename;
         }
         $agent->save();
@@ -105,7 +105,7 @@ class AgentController extends Controller
                 $file = $request->file('image');
                 $extension = $file->getClientOriginalExtension();
                 $filename = time() . '.' . $extension;
-                $file->move('uploads/agents/', $filename);
+                $file->move(public_path('uploads/agents/'), $filename);
                 $agent->image = $filename;
             }
             $agent->save();

@@ -69,7 +69,7 @@ class NeighborhoodController extends Controller
             $file = $request->file('banner');
             $extension = $file->getClientOriginalExtension();
             $filename = $neighborhood->code . time() . '.' . $extension;
-            $file->move('uploads/neighborhoods/', $filename);
+            $file->move(public_path('uploads/neighborhoods/'), $filename);
             $neighborhood->banner = $filename;
         }
         $query = $neighborhood->save();
@@ -146,7 +146,7 @@ class NeighborhoodController extends Controller
             $file = $request->file('banner');
             $extension = $file->getClientOriginalExtension();
             $filename = $neighborhood->code . time() . '.' . $extension;
-            $file->move('uploads/neighborhoods/', $filename);
+            $file->move(public_path('uploads/neighborhoods/'), $filename);
             $neighborhood->banner = $filename;
         }
         $query = $neighborhood->save();
