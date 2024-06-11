@@ -35,11 +35,7 @@ class AgentController extends Controller
         ]);
 
         if ($validator->fails()) {
-            $missing_fields = [];
-            foreach ($validator->errors()->messages() as $key => $value) {
-                $missing_fields[] = $key;
-            }
-            return back()->with('error', 'The following fields are required: ' . implode(', ', $missing_fields));
+            return response()->json(['msg' => 'error', 'response' => 'The following fields are required: ' . implode(', ', array_keys($validator->errors()->messages()))]);
         }
 
         $agent = new Agents();
@@ -89,11 +85,7 @@ class AgentController extends Controller
         ]);
 
         if ($validator->fails()) {
-            $missing_fields = [];
-            foreach ($validator->errors()->messages() as $key => $value) {
-                $missing_fields[] = $key;
-            }
-            return back()->with('error', 'The following fields are required: ' . implode(', ', $missing_fields));
+            return response()->json(['msg' => 'error', 'response' => 'The following fields are required: ' . implode(', ', array_keys($validator->errors()->messages()))]);
         }
         $agent = Agents::where('id', $request->id)->first();
         if (!empty($agent)) {

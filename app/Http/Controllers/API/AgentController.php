@@ -12,7 +12,7 @@ class AgentController extends Controller
     {
         $agents = Agents::all();
         foreach ($agents as $agent) {
-            $agent->image = asset('uploads/agent/' . $agent->image);
+            $agent->image = asset('uploads/agents/' . $agent->image);
         }
         return response()->json(['message' => 'Agents retrieved successfully.', 'data' => $agents], 200);
     }
@@ -21,7 +21,7 @@ class AgentController extends Controller
     {
         $agent = Agents::find($id);
         if ($agent) {
-            $agent->image = asset('uploads/agent/' . $agent->image);
+            $agent->image = asset('uploads/agents/' . $agent->image);
             return response()->json(['message' => 'Agent retrieved successfully.', 'data' => $agent], 200);
         } else {
             return response()->json(['message' => 'Agent not found.'], 404);
