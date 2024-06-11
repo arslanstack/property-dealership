@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AgentController;
+use App\Http\Controllers\API\ContactController;
 use App\Http\Controllers\API\EvaluationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -53,5 +54,9 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::group(['prefix' => 'evaluation'], function () {
         Route::get('/input-options', [EvaluationController::class, 'inputs']);
         Route::post('/submit', [EvaluationController::class, 'store']);
+    });
+    Route::group(['prefix' => 'contact'], function () {
+        Route::get('/property-options', [ContactController::class, 'inputs']);
+        Route::post('/submit', [ContactController::class, 'index']);
     });
 });
