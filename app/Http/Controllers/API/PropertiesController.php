@@ -92,7 +92,6 @@ class PropertiesController extends Controller
     }
     public function all(Request $request)
     {
-        // dd($request->all());
         $sorting = $request->sorting ?? null;
         $listing_status = $request->listing_status ?? null;
         $listing_type = $request->listing_type ?? null;
@@ -105,17 +104,17 @@ class PropertiesController extends Controller
 
         if ($sorting) {
             if ($sorting == 2) {
-                $properties = $properties->sortByDesc('is_featured');
+                $properties = $properties->orderBy('is_featured', 'desc');
             } else if ($sorting == 3) {
-                $properties = $properties->sortByDesc('views');
+                $properties = $properties->orderBy('views', 'desc');
             } else if ($sorting == 4) {
-                $properties = $properties->sortBy('price');
+                $properties = $properties->orderBy('price'); // Ascending order
             } else if ($sorting == 5) {
-                $properties = $properties->sortByDesc('price');
+                $properties = $properties->orderBy('price', 'desc'); // Descending order
             } else if ($sorting == 6) {
-                $properties = $properties->sortBy('created_at');
+                $properties = $properties->orderBy('created_at'); // Ascending order
             } else if ($sorting == 7) {
-                $properties = $properties->sortByDesc('created_at');
+                $properties = $properties->orderBy('created_at', 'desc'); // Descending order
             }
         }
 

@@ -4,13 +4,13 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-8 col-sm-8 col-xs-8">
-        <h2> Home Evaluations </h2>
+        <h2> Home Evaluation Requests </h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="{{ url('admin') }}">Dashboard</a>
             </li>
             <li class="breadcrumb-item active">
-                <strong> Home Evaluations </strong>
+                <strong> Home Evaluation Requests </strong>
             </li>
         </ol>
     </div>
@@ -61,7 +61,7 @@
                                     <td>{{ $item->city . ', ' . $item->state}}</td>
                                     <td>{{date_formated($item->created_at)}}</td>
                                     <td>
-                                        <button class="btn btn-primary btn-sm btn_eval_edit" data-id="{{$item->id}}" type="button"><i class="fa-solid fa-edit"></i> Details</button>
+                                        <a class="btn btn-primary btn-sm btn_eval_edit" href="{{ url('admin/home-evaluation-requests/details') }}/{{ $item->id }}"><i class="fa-solid fa-edit"></i> Details</a>
                                         <button class="btn btn-danger btn-sm btn_delete" data-id="{{$item->id}}" data-text="you want to delete this submission?" type="button" data-placement="top" title="Delete">Delete</button>
                                     </td>
                                 </tr>
@@ -152,53 +152,5 @@
                 }
             });
     });
-    $(document).on("click", ".btn_eval_edit", function() {
-        var id = $(this).attr('data-id');
-        $.ajax({
-            url: "{{ url('admin/home-evaluation-requests/show') }}",
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                "_token": "{{ csrf_token() }}",
-                'id': id
-            },
-            success: function(status) {
-                $("#edit_modalbox_body").html(status.response);
-                $("#edit_modalbox").modal('show');
-            }
-        });
-    });
-    // $(document).on("click", "#update_type_button", function() {
-    //     var btn = $(this).ladda();
-    //     btn.ladda('start');
-    //     var formData = new FormData($("#edit_type_form")[0]);
-    //     $.ajax({
-    //         url: "{{ url('admin/types/update-type') }}",
-    //         type: 'POST',
-    //         data: formData,
-    //         dataType: 'json',
-    //         cache: false,
-    //         contentType: false,
-    //         processData: false,
-    //         success: function(status) {
-    //             if (status.msg == 'success') {
-    //                 toastr.success(status.response, "Success");
-    //                 setTimeout(function() {
-    //                     location.reload();
-    //                 }, 500);
-    //             } else if (status.msg == 'error') {
-    //                 btn.ladda('stop');
-    //                 toastr.error(status.response, "Error");
-    //             } else if (status.msg == 'lvl_error') {
-    //                 btn.ladda('stop');
-    //                 var message = "";
-    //                 $.each(status.response, function(key, value) {
-    //                     message += value + "<br>";
-    //                 });
-    //                 toastr.error(message, "Error");
-    //             }
-    //         }
-    //     });
-    // });
 </script>
 @endpush

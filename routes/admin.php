@@ -59,7 +59,7 @@ Route::group(['prefix'  =>  'admin'], function () {
 		});
 		Route::group(['prefix'  =>  'home-evaluation-requests'], function () {
 			Route::get('/', [EvaluationController::class, 'index']);
-			Route::post('/show', [EvaluationController::class, 'show']);
+			Route::get('/details/{id}', [EvaluationController::class, 'show']);
 			Route::post('/update', [EvaluationController::class, 'update']);
 		});
 		Route::group(['prefix'  =>  'neighborhoods'], function () {

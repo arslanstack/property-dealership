@@ -27,15 +27,13 @@ class EvaluationController extends Controller
         return view('admin/evals/manage_evals', $data);
     }
 
-    public function show(Request $request)
+    public function show($id)
     {
-        $eval = HomeEval::where('id', $request->id)->first();
+        $eval = HomeEval::where('id', $id)->first();
         if (!empty($eval)) {
-            $htmlresult = view('admin/evals/evals_ajax', compact('eval'))->render();
-            $finalResult = response()->json(['msg' => 'success', 'response' => $htmlresult]);
-            return $finalResult;
+            return view('admin/evals/evals_details', ['eval' => $eval]);
         } else {
-            return response()->json(['msg' => 'error', 'response' => 'Evaluation eval not found.']);
+            return redirect()->back()->with('error', 'Evaluation not found');
         }
     }
 }
