@@ -588,10 +588,92 @@
 					"response": []
 				},
 				{
+					"name": "Saved Searches",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/search/saved",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"search",
+								"saved"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Saved Search Results",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/search/search-results/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"search",
+								"search-results",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Search Form Submit",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{access_token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "formdata",
 							"formdata": [
@@ -642,7 +724,7 @@
 								},
 								{
 									"key": "city_id",
-									"value": "2",
+									"value": "1",
 									"type": "text"
 								},
 								{

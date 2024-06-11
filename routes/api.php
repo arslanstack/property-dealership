@@ -56,7 +56,9 @@ Route::group(['middleware' => 'api'], function ($router) {
     });
     Route::group(['prefix' => 'search'], function () {
         Route::get('/input-options', [SearchController::class, 'input']);
+        Route::get('/saved', [SearchController::class, 'savedSearches']);
         Route::post('/submit', [SearchController::class, 'index']);
+        Route::get('/search-results/{id}', [SearchController::class, 'savedSearchResults']);
     });
     Route::group(['prefix' => 'evaluation'], function () {
         Route::get('/input-options', [EvaluationController::class, 'inputs']);
