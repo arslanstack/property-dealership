@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('properties', function (Blueprint $table) {
-            $table->tinyInteger('is_featured')->default(0)->after('status')->comment('1: No, 2: Yes');
+            $table->tinyInteger('is_featured')->default(1)->after('status')->comment('1: No, 2: Yes');
         });
     }
 

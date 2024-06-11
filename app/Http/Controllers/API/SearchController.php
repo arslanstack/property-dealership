@@ -17,6 +17,14 @@ class SearchController extends Controller
 {
     public function input()
     {
+        $neighborhoods = Neighborhood::all();
+        $property_neighborhoods = [];
+        foreach ($neighborhoods as $neighborhood) {
+            $property_neighborhoods[] = [
+                'id' => $neighborhood->id,
+                'title' => $neighborhood->title
+            ];
+        }
 
         $city = City::all();
         $property_cities = [];

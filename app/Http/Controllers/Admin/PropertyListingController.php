@@ -461,12 +461,22 @@ class PropertyListingController extends Controller
     {
         $property = Property::where('id', $request->id)->first();
         if ($property) {
-            $property->is_featured = $request->featured_status;
-            $query = $property->save();
-            if ($query) {
-                return response()->json(['msg' => 'success', 'response' => 'Property Listing featured successfully.']);
-            } else {
-                return response()->json(['msg' => 'error', 'response' => 'Property Listing Could Not Be Featured. Try Again!']);
+            if ($property->is_featured == 1) {
+                $property->is_featured = 2;
+                $query = $property->save();
+                if ($query) {
+                    return response()->json(['msg' => 'success', 'response' => 'Property Listing featured successully.']);
+                } else {
+                    return response()->json(['msg' => 'error', 'response' => 'Something Went Wrong!']);
+                }
+            } elseif ($property->is_featured == 2) {
+                $property->is_featured = 1;
+                $query = $property->save();
+                if ($query) {
+                    return response()->json(['msg' => 'success', 'response' => 'Property Listing unfeatured successully.']);
+                } else {
+                    return response()->json(['msg' => 'error', 'response' => 'Something Went Wrong!']);
+                }
             }
         } else {
             return response()->json(['msg' => 'error', 'response' => 'Something Went Wrong!']);

@@ -79,9 +79,9 @@
                                         <a href="{{ url('admin/property-listings/details') }}/{{ $item->id }}" class="btn btn-primary btn-sm" data-placement="top" title="Details"> <i class="fa fa-edit"></i> Edit Details </a>
                                         <button class="btn btn-danger btn-sm btn_delete" data-id="{{$item->id}}" data-text="You want to delete this listing!" type="button" data-placement="top" title="Delete">Delete</button>
                                         @if($item->is_featured == 1)
-                                        <button class="btn btn-success btn-sm btn_feature" data-id="{{$item->id}}" data-featured_status="2" data-text="You want to feature this listing!" type="button" data-placement="top" title="Feature">Feature</button>
-                                        @else
-                                        <button class="btn btn-warning btn-sm btn_feature" data-id="{{$item->id}}" data-featured_status="1" data-text="You want to unfeature this listing!" type="button" data-placement="top" title="Unfeature">Unfeature</button>
+                                        <button class="btn btn-success btn-sm btn_feature" data-id="{{$item->id}}" data-text="You want to feature this listing!" type="button" data-placement="top" title="Feature">Feature</button>
+                                        @elseif($item->is_featured == 2)
+                                        <button class="btn btn-warning btn-sm btn_feature" data-id="{{$item->id}}" data-text="You want to unfeature this listing!" type="button" data-placement="top" title="Unfeature">Unfeature</button>
                                         @endif
                                     </td>
                                 </tr>
@@ -188,7 +188,6 @@
     });
     $(document).on("click", ".btn_feature", function() {
         var id = $(this).attr('data-id');
-        var featured_status = $(this).attr('data-featured_status');
         var show_text = $(this).attr('data-text');
         swal({
                 title: "Are you sure",
@@ -210,7 +209,6 @@
                         data: {
                             "_token": "{{ csrf_token() }}",
                             'id': id,
-                            'featured_status': featured_status,
                         },
                         dataType: 'json',
                         success: function(status) {
