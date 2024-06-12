@@ -623,3 +623,10 @@ if (!function_exists('country_select')) {
 		return $countries_in_json;
 	}
 }
+if (!function_exists('count_records')) {
+	function count_records($table_name)
+	{
+		$query = DB::table($table_name);
+		return $query->count();
+	}
+}
