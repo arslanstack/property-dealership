@@ -141,9 +141,9 @@ class UserController extends Controller
         ]);
         if ($status > 0) {
             if ($data['status'] == '1') {
-                $finalResult = response()->json(['msg' => 'success', 'response' => 'User Unblocked successfully.']);
+                $finalResult = response()->json(['msg' => 'success', 'response' => 'User blocked successfully.']);
             } else {
-                $finalResult = response()->json(['msg' => 'success', 'response' => 'User Blocked successfully.']);
+                $finalResult = response()->json(['msg' => 'success', 'response' => 'User unblocked successfully.']);
             }
             return $finalResult;
         } else {
