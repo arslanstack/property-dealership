@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\City;
+use App\Models\Neighborhood;
+use App\Models\Property;
 use Illuminate\Support\Facades\Validator;
 
 class CitiesController extends Controller
@@ -88,6 +90,11 @@ class CitiesController extends Controller
     {
         $city = City::find($request->id);
         if (!empty($city)) {
+            $properties = Property::where('city', $city->name)->count();
+            $neighborhoods = Neighborhood::where('city', $city->name)->count();
+            if ($properties > 0 || $neighborhoods > 0) {
+                return response()->json(['msg' => 'error', 'response' => 'City cannot be deleted. It is being used in property listings or neighborhoods.']);
+            }
             $city->delete();
             return response()->json(['msg' => 'success', 'response' => 'City deleted successfully.']);
         } else {

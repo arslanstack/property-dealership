@@ -43,7 +43,7 @@
                                 <tr>
                                     <th>Sr #</th>
                                     <th>City</th>
-                                    <th>State</th>
+                                    <th>State/Province</th>
                                     <th>Country</th>
                                     <th>Actions</th>
                                 </tr>
