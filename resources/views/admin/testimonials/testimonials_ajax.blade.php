@@ -13,7 +13,7 @@
                 <div class="col-sm-8">
                     <div class="row">
                         <div class="col-sm-10 mr-0 pr-0">
-                            <input type="file" name="image" id="testimonial_img_input" class="form-control" accept="image/*">
+                            <input type="file" required name="image" id="testimonial_img_input" class="form-control" accept="image/*">
                         </div>
                         <div class="col-sm-2 ml-0 pl-0">
                             <img id="previewImage" src="{{asset('uploads/testimonials/' . $testimonial['image'] )}}" style="width: 50px; height: 40px; object-fit:contain;" alt="">
@@ -26,19 +26,19 @@
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label"><strong>Name</strong></label>
                 <div class="col-sm-8">
-                    <input type="text" name="name" class="form-control" placeholder="name" value="{{ $testimonial['name'] }}">
+                    <input type="text" name="name" class="form-control" placeholder="name required" value="{{ $testimonial['name'] }}">
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label"><strong>Profession</strong></label>
                 <div class="col-sm-8">
-                    <input type="text" name="designation" class="form-control" placeholder="designation" value="{{ $testimonial['designation'] }}">
+                    <input type="text" name="designation" class="form-control" placeholder="designation" required value="{{ $testimonial['designation'] }}">
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label"><strong>City/Country</strong></label>
                 <div class="col-sm-8">
-                    <input type="text" name="location" class="form-control" placeholder="location" value="{{ $testimonial['location'] }}">
+                    <input type="text" name="location" class="form-control" placeholder="location" required value="{{ $testimonial['location'] }}">
                 </div>
             </div>
             <div class="form-group row">

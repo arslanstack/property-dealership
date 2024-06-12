@@ -53,7 +53,7 @@
                                 @foreach($agents as $item)
                                 <tr class="gradeX">
                                     <td>{{ $i++ }}</td>
-                                    <td>{{ $item->name  }}</td>
+                                    <td><img src="{{asset('uploads/agents/' . $item->image)}}" style="width: 40px; height: 40px; object-fit:contain; margin-right: 5px;" alt="">{{ $item->name  }}</td>
                                     <td>{{ $item->designation  }}</td>
                                     <td>{{ $item->phone  }}</td>
                                     <td>
@@ -92,6 +92,12 @@
                 <form id="add_agent_form" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group row">
+                        <label class="col-sm-4 col-form-label"><strong>Image</strong></label>
+                        <div class="col-sm-8">
+                            <input type="file" name="image" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <label class="col-sm-4 col-form-label"><strong>Name</strong></label>
                         <div class="col-sm-8">
                             <input type="text" name="name" required class="form-control">
@@ -113,12 +119,6 @@
                         <label class="col-sm-4 col-form-label"><strong>Description</strong></label>
                         <div class="col-sm-8">
                             <textarea name="description" required class="form-control" rows="3" id=""></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-4 col-form-label"><strong>Image</strong></label>
-                        <div class="col-sm-8">
-                            <input type="file" name="image" class="form-control" required>
                         </div>
                     </div>
                 </form>
