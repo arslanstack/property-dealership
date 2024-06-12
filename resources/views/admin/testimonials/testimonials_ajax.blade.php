@@ -8,33 +8,8 @@
     <div class="modal-body">
         <form id="edit_testimonial_form" method="post">
             @csrf
-            <input type="hidden" name="id" class="form-control" value="{{ $testimonial['id'] }}">
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label"><strong>Client Name</strong></label>
-                <div class="col-sm-8">
-                    <input type="text" name="name" class="form-control" placeholder="name" value="{{ $testimonial['name'] }}">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label"><strong>Content</strong></label>
-                <div class="col-sm-8">
-                    <input type="text" name="content" class="form-control" placeholder="content" value="{{ $testimonial['content'] }}">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label"><strong>Client Profession</strong></label>
-                <div class="col-sm-8">
-                    <input type="text" name="designation" class="form-control" placeholder="designation" value="{{ $testimonial['designation'] }}">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label"><strong>Client Location</strong></label>
-                <div class="col-sm-8">
-                    <input type="text" name="location" class="form-control" placeholder="location" value="{{ $testimonial['location'] }}">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label"><strong>Client Image</strong></label>
+                <label class="col-sm-4 col-form-label"><strong>Image</strong></label>
                 <div class="col-sm-8">
                     <div class="row">
                         <div class="col-sm-10 mr-0 pr-0">
@@ -47,6 +22,33 @@
 
                 </div>
             </div>
+            <input type="hidden" name="id" class="form-control" value="{{ $testimonial['id'] }}">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"><strong>Name</strong></label>
+                <div class="col-sm-8">
+                    <input type="text" name="name" class="form-control" placeholder="name" value="{{ $testimonial['name'] }}">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"><strong>Profession</strong></label>
+                <div class="col-sm-8">
+                    <input type="text" name="designation" class="form-control" placeholder="designation" value="{{ $testimonial['designation'] }}">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"><strong>City/Country</strong></label>
+                <div class="col-sm-8">
+                    <input type="text" name="location" class="form-control" placeholder="location" value="{{ $testimonial['location'] }}">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label"><strong>Content</strong></label>
+                <div class="col-sm-8">
+                    <!-- <input type="text" name="content" class="form-control" placeholder="content" value=""> -->
+                    <textarea name="content" class="form-control" required>{{ $testimonial['content'] }}</textarea>
+                </div>
+            </div>
+
         </form>
     </div>
     <div class="modal-footer">

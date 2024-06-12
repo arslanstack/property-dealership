@@ -12,7 +12,7 @@ class TestimonialController extends Controller
     {
         $testimonials = Testimonial::all();
         foreach ($testimonials as $testimonial) {
-            $testimonial->image = asset('storage/' . $testimonial->image);
+            $testimonial->image = asset('uploads/testimonials/' . $testimonial->image);
         }
         return response()->json(['message' => 'Testimonials retrieved successfully.', 'data' => $testimonials], 200);
     }
@@ -21,7 +21,7 @@ class TestimonialController extends Controller
     {
         $testimonial = Testimonial::find($id);
         if ($testimonial) {
-            $testimonial->image = asset('storage/' . $testimonial->image);
+            $testimonial->image = asset('uploads/testimonials/' . $testimonial->image);
             return response()->json(['message' => 'Testimonial retrieved successfully.', 'data' => $testimonial], 200);
         } else {
             return response()->json(['message' => 'Testimonial not found.'], 404);

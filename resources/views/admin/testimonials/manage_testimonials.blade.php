@@ -43,7 +43,8 @@
                                 <tr>
                                     <th>Sr #</th>
                                     <th>Client</th>
-                                    <th>Content</th>
+                                    <th>Profession</th>
+                                    <th>City</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -52,8 +53,9 @@
                                 @foreach($testimonials as $item)
                                 <tr class="gradeX">
                                     <td>{{ $i++ }}</td>
-                                    <td>{{ $item->name  }}</td>
-                                    <td>{{ $item->content  }}</td>
+                                    <td><img src="{{asset('uploads/testimonials/' . $item->image)}}" style="width: 40px; height: 40px; object-fit:contain; margin-right: 5px;" alt="">{{ $item->name  }}</td>
+                                    <td>{{$item->designation}}</td>
+                                    <td>{{$item->location}}</td>
                                     <td>
                                         <button class="btn btn-primary btn-sm btn_testimonial_edit" data-id="{{$item->id}}" type="button"><i class="fa-solid fa-edit"></i> Edit</button>
                                         <button class="btn btn-danger btn-sm btn_delete" data-id="{{$item->id}}" data-text="you want to delete this testimonial?" type="button" data-placement="top" title="Delete">Delete</button>
@@ -90,33 +92,33 @@
                 <form id="add_testimonial_form" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group row">
-                        <label class="col-sm-4 col-form-label"><strong>Client Name</strong></label>
+                        <label class="col-sm-4 col-form-label"><strong>Image</strong></label>
                         <div class="col-sm-8">
-                            <input type="text" name="name" class="form-control" placeholder="Add a title">
+                            <input type="file" name="image" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label"><strong>Name</strong></label>
+                        <div class="col-sm-8">
+                            <input type="text" name="name" required class="form-control" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label"><strong>Profession</strong></label>
+                        <div class="col-sm-8">
+                            <input type="text" name="designation" required class="form-control" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label"><strong>City/Country</strong></label>
+                        <div class="col-sm-8">
+                            <input type="text" name="location" required class="form-control" placeholder="">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label"><strong>Content</strong></label>
                         <div class="col-sm-8">
-                            <input type="text" name="content" class="form-control" placeholder="Add a title">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-4 col-form-label"><strong>Client Profession</strong></label>
-                        <div class="col-sm-8">
-                            <input type="text" name="designation" class="form-control" placeholder="Add a title">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-4 col-form-label"><strong>Client Location</strong></label>
-                        <div class="col-sm-8">
-                            <input type="text" name="location" class="form-control" placeholder="Add a title">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-4 col-form-label"><strong>Client Image</strong></label>
-                        <div class="col-sm-8">
-                            <input type="file" name="image" class="form-control" required>
+                            <textarea name="content" class="form-control" required></textarea>
                         </div>
                     </div>
                 </form>
