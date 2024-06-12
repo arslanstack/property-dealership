@@ -44,7 +44,6 @@
                                     <th>Sr #</th>
                                     <th>User</th>
                                     <th>Email</th>
-                                    <th>Invitation</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -56,13 +55,6 @@
                                     <td>{{ $i++ }}</td>
                                     <td>{{ $item->fname . ' ' . $item->lname  }}</td>
                                     <td>{{$item->email}}</td>
-                                    <td>
-                                        @if($item->status == 0)
-                                        <label class="label label-warning"> Not Accepted </label>
-                                        @else
-                                        <label class="label label-success"> Accepted </label>
-                                        @endif
-                                    </td>
                                     <td>
                                         @if($item->is_blocked == 1)
                                         <label class="label label-warning text-dark"> Blocked </label>

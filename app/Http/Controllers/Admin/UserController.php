@@ -37,11 +37,11 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'fname' => 'required',
             'lname' => 'required',
-            'email' => 'required|email|unique:users',
+            'email' => 'required|unique:users,email,' . $request->id . ',id',
             'password' => 'required',
         ]);
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return redirect()->back()->with('error', $validator->errors()->first());
         }
         $user = new User();
         $user->fname = $request->fname;
@@ -66,7 +66,7 @@ class UserController extends Controller
             $headers = "From: webmaster@example.com\r\n";
             $headers .= "Reply-To: webmaster@example.com\r\n";
             $headers .= "Content-Type: text/html\r\n";
-            $subject = 'An Admin Invited You To Join My Baja Properties';
+            $subject = 'An Admin Invited You To Join My Baja Property';
             $emailTemplate = view('emails.invite', compact(['credentials']))->render();
             $sendMail = mail($request->email, $subject, $emailTemplate, $headers);
             if ($sendMail) {
@@ -83,7 +83,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'fname' => 'required',
             'lname' => 'required',
-            'email' => 'required|unique:users,email,' . $request->id . ',id',
+
         ]);
         if ($validator->fails()) {
             return redirect()->back()->with('error', $validator->errors()->first());
@@ -92,8 +92,8 @@ class UserController extends Controller
         if (!empty($user)) {
             $user->fname = $request->fname;
             $user->lname = $request->lname;
-            $user->email = $request->email;
             $user->phone_no = $request->phone_no ?? '';
+            $user->password = $request->password ? bcrypt($request->password) : $user->password;
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $image_name = time() . '.' . $image->getClientOriginalExtension();

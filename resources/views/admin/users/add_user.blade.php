@@ -25,7 +25,7 @@
         <div class="col-md-12">
             <div class="ibox">
                 <div class="row ibox-content" style="border: none !important;">
-                    <div class="col-md-4">
+                    <!-- <div class="col-md-4">
                         <div class="ibox-title" style="border: none !important;">
                             <h5>Profile Image</h5>
                         </div>
@@ -36,11 +36,11 @@
                                 </label>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-8">
+                    </div> -->
+                    <div class="col-md-12">
                         <div class="ibox">
                             <div class="ibox-title" style="border: none !important;">
-                                <h5>User Details</h5>
+                                <h5>Add User Details</h5>
                             </div>
                             <div class="ibox-content">
                                 <div>
@@ -50,11 +50,11 @@
                                             <div class="row mt-4">
                                                 <div class="col-lg-12">
                                                     <div class="row">
-                                                        <strong class="col-sm-2 col-form-label">First Name</strong>
+                                                        <strong class="col-sm-2 col-form-label">First Name <sup class="text-danger">*</sup></strong>
                                                         <div class="col-sm-4">
                                                             <input type="text" class="form-control" name="fname" id="fname" required>
                                                         </div>
-                                                        <strong class="col-sm-2 col-form-label">Last Name</strong>
+                                                        <strong class="col-sm-2 col-form-label">Last Name <sup class="text-danger">*</sup></strong>
                                                         <div class="col-sm-4">
                                                             <input type="text" class="form-control" name="lname" id="lname" required>
                                                         </div>
@@ -64,11 +64,11 @@
                                             <div class="row mt-4">
                                                 <div class="col-lg-12">
                                                     <div class="row">
-                                                        <strong class="col-sm-2 col-form-label">Email</strong>
+                                                        <strong class="col-sm-2 col-form-label">Email <sup class="text-danger">*</sup></strong>
                                                         <div class="col-sm-4">
                                                             <input type="text" class="form-control" name="email" id="email" required>
                                                         </div>
-                                                        <strong class="col-sm-2 col-form-label">Password</strong>
+                                                        <strong class="col-sm-2 col-form-label">Password <sup class="text-danger">*</sup></strong>
                                                         <div class="col-sm-4">
                                                             <input type="text" class="form-control" name="password" id="password" required>
                                                         </div>

@@ -25,7 +25,7 @@
 		<div class="col-md-12">
 			<div class="ibox">
 				<div class="row ibox-content" style="border: none !important;">
-					<div class="col-md-4">
+					<!-- <div class="col-md-4">
 						<div class="ibox-title" style="border: none !important;">
 							<h5>Profile Image</h5>
 						</div>
@@ -36,8 +36,8 @@
 								</label>
 							</div>
 						</div>
-					</div>
-					<div class="col-md-8">
+					</div> -->
+					<div class="col-md-12">
 						<div class="ibox">
 							<div class="ibox-title" style="border: none !important;">
 								<h5>User Details</h5>
@@ -51,11 +51,11 @@
 											<div class="row mt-4">
 												<div class="col-lg-12">
 													<div class="row">
-														<strong class="col-sm-2 col-form-label">First Name</strong>
+														<strong class="col-sm-2 col-form-label">First Name<sup class="text-danger">*</sup></strong>
 														<div class="col-sm-4">
 															<input type="text" class="form-control" name="fname" id="fname" value="{{$user->fname}}" required>
 														</div>
-														<strong class="col-sm-2 col-form-label">Last Name</strong>
+														<strong class="col-sm-2 col-form-label">Last Name<sup class="text-danger">*</sup></strong>
 														<div class="col-sm-4">
 															<input type="text" class="form-control" name="lname" id="lname" value="{{$user->lname}}" required>
 														</div>
@@ -67,15 +67,11 @@
 													<div class="row">
 														<strong class="col-sm-2 col-form-label">Email</strong>
 														<div class="col-sm-4">
-															<input type="text" class="form-control" name="email" id="email" value="{{$user->email}}" required>
+															<input type="text" class="form-control" name="email" id="email" value="{{$user->email}}" readonly disabled required>
 														</div>
-														<strong class="col-sm-2 col-form-label">Invitation</strong>
-														<div class="col-sm-4">
-															@if($user->status == 0)
-															<label class="label label-warning text-dark"> Not Accepted </label>
-															@else
-															<label class="label label-success"> Accepted </label>
-															@endif
+														<strong class="col-sm-2 col-form-label" data-placement="top" title="Add new password to reset or leave blank.">New Password</strong>
+														<div class="col-sm-4" data-placement="top" title="Add new password to reset or leave blank.">
+															<input type="text" class="form-control" name="password" id="password" placeholder="New Password To Reset or Leave Blank">
 														</div>
 													</div>
 												</div>

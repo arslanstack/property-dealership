@@ -21,7 +21,7 @@
             <li class="{{ Request::is('admin') ? 'active' : '' }} {{ Request::is('admin/admin') ? 'active' : '' }} {{ Request::is('admin/change_password') ? 'active' : '' }}">
                 <a href="{{ url('admin') }}"><i class="fa-solid fa-gauge-high"></i> <span class="nav-label">Dashboard</span></a>
             </li>
-            <li class="{{ Request::is('admin/users') ? 'active' : '' }} {{ Request::is('admin/users/detail*') ? 'active' : '' }}">
+            <li class="{{ Request::is('admin/users') ? 'active' : '' }} {{ Request::is('admin/users/*') ? 'active' : '' }}">
                 <a href="{{ url('admin/users') }}"><i class="fa-solid fa-users"></i> <span class="nav-label">Users Management</span></a>
             </li>
             <li class="{{ Request::is('admin/types') ? 'active' : '' }} {{ Request::is('admin/types/detail*') ? 'active' : '' }}">
