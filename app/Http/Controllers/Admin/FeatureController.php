@@ -5,16 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Feature;
+use App\Models\PropertyFeature;
 use Illuminate\Support\Facades\Validator;
 
 class FeatureController extends Controller
 {
     public function index(Request $request)
     {
-        // Neighborhood ID
-        // Listing Status
-        // Development Level
-        // Rent Cycle
         $query = Feature::query();
         $search_type = $request->input('search_type');
         $search_query = $request->input('search_query');
@@ -108,6 +105,10 @@ class FeatureController extends Controller
     {
         $feature = Feature::find($request->id);
         if (!empty($feature)) {
+            $properties_count = PropertyFeature::where('feature_id', $request->id)->count();
+            if ($properties_count > 0) {
+                return response()->json(['msg' => 'error', 'response' => 'Couldn\'t delete this feature. This feature is associated with ' . $properties_count . ' property listings.']);
+            }
             $feature->delete();
             return response()->json(['msg' => 'success', 'response' => 'Feature deleted successfully.']);
         } else {
