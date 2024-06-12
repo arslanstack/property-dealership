@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\PropertyType;
 use Illuminate\Http\Request;
 use App\Models\Types;
 use Illuminate\Support\Facades\Validator;
@@ -109,6 +110,12 @@ class TypeController extends Controller
     {
         $type = Types::find($request->id);
         if (!empty($type)) {
+
+            // if any property with this type exists then don't delete and return an error
+            $property = PropertyType::where('type_id', $type->id)->count();
+            if ($property > 0) {
+                return response()->json(['msg' => 'error', 'response' => 'Proprety type could not be deleted. This property type is being used in ' . $property . ' listing(s)']);
+            }
             // delete banner first 
             if (!empty($type->banner)) {
                 $file_path = public_path() . '/uploads/types/' . $type->banner;
