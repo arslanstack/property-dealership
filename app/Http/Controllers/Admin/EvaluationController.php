@@ -33,7 +33,18 @@ class EvaluationController extends Controller
         if (!empty($eval)) {
             return view('admin/evals/evals_details', ['eval' => $eval]);
         } else {
-            return redirect()->back()->with('error', 'Evaluation not found');
+            return redirect()->back()->with('error', 'Evaluation Request not found');
+        }
+    }
+
+    public function delete(Request $request)
+    {
+        $eval = HomeEval::where('id', $request->id)->first();
+        if (!empty($eval)) {
+            $eval->delete();
+            return response()->json(['msg' => 'success', 'response' => 'Evaluation Request deleted successfully.']);
+        } else {
+            return response()->json(['msg' => 'error', 'response' => 'Evaluation Request not found!']);
         }
     }
 }

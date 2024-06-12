@@ -114,7 +114,7 @@
 				</div>
 				<div class="ibox-content">
 					<h1 class="no-margins">{{count_records('home_evals')}}</h1>
-					<div class="stat-percent font-bold text-primary"><a href="{{ url('admin/home-evaluation-requests') }}"><span class="label label-primary">View</span></a></div>
+					<div class="stat-percent font-bold text-primary"><a href="{{ url('admin/evaluations') }}"><span class="label label-primary">View</span></a></div>
 					<small>Requests</small>
 				</div>
 			</div>

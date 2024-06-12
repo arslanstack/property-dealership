@@ -14,18 +14,13 @@
             </li>
         </ol>
     </div>
-    <!-- <div class="col-lg-4 col-sm-4 col-xs-4 text-right">
-        <a class="btn btn-primary text-white t_m_25" data-toggle="modal" data-target="#add_modalbox">
-            <i class="fa fa-plus" aria-hidden="true"></i> Add New Property Type
-        </a>
-    </div> -->
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-content">
-                    <form id="search_form" action="{{url('admin/evals')}}" method="GET" enctype="multipart/form-data">
+                    <form id="search_form" action="{{url('admin/evaluations')}}" method="GET" enctype="multipart/form-data">
                         <div class="form-group row justify-content-end">
                             <div class="col-sm-6">
                                 <div class="input-group">
@@ -61,7 +56,7 @@
                                     <td>{{ $item->city . ', ' . $item->state}}</td>
                                     <td>{{date_formated($item->created_at)}}</td>
                                     <td>
-                                        <a class="btn btn-primary btn-sm btn_eval_edit" href="{{ url('admin/home-evaluation-requests/details') }}/{{ $item->id }}"><i class="fa-solid fa-edit"></i> Details</a>
+                                        <a class="btn btn-primary btn-sm btn_eval_edit" href="{{ url('admin/evaluations/details') }}/{{ $item->id }}">Details</a>
                                         <button class="btn btn-danger btn-sm btn_delete" data-id="{{$item->id}}" data-text="you want to delete this submission?" type="button" data-placement="top" title="Delete">Delete</button>
                                     </td>
                                 </tr>
@@ -124,7 +119,7 @@
                 if (isConfirm) {
                     $(".confirm").prop("disabled", true);
                     $.ajax({
-                        url: "{{ url('admin/types/delete') }}",
+                        url: "{{ url('admin/evaluations/delete') }}",
                         type: 'post',
                         data: {
                             "_token": "{{ csrf_token() }}",

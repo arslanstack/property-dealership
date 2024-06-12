@@ -42,8 +42,8 @@
             <li class="{{ Request::is('admin/agents') ? 'active' : '' }} {{ Request::is('admin/agents/*') ? 'active' : '' }}">
                 <a href="{{ url('admin/agents') }}"><i class="fa-solid fa-user"></i> <span class="nav-label">Real Estate Agents</span></a>
             </li>
-            <li class="{{ Request::is('admin/home-evaluation-requests') ? 'active' : '' }} {{ Request::is('admin/home-evaluation-requests/*') ? 'active' : '' }}">
-                <a href="{{ url('admin/home-evaluation-requests') }}"><i class="fa-solid fa-home"></i> <span class="nav-label">Home Evaluations</span></a>
+            <li class="{{ Request::is('admin/evaluations') ? 'active' : '' }} {{ Request::is('admin/evaluations/*') ? 'active' : '' }}">
+                <a href="{{ url('admin/evaluations') }}"><i class="fa-solid fa-home"></i> <span class="nav-label">Home Evaluations</span></a>
             </li>
             <li class="{{ Request::is('admin/cities') ? 'active' : '' }} {{ Request::is('admin/cities/*') ? 'active' : '' }}">
                 <a href="{{ url('admin/cities') }}"><i class="fa-solid fa-city"></i> <span class="nav-label">Cities of Operation</span></a>

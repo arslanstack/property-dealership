@@ -69,10 +69,11 @@ Route::group(['prefix'  =>  'admin'], function () {
 			Route::post('/update', [AgentController::class, 'update']);
 			Route::post('/delete', [AgentController::class, 'delete']);
 		});
-		Route::group(['prefix'  =>  'home-evaluation-requests'], function () {
+		Route::group(['prefix'  =>  'evaluations'], function () {
 			Route::get('/', [EvaluationController::class, 'index']);
 			Route::get('/details/{id}', [EvaluationController::class, 'show']);
 			Route::post('/update', [EvaluationController::class, 'update']);
+			Route::post('/delete', [EvaluationController::class, 'delete']);
 		});
 		Route::group(['prefix'  =>  'neighborhoods'], function () {
 			Route::get('/', [NeighborhoodController::class, 'index']);
