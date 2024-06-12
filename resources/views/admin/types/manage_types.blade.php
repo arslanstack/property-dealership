@@ -52,7 +52,7 @@
                                 @foreach($types as $item)
                                 <tr class="gradeX">
                                     <td>{{ $i++ }}</td>
-                                    <td>{{ $item->title  }}</td>
+                                    <td> <img src="{{asset('uploads/types/' . $item->banner)}}" style="width: 40px; height: 40px; object-fit:contain;" alt=""> {{ $item->title  }}</td>
                                     <td>{{date_formated($item->created_at)}}</td>
                                     <td>
                                         <button class="btn btn-primary btn-sm btn_type_edit" data-id="{{$item->id}}" type="button"><i class="fa-solid fa-edit"></i> Edit</button>
@@ -92,7 +92,7 @@
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label"><strong>Title</strong></label>
                         <div class="col-sm-8">
-                            <input type="text" name="title" class="form-control" placeholder="Add a title">
+                            <input type="text" required name="title" class="form-control">
                         </div>
                     </div>
                     <div class="form-group row">
