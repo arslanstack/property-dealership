@@ -77,6 +77,10 @@ git push -u origin
 
 ### Snapshots
 
+<img src="./snaps/1.png" alt="Project Banner">
+<img src="./snaps/1-5.png" alt="Project Banner">
+<img src="./snaps/1-6.png" alt="Project Banner">
+<img src="./snaps/1-7.png" alt="Project Banner">
 <img src="./snaps/2.png" alt="Project Banner">
 <img src="./snaps/3.png" alt="Project Banner">
 <img src="./snaps/4.png" alt="Project Banner">
