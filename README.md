@@ -18,7 +18,6 @@ After cloning the project, navigate into the project directory and install depen
 ```bash
 cd property-dealership
 composer install
-npm install
 ```
 
 ### Configuration
@@ -75,4 +74,12 @@ git add .
 git commit -m "Describe the feature"
 git push -u origin
 ```
+
+### Snapshots
+
+<img src="./snaps/2.png" alt="Project Banner">
+<img src="./snaps/3.png" alt="Project Banner">
+<img src="./snaps/4.png" alt="Project Banner">
+<img src="./snaps/5.png" alt="Project Banner">
+<img src="./snaps/6.png" alt="Project Banner">
 
