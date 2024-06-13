@@ -36,17 +36,17 @@
             <li class="{{ Request::is('admin/property-listings') ? 'active' : '' }} {{ Request::is('admin/property-listings/*') ? 'active' : '' }}">
                 <a href="{{ url('admin/property-listings') }}"><i class="fa-solid fa-th"></i> <span class="nav-label">Property Listings</span></a>
             </li>
-            <li class="{{ Request::is('admin/testimonials') ? 'active' : '' }} {{ Request::is('admin/testimonials/*') ? 'active' : '' }}">
-                <a href="{{ url('admin/testimonials') }}"><i class="fa-solid fa-comment"></i> <span class="nav-label">Testimonials</span></a>
-            </li>
-            <li class="{{ Request::is('admin/agents') ? 'active' : '' }} {{ Request::is('admin/agents/*') ? 'active' : '' }}">
-                <a href="{{ url('admin/agents') }}"><i class="fa-solid fa-user"></i> <span class="nav-label">Real Estate Agents</span></a>
-            </li>
             <li class="{{ Request::is('admin/evaluations') ? 'active' : '' }} {{ Request::is('admin/evaluations/*') ? 'active' : '' }}">
                 <a href="{{ url('admin/evaluations') }}"><i class="fa-solid fa-home"></i> <span class="nav-label">Home Evaluations</span></a>
             </li>
             <li class="{{ Request::is('admin/cities') ? 'active' : '' }} {{ Request::is('admin/cities/*') ? 'active' : '' }}">
                 <a href="{{ url('admin/cities') }}"><i class="fa-solid fa-city"></i> <span class="nav-label">Cities of Operation</span></a>
+            </li>
+            <li class="{{ Request::is('admin/testimonials') ? 'active' : '' }} {{ Request::is('admin/testimonials/*') ? 'active' : '' }}">
+                <a href="{{ url('admin/testimonials') }}"><i class="fa-solid fa-comment"></i> <span class="nav-label">Testimonials</span></a>
+            </li>
+            <li class="{{ Request::is('admin/agents') ? 'active' : '' }} {{ Request::is('admin/agents/*') ? 'active' : '' }}">
+                <a href="{{ url('admin/agents') }}"><i class="fa-solid fa-user"></i> <span class="nav-label">Real Estate Agents</span></a>
             </li>
         </ul>
     </div>

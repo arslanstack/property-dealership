@@ -14,6 +14,7 @@ use App\Models\Neighborhood;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Support\Facades\Response;
 
 class PropertyListingController extends Controller
@@ -60,7 +61,7 @@ class PropertyListingController extends Controller
     {
         // dd($request->all());
         if ($request->date_available != null || $request->date_available != '') {
-            $date_available = Carbon::parse($request->input('date_available'))->format('Y-m-d H:i:s.u');
+            $date_available = DateTime::createFromFormat('d/m/Y', $request->input('date_available'))->format('Y-m-d H:i:s.u');
         } else {
             $date_available = Carbon::today()->format('Y-m-d H:i:s.u');
         }

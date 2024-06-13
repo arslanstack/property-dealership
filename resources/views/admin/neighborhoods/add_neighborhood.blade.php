@@ -10,11 +10,11 @@
     }
 
     .image--cover {
-        width: 150px;
-        height: 150px;
+        width: 40px;
+        height: 40px;
         border: 1px solid gray;
         border-radius: 50%;
-        margin: 20px;
+        /* margin: 20px; */
 
         object-fit: cover;
         object-position: center right;
