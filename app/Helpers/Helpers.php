@@ -240,6 +240,22 @@ if (!function_exists('mapfeaturetype')) {
 		}
 	}
 }
+if (!function_exists('mapRentCycle')) {
+	function mapRentCycle($tinyint)
+	{
+		if ($tinyint == 0) {
+			return 'One Day';
+		} elseif ($tinyint == 1) {
+			return 'Monthly';
+		} elseif ($tinyint == 2) {
+			return 'Quaterly';
+		} elseif ($tinyint == 3) {
+			return 'Semi-Annually';
+		} elseif ($tinyint == 4) {
+			return 'Annually';
+		}
+	}
+}
 if (!function_exists('developmentlvl')) {
 	function developmentlvl($tinyint)
 	{

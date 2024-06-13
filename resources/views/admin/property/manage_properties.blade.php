@@ -62,7 +62,7 @@
                                     <td>{{$item->Neighborhood->title}}</td>
                                     <td>
                                         @if ($item->listing_status ==1)
-                                        <label class="label label-warning"> For Sale </label>
+                                        <label class="label label-primary"> For Sale </label>
                                         @elseif($item->listing_status ==2)
                                         <label class="label label-info"> For Rent </label>
                                         @elseif($item->listing_status ==3)
@@ -81,7 +81,7 @@
                                         @if($item->is_featured == 1)
                                         <button class="btn btn-success btn-sm btn_feature" data-id="{{$item->id}}" data-text="You want to feature this listing!" type="button" data-placement="top" title="Feature">Feature</button>
                                         @elseif($item->is_featured == 2)
-                                        <button class="btn btn-warning btn-sm btn_feature" data-id="{{$item->id}}" data-text="You want to unfeature this listing!" type="button" data-placement="top" title="Unfeature">Unfeature</button>
+                                        <button class="btn btn-dark btn-sm btn_feature" data-id="{{$item->id}}" data-text="You want to unfeature this listing!" type="button" data-placement="top" title="Unfeature">Unfeature</button>
                                         @endif
                                     </td>
                                 </tr>
