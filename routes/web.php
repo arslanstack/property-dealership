@@ -13,8 +13,21 @@ use Illuminate\Support\Facades\Artisan;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/', 
+// Route to run php artisan migrate
+Route::get('/migrate', function () {
+    Artisan::call('migrate');
+    return 'DONE'; // Return anything
+});
+Route::get('/migrate-refresh', function () {
+    Artisan::call('migrate:refresh');
+    return 'DONE'; // Return anything
+});
+Route::get('/migrate-rollback', function () {
+    Artisan::call('migrate:rollback');
+    return 'DONE'; // Return anything
+});
+Route::get(
+    '/',
     function () {
         return redirect()->route('admin.dashboard');
     }
@@ -31,4 +44,3 @@ Route::get('/clearcache', function () {
 
 
 require 'admin.php';
-

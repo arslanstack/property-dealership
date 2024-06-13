@@ -97,5 +97,7 @@ Route::group(['prefix'  =>  'admin'], function () {
 			Route::post('/imageManagement', [PropertyListingController::class, 'imageManagement']);
 			Route::post('/delete-image', [PropertyListingController::class, 'deleteImage']);
 		});
+
+		Route::post('/ckeditor-upload', [AdminController::class, 'ckeditor_upload'])->name('ckeditor-upload');
 	});
 });

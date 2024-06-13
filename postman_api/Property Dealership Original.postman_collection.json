@@ -167,7 +167,7 @@
 					"response": []
 				},
 				{
-					"name": "Get All Copy",
+					"name": "Get One Feature",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -214,14 +214,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/types/details/8",
+							"raw": "{{base_url}}/types/details/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"types",
 								"details",
-								"8"
+								"1"
 							]
 						}
 					},
@@ -298,14 +298,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/cities/details/3",
+							"raw": "{{base_url}}/cities/details/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"cities",
 								"details",
-								"3"
+								"1"
 							]
 						}
 					},
@@ -340,14 +340,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/agents/details/3",
+							"raw": "{{base_url}}/agents/details/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"agents",
 								"details",
-								"3"
+								"1"
 							]
 						}
 					},
@@ -382,14 +382,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/neighborhoods/details/14",
+							"raw": "{{base_url}}/neighborhoods/details/5",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"neighborhoods",
 								"details",
-								"14"
+								"5"
 							]
 						}
 					},
@@ -599,13 +599,11 @@
 						"header": [
 							{
 								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
+								"value": "application/json"
 							},
 							{
 								"key": "Authorization",
-								"value": "bearer {{access_token}}",
-								"type": "text"
+								"value": "bearer {{access_token}}"
 							}
 						],
 						"url": {
@@ -670,8 +668,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "bearer {{access_token}}",
-								"type": "text"
+								"value": "bearer {{access_token}}"
 							}
 						],
 						"body": {
@@ -891,15 +888,11 @@
 							]
 						},
 						"url": {
-							"raw": "https://property.arslanstack.com/api/evaluation/submit",
-							"protocol": "https",
+							"raw": "{{base_url}}/evaluation/submit",
 							"host": [
-								"property",
-								"arslanstack",
-								"com"
+								"{{base_url}}"
 							],
 							"path": [
-								"api",
 								"evaluation",
 								"submit"
 							]
@@ -1006,7 +999,7 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "http://127.0.0.1:8000/api",
+			"value": "https://explorelogicsit.net/propertydealership/api",
 			"type": "string"
 		},
 		{

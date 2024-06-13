@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('bathrooms');
             $table->integer('parking_spaces');
             $table->string('banner');
-            $table->string('gallery');
+            $table->text('gallery');
             $table->string('map')->nullable();
             $table->mediumText('description');
             $table->string('address');

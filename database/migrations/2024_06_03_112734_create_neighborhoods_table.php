@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('banner')->nullable();
             $table->string('zip')->nullable();
             $table->string('map')->nullable();
-            $table->string('images')->nullable();
+            $table->text('images')->nullable();
             $table->mediumText('description')->nullable();
             $table->tinyInteger('status')->default(1)->comment('0: Inactive, 1: Active');
             $table->timestamps();

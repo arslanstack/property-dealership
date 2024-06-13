@@ -19,7 +19,7 @@
     }
 
     .ck-editor__editable_inline {
-        min-height: 100px;
+        min-height: 500px;
     }
 
     .plus-icon {
@@ -83,6 +83,28 @@
     .add-icon:hover {
         color: gray;
     }
+
+    .wrapper {
+        padding: 100px;
+    }
+
+    .image--cover {
+        width: 150px;
+        height: 150px;
+        border: 1px solid gray;
+        border-radius: 50%;
+        margin: 20px;
+
+        object-fit: cover;
+        object-position: center right;
+        box-shadow: 0px -3px 5px 0px rgba(196, 189, 189, 0.75);
+        -webkit-box-shadow: 0px -3px 5px 0px rgba(196, 189, 189, 0.75);
+        -moz-box-shadow: 0px -3px 5px 0px rgba(196, 189, 189, 0.75);
+    }
+
+    td {
+        background-color: #FFFFFF !important;
+    }
 </style>
 @endpush
 @section('content')
@@ -115,104 +137,177 @@
                     <form action="{{url('admin/neighborhoods/update')}}" class="m-4" id="neighborhood-form" method="post" enctype="multipart/form-data">
                         @csrf
                         <input type="text" hidden value="{{$neighborhood->id}}" name="id">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group row">
-                                    <label class="form-label"><strong>Title</strong></label>
-                                    <input type="text" name="title" id="title-content" value="{{$neighborhood->title}}" required class="form-control">
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <div class="row mt-4">
+                                    <label class="col-sm-2 col-form-label"><strong>Title</strong></label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="title" id="title-content" value="{{$neighborhood->title}}" required class="form-control">
+                                    </div>
+                                    <label class="col-sm-2 col-form-label ps-3"><strong>Image</strong></label>
+                                    <div class="col-sm-4">
+                                        <input type="file" name="banner" id="Bannerimage" class="form-control" accept="image/*">
+                                    </div>
                                 </div>
-                                <div class="form-group row">
-                                    <label class="form-label"><strong>Banner Image</strong></label>
-                                    <input type="file" name="banner" id="Bannerimage" class="form-control" accept="image/*">
+                                <div class="row mt-4">
+                                    <label class="col-sm-2 col-form-label"><strong>Zip Code</strong></label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="zip" required class="form-control" value="{{$neighborhood->zip}}">
+                                    </div>
+                                    <label class="col-sm-2 col-form-label"><strong>City/Town <a data-toggle="modal" data-target="#add_modalbox" class="text-navy ml-1" style="text-decoration: underline;" type="button">Add New</a></strong></label>
+                                    <div class="col-sm-4">
+                                        <select name="city" id="cities_select" required class="form-control" style="height: 2.22rem !important;" id="">
+                                            @foreach($cities as $city)
+                                            <option value="{{$city->name}}" {{$city->name == $neighborhood->city ? 'selected' : ''}}>{{$city->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="form-group row">
-                                    <label class="form-label"><strong>Zip/Postal Code</strong></label>
-                                    <input type="text" name="zip" required class="form-control" value="{{$neighborhood->zip}}">
+                            </div>
+                        </div>
+                        <div class="form-group row mt-4">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label for="" class="form-label"><strong>Location (Select Latitude & Longitude Coordinates By Clicking The Map)</strong></label>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div id="map" style="height: 50vh !important;"></div>
+                                    </div>
                                 </div>
 
-                                <div class="form-group row">
-                                    <label class="form-label"><strong>City/Town <a data-toggle="modal" data-target="#add_modalbox" style="color: red; text-decoration: underline;" type="button">Add New City</a></strong></label>
-                                    <select name="city" id="cities_select" required class="form-control" style="height: 2.22rem !important;" id="">
-                                        @foreach($cities as $city)
-                                        <option value="{{$city->name}}" {{$city->name == $neighborhood->city ? 'selected' : ''}}>{{$city->name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label for="Bannerimage" style="cursor: pointer;" class="form-label float-right float-end">
-                                    <div id="my-auto">
-                                        <img id="imageView" src="{{asset('/uploads/neighborhoods/'. $neighborhood->banner)}}" class="img-fluid" style="width: 450px; height: 310px; overflow: contain;" alt="Image View">
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <label class="col-sm-2 col-form-label"><strong>Latitude</strong></label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="latitude" id="latitude" class="form-control" value="{{$neighborhood->latitude}}" required>
                                     </div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-12">
-                                <div class="form-group row">
-                                    <label for="" class="form-label"><strong>Location (Select Latitude & Longitude Coordinates By Clicking The Map)</strong></label>
-                                </div>
-                                <div id="map" style="height: 100vh !important;"></div>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-md-6">
-                                <div class="form-group row mr-1">
-                                    <label for="latitude" class="form-label"><strong>Latitude Coordinates</strong></label>
-                                    <input type="text" name="latitude" id="latitude" class="form-control" value="{{$neighborhood->latitude}}" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group row mr-1">
-                                    <label for="longitude" class="form-label"><strong>Longitude Coordinates</strong></label>
-                                    <input type="text" name="longitude" id="longitude" class="form-control" value="{{$neighborhood->longitude}}" required>
+                                    <label class="col-sm-2 col-form-label ps-3"><strong>Longitude</strong></label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="longitude" id="longitude" class="form-control" value="{{$neighborhood->longitude}}" required>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-2">
-                            <div class="col-12">
-                                <div class="form-group row">
-                                    <label for="images" class="form-label"><strong>Images</strong></label>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="row" id="showImgGal">
-                                                @if(!empty($neighborhood->images))
-                                                @foreach($neighborhood->images as $image)
-                                                <div class="col-md-2 col-sm-6 my-2" id="img-gallery">
-                                                    <img src="{{$image}}" class="img-fluid images-img" style="max-width: 100%; height: auto; overflow: contain; border-radius: 5%;" alt="Image View">
-                                                    <div class="delete-icon" onclick="deleteImage(this)" data-url="{{$image}}" data-id="{{$neighborhood->id}}"><i class="fa fa-trash trash-icon"></i></div>
-                                                </div>
-                                                @endforeach
-                                                @endif
-                                            </div>
+                        <div class="form-group row mt-4">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label for="" class="form-label"><strong>Featured Amenities</strong></label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered text-center">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col"></th>
+                                                        <th scope="col">Amenity 1</th>
+                                                        <th scope="col">Amenity 2</th>
+                                                        <th scope="col">Amenity 3</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row">Icon</th>
+                                                        <td>
+                                                            <label for="amenity_img1" style="cursor:pointer;">
+                                                                <div class="wrapper">
+                                                                    <img src="{{asset('uploads/amenities/' . $neighborhood->amenity_icon1)}}" class="image--cover" id="amenity_icon1" alt="">
+                                                                </div>
+                                                            </label>
+                                                            <input type="file" accept="image/*" class="form-control d-none" name="amenity_icon1" id="amenity_img1">
+                                                        </td>
+                                                        <td>
+                                                            <label for="amenity_img2" style="cursor:pointer;">
+                                                                <div class="wrapper">
+                                                                    <img src="{{asset('uploads/amenities/' . $neighborhood->amenity_icon2)}}" class="image--cover" id="amenity_icon2" alt="">
+                                                                </div>
+                                                            </label>
+                                                            <input type="file" accept="image/*" class="form-control d-none" name="amenity_icon2" id="amenity_img2">
+                                                        </td>
+                                                        <td>
+                                                            <label for="amenity_img3" style="cursor:pointer;">
+                                                                <div class="wrapper">
+                                                                    <img src="{{asset('uploads/amenities/' . $neighborhood->amenity_icon3)}}" class="image--cover" id="amenity_icon3" alt="">
+                                                                </div>
+                                                            </label>
+                                                            <input type="file" accept="image/*" class="form-control d-none" name="amenity_icon3" id="amenity_img3">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Title</th>
+                                                        <td><input type="text" class="form-control" value="{{$neighborhood->amenity_title1}}" required name="amenity_title1"></td>
+                                                        <td><input type="text" class="form-control" value="{{$neighborhood->amenity_title2}}" required name="amenity_title2"></td>
+                                                        <td><input type="text" class="form-control" value="{{$neighborhood->amenity_title3}}" required name="amenity_title3"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Description</th>
+                                                        <td><textarea name="amenity_desc1" required class="form-control">{{$neighborhood->amenity_desc1}}</textarea></td>
+                                                        <td><textarea name="amenity_desc2" required class="form-control">{{$neighborhood->amenity_desc2}}</textarea></td>
+                                                        <td><textarea name="amenity_desc3" required class="form-control">{{$neighborhood->amenity_desc3}}</textarea></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
-                                    <div class="dropzone col-12" id="myDropzone"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label for="images" class="form-label"><strong>Images</strong></label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="row" id="showImgGal">
+                                            @if(!empty($neighborhood->images))
+                                            @foreach($neighborhood->images as $image)
+                                            <div class="col-md-2 col-sm-6 my-2" style="height: 102px;" id="img-gallery">
+                                                <img src="{{$image}}" class="img-fluid images-img" style="width: 100%; height: 100%; overflow: contain; border-radius: 5%;" alt="Image View">
+                                                <div class="delete-icon" onclick="deleteImage(this)" data-url="{{$image}}" data-id="{{$neighborhood->id}}"><i class="fa fa-trash trash-icon"></i></div>
+                                            </div>
+                                            @endforeach
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="dropzone col-12" id="myDropzone"></div>
+                                    </div>
                                     <input type="text" name="images" id="images" hidden value="{{$images_array}}">
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group row">
-                                    <label for="description" class="form-label"><strong>Description</strong></label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group row">
-                                    <div id="loader" class="text-center">
-                                        <div class="spinner-border" role="status">
-                                            <span class="visually-hidden"></span>
-                                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label for="description" class="form-label"><strong>Description</strong></label>
                                     </div>
-                                    <textarea class="form-control" id="description" name="description" hidden placeholder="Enter the Description" rows="10">{!! $neighborhood->description !!}</textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <textarea class="form-control" id="description" name="description" hidden placeholder="Enter the Description" rows="10">{{ $neighborhood->description }}</textarea>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group row justify-content-end">
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <div class="col-md-12 justify-content-end">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -511,7 +606,7 @@
                 var img = document.createElement('img');
                 img.src = response.image_url;
                 img.className = 'img-fluid images-img';
-                img.style = 'max-width: 100%; height: auto; overflow: contain; border-radius: 5%;';
+                img.style = 'width: 100%; height: 100%; overflow: contain; border-radius: 5%;';
                 img.alt = 'Image View';
                 var deleteIcon = document.createElement('div');
                 deleteIcon.className = 'delete-icon';
@@ -526,6 +621,7 @@
                 var div = document.createElement('div');
                 div.className = 'col-md-2 col-sm-6 my-2';
                 div.id = 'img-gallery';
+                div.style = 'height: 102px;';
                 div.appendChild(img);
                 div.appendChild(deleteIcon);
                 document.getElementById('showImgGal').appendChild(div);
@@ -559,6 +655,7 @@
             toastr.error("Please select the latitude and longitude coordinates");
             return false;
         }
+
         return true;
     });
 </script>
@@ -609,7 +706,7 @@
             center: myLatlng,
         });
         let infoWindow = new google.maps.InfoWindow({
-            content: "Click the map to get Lat/Lng!",
+            content: "Latitude: " + latitude + "<br>Longitude: " + longitude + "<br>Click on the map to select coordinates",
             position: myLatlng,
         });
         infoWindow.open(map);
@@ -620,7 +717,7 @@
             });
             coordinates = mapsMouseEvent.latLng.toJSON();
             infoWindow.setContent(
-                JSON.stringify(coordinates, null, 2),
+                "Latitude: " + coordinates.lat + "<br>Longitude: " + coordinates.lng
             );
             infoWindow.open(map);
             $('#latitude').val(coordinates.lat);
@@ -681,131 +778,125 @@
 </script>
 <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/super-build/ckeditor.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var loader = document.getElementById('loader');
-        CKEDITOR.ClassicEditor.create(document.getElementById("description"), {
-            ckfinder: {},
-            toolbar: {
-                items: [
-                    'selectAll', '|',
-                    'heading', '|',
-                    'bold', 'italic', 'underline', 'code', 'removeFormat', '|',
-                    'bulletedList', 'numberedList', '|',
-                    'outdent', 'indent', '|',
-                    'undo', 'redo',
-                    '-',
-                    'fontSize', '|',
-                    'link', '|',
-                    'specialCharacters', '|',
-                ],
-            },
-            list: {
-                properties: {
-                    styles: true,
-                    startIndex: true,
-                    reversed: true
+    CKEDITOR.ClassicEditor.create(document.getElementById("description"), {
+        ckfinder: {
+            uploadUrl: "{{ url('admin/ckeditor-upload').'?_token='.csrf_token() }}"
+        },
+        toolbar: {
+            items: [
+                'selectAll', '|',
+                'heading', '|',
+                'bold', 'italic', 'underline', 'code', 'removeFormat', '|',
+                'bulletedList', 'numberedList', '|',
+                'outdent', 'indent', '|',
+                'undo', 'redo',
+                '-',
+                'fontSize', '|',
+                'alignment', '|',
+                'link', 'insertImage', 'blockQuote', 'insertTable', '|',
+                'specialCharacters', '|',
+            ],
+        },
+        list: {
+            properties: {
+                styles: true,
+                startIndex: true,
+                reversed: true
+            }
+        },
+        heading: {
+            options: [{
+                    model: 'paragraph',
+                    title: 'Paragraph',
+                    class: 'ck-heading_paragraph'
+                },
+                {
+                    model: 'heading1',
+                    view: 'h1',
+                    title: 'Heading 1',
+                    class: 'ck-heading_heading1'
+                },
+                {
+                    model: 'heading2',
+                    view: 'h2',
+                    title: 'Heading 2',
+                    class: 'ck-heading_heading2'
+                },
+                {
+                    model: 'heading3',
+                    view: 'h3',
+                    title: 'Heading 3',
+                    class: 'ck-heading_heading3'
+                },
+                {
+                    model: 'heading4',
+                    view: 'h4',
+                    title: 'Heading 4',
+                    class: 'ck-heading_heading4'
+                },
+                {
+                    model: 'heading5',
+                    view: 'h5',
+                    title: 'Heading 5',
+                    class: 'ck-heading_heading5'
+                },
+                {
+                    model: 'heading6',
+                    view: 'h6',
+                    title: 'Heading 6',
+                    class: 'ck-heading_heading6'
                 }
-            },
-            heading: {
-                options: [{
-                        model: 'paragraph',
-                        title: 'Paragraph',
-                        class: 'ck-heading_paragraph'
-                    },
-                    {
-                        model: 'heading1',
-                        view: 'h1',
-                        title: 'Heading 1',
-                        class: 'ck-heading_heading1'
-                    },
-                    {
-                        model: 'heading2',
-                        view: 'h2',
-                        title: 'Heading 2',
-                        class: 'ck-heading_heading2'
-                    },
-                    {
-                        model: 'heading3',
-                        view: 'h3',
-                        title: 'Heading 3',
-                        class: 'ck-heading_heading3'
-                    },
-                    {
-                        model: 'heading4',
-                        view: 'h4',
-                        title: 'Heading 4',
-                        class: 'ck-heading_heading4'
-                    },
-                    {
-                        model: 'heading5',
-                        view: 'h5',
-                        title: 'Heading 5',
-                        class: 'ck-heading_heading5'
-                    },
-                    {
-                        model: 'heading6',
-                        view: 'h6',
-                        title: 'Heading 6',
-                        class: 'ck-heading_heading6'
-                    }
-                ]
-            },
-            minHeight: '100px',
-            placeholder: 'Enter the Description',
-
-            fontSize: {
-                options: [10, 12, 14, 'default', 18, 20, 22],
-                supportAllValues: true
-            },
-            link: {
-                decorators: {
-                    addTargetToExternalLinks: true,
-                    defaultProtocol: 'https://',
-                    toggleDownloadable: {
-                        mode: 'manual',
-                        label: 'Downloadable',
-                        attributes: {
-                            download: 'file'
-                        }
-                    }
-                }
-            },
-            contentLanguageDirection: 'rtl',
-
-            removePlugins: [
-                // These two are commercial, but you can try them out without registering to a trial.
-                // 'ExportPdf',
-                // 'ExportWord',
-                'AIAssistant',
-                'CKBox',
-                'CKFinder',
-                'RealTimeCollaborativeComments',
-                'RealTimeCollaborativeTrackChanges',
-                'RealTimeCollaborativeRevisionHistory',
-                'PresenceList',
-                'Comments',
-                'TrackChanges',
-                'TrackChangesData',
-                'RevisionHistory',
-                'Pagination',
-                'WProofreader',
-                // Careful, with the Mathtype plugin CKEditor will not load when loading this sample
-                // from a local file system (file://) - load this site via HTTP server if you enable MathType.
-                'MathType',
-                // The following features are part of the Productivity Pack and require additional license.
-                'SlashCommand',
-                'Template',
-                'DocumentOutline',
-                'FormatPainter',
-                'TableOfContents',
-                'PasteFromOfficeEnhanced'
             ]
-        }).then(editor => {
-            loader.style.display = 'none';
-        }).catch(error => {
-            console.error('Error initializing CKEditor:', error);
-            loader.style.display = 'none';
-        });
+        },
+        placeholder: 'Enter Description Here!',
+
+        fontSize: {
+            options: [10, 12, 14, 'default', 18, 20, 22],
+            supportAllValues: true
+        },
+
+        link: {
+            decorators: {
+                addTargetToExternalLinks: true,
+                defaultProtocol: 'https://',
+                toggleDownloadable: {
+                    mode: 'manual',
+                    label: 'Downloadable',
+                    attributes: {
+                        download: 'file'
+                    }
+                }
+            }
+        },
+
+        removePlugins: [
+            // These two are commercial, but you can try them out without registering to a trial.
+            // 'ExportPdf',
+            // 'ExportWord',
+            'AIAssistant',
+            'CKBox',
+            'CKFinder',
+            'RealTimeCollaborativeComments',
+            'RealTimeCollaborativeTrackChanges',
+            'RealTimeCollaborativeRevisionHistory',
+            'PresenceList',
+            'Comments',
+            'TrackChanges',
+            'TrackChangesData',
+            'RevisionHistory',
+            'Pagination',
+            'WProofreader',
+            // Careful, with the Mathtype plugin CKEditor will not load when loading this sample
+            // from a local file system (file://) - load this site via HTTP server if you enable MathType.
+            'MathType',
+            // The following features are part of the Productivity Pack and require additional license.
+            'SlashCommand',
+            'Template',
+            'DocumentOutline',
+            'FormatPainter',
+            'TableOfContents',
+            'PasteFromOfficeEnhanced'
+        ]
     });
 </script>
 <script>
@@ -829,9 +920,17 @@
         toastr.success("{{Session::get('success')}}");
 
     }
-    $('#Bannerimage').change(function() {
-        $('#imageView').show();
-        $('#imageView').attr('src', URL.createObjectURL(event.target.files[0]));
+    $('#amenity_img1').change(function() {
+        $('#amenity_icon1').show();
+        $('#amenity_icon1').attr('src', URL.createObjectURL(event.target.files[0]));
+    });
+    $('#amenity_img2').change(function() {
+        $('#amenity_icon2').show();
+        $('#amenity_icon2').attr('src', URL.createObjectURL(event.target.files[0]));
+    });
+    $('#amenity_img3').change(function() {
+        $('#amenity_icon3').show();
+        $('#amenity_icon3').attr('src', URL.createObjectURL(event.target.files[0]));
     });
 </script>
 <script>

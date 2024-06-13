@@ -14,6 +14,9 @@ class NeighborhoodsController extends Controller
         $neighborhoods = Neighborhood::all();
         foreach ($neighborhoods as $neighborhood) {
             $neighborhood->banner = asset('uploads/neighborhoods/' . $neighborhood->banner);
+            $neighborhood->amenity_icon1 = asset('uploads/amenities/' . $neighborhood->amenity_icon1);
+            $neighborhood->amenity_icon2 = asset('uploads/amenities/' . $neighborhood->amenity_icon2);
+            $neighborhood->amenity_icon3 = asset('uploads/amenities/' . $neighborhood->amenity_icon3);
             $images = json_decode($neighborhood->images);
             $neighborhood_images = [];
             foreach ($images as $image) {
@@ -30,6 +33,9 @@ class NeighborhoodsController extends Controller
         $neighborhood = Neighborhood::find($id);
         if ($neighborhood) {
             $neighborhood->banner = asset('uploads/neighborhoods/' . $neighborhood->banner);
+            $neighborhood->amenity_icon1 = asset('uploads/amenities/' . $neighborhood->amenity_icon1);
+            $neighborhood->amenity_icon2 = asset('uploads/amenities/' . $neighborhood->amenity_icon2);
+            $neighborhood->amenity_icon3 = asset('uploads/amenities/' . $neighborhood->amenity_icon3);
             $images = json_decode($neighborhood->images);
             $neighborhood_images = [];
             foreach ($images as $image) {

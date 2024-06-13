@@ -26,6 +26,15 @@ class Neighborhood extends Model
         'images',
         'description',
         'status',
+        'amenity_icon1',
+        'amenity_icon2',
+        'amenity_icon3',
+        'amenity_title1',
+        'amenity_title2',
+        'amenity_title3',
+        'amenity_desc1',
+        'amenity_desc2',
+        'amenity_desc3',
     ];
 
     public function getImagesAttribute($value)

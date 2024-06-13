@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\City;
 use Illuminate\Http\Request;
 use App\Models\Neighborhood;
+use App\Models\Property;
 use Illuminate\Support\Facades\Validator;
 
 class NeighborhoodController extends Controller
@@ -46,26 +47,55 @@ class NeighborhoodController extends Controller
         ]);
 
         if ($validator->fails()) {
-            // create a list of all the required fields that are missing and return message
             $missing_fields = [];
             foreach ($validator->errors()->messages() as $key => $value) {
                 $missing_fields[] = $key;
             }
             return back()->with('error', 'The following fields are required: ' . implode(', ', $missing_fields));
         };
+
         $city = City::where('name', $request->city)->first();
         $neighborhood = new Neighborhood();
         $neighborhood->title = $request->title;
         $neighborhood->slug = slugify($request->title) . rand(1, 99);
-        $neighborhood->code = NHCodes($request->title, $request->state, $request->country);
+        $neighborhood->code = NHCodes($request->title, $city->state, $city->country);
         $neighborhood->zip = $request->zip;
         $neighborhood->country = $city->country ?? '';
         $neighborhood->state = $city->state ?? '';
         $neighborhood->city = $city->name;
+        $neighborhood->amenity_title1 = $request->amenity_title1 ?? '';
+        $neighborhood->amenity_title2 = $request->amenity_title2 ?? '';
+        $neighborhood->amenity_title3 = $request->amenity_title3 ?? '';
+        $neighborhood->amenity_desc1 = $request->amenity_desc1 ?? '';
+        $neighborhood->amenity_desc2 = $request->amenity_desc2 ?? '';
+        $neighborhood->amenity_desc3 = $request->amenity_desc3 ?? '';
         $neighborhood->images = $request->images;
         $neighborhood->latitude = $request->latitude;
         $neighborhood->longitude = $request->longitude;
         $neighborhood->description = $request->description ?? '';
+
+        if ($request->has('amenity_icon1')) {
+            $file = $request->file('amenity_icon1');
+            $extension = $file->getClientOriginalExtension();
+            $filename = $neighborhood->code . 1 . time() . '.' . $extension;
+            $file->move(public_path('uploads/amenities/'), $filename);
+            $neighborhood->amenity_icon1 = $filename;
+        }
+        if ($request->has('amenity_icon2')) {
+            $file = $request->file('amenity_icon2');
+            $extension = $file->getClientOriginalExtension();
+            $filename = $neighborhood->code . 2 . time() . '.' . $extension;
+            $file->move(public_path('uploads/amenities/'), $filename);
+            $neighborhood->amenity_icon2 = $filename;
+        }
+        if ($request->has('amenity_icon3')) {
+            $file = $request->file('amenity_icon3');
+            $extension = $file->getClientOriginalExtension();
+            $filename = $neighborhood->code . 3 . time() . '.' . $extension;
+            $file->move(public_path('uploads/amenities/'), $filename);
+            $neighborhood->amenity_icon3 = $filename;
+        }
+
         if ($request->hasFile('banner')) {
             $file = $request->file('banner');
             $extension = $file->getClientOriginalExtension();
@@ -131,11 +161,17 @@ class NeighborhoodController extends Controller
         $city = City::where('name', $request->city)->first();
         $neighborhood->title = $request->title;
         $neighborhood->slug = slugify($request->title) . rand(1, 99);
-        $neighborhood->code = NHCodes($request->title, $request->state, $request->country);
+        $neighborhood->code = NHCodes($request->title, $city->state, $city->country);
         $neighborhood->zip = $request->zip;
         $neighborhood->country = $city->country ?? '';
         $neighborhood->state = $city->state ?? '';
         $neighborhood->city = $city->name;
+        $neighborhood->amenity_title1 = $request->amenity_title1 ?? '';
+        $neighborhood->amenity_title2 = $request->amenity_title2 ?? '';
+        $neighborhood->amenity_title3 = $request->amenity_title3 ?? '';
+        $neighborhood->amenity_desc1 = $request->amenity_desc1 ?? '';
+        $neighborhood->amenity_desc2 = $request->amenity_desc2 ?? '';
+        $neighborhood->amenity_desc3 = $request->amenity_desc3 ?? '';
         $neighborhood->images = json_encode($images_urls);
         $neighborhood->latitude = $request->latitude;
         $neighborhood->longitude = $request->longitude;
@@ -151,6 +187,39 @@ class NeighborhoodController extends Controller
             $file->move(public_path('uploads/neighborhoods/'), $filename);
             $neighborhood->banner = $filename;
         }
+        if ($request->has('amenity_icon1')) {
+            $file_path = public_path('uploads/amenities/' . $neighborhood->amenity_icon1);
+            if (file_exists($file_path)) {
+                unlink($file_path);
+            }
+            $file = $request->file('amenity_icon1');
+            $extension = $file->getClientOriginalExtension();
+            $filename = $neighborhood->code . 1 . time() . '.' . $extension;
+            $file->move(public_path('uploads/amenities/'), $filename);
+            $neighborhood->amenity_icon1 = $filename;
+        }
+        if ($request->has('amenity_icon2')) {
+            $file_path = public_path('uploads/amenities/' . $neighborhood->amenity_icon2);
+            if (file_exists($file_path)) {
+                unlink($file_path);
+            }
+            $file = $request->file('amenity_icon2');
+            $extension = $file->getClientOriginalExtension();
+            $filename = $neighborhood->code . 2 . time() . '.' . $extension;
+            $file->move(public_path('uploads/amenities/'), $filename);
+            $neighborhood->amenity_icon2 = $filename;
+        }
+        if ($request->has('amenity_icon3')) {
+            $file_path = public_path('uploads/amenities/' . $neighborhood->amenity_icon3);
+            if (file_exists($file_path)) {
+                unlink($file_path);
+            }
+            $file = $request->file('amenity_icon3');
+            $extension = $file->getClientOriginalExtension();
+            $filename = $neighborhood->code . 3 . time() . '.' . $extension;
+            $file->move(public_path('uploads/amenities/'), $filename);
+            $neighborhood->amenity_icon3 = $filename;
+        }
         $query = $neighborhood->save();
         if ($query) {
             return back()->with('success', 'Neighborhood updated successfully');
@@ -162,10 +231,32 @@ class NeighborhoodController extends Controller
     {
         $neighborhood = Neighborhood::where('id', $request->id)->first();
         if (!empty($neighborhood)) {
+            $properties = Property::where('neighborhood_id', $neighborhood->id)->count();
+            if ($properties > 0) {
+                return response()->json(['msg' => 'error', 'response' => 'Neighborhood cannot be deleted because it has property listings associated with it.']);
+            }
             if (!empty($neighborhood->banner)) {
                 $file_path = public_path('uploads/neighborhoods/' . $neighborhood->banner);
                 if (file_exists($file_path)) {
                     unlink($file_path);
+                }
+                if (!empty($neighborhood->amenity_icon1)) {
+                    $file_path = public_path('uploads/neighborhoods/' . $neighborhood->amenity_icon1);
+                    if (file_exists($file_path)) {
+                        unlink($file_path);
+                    }
+                }
+                if (!empty($neighborhood->amenity_icon2)) {
+                    $file_path = public_path('uploads/neighborhoods/' . $neighborhood->amenity_icon2);
+                    if (file_exists($file_path)) {
+                        unlink($file_path);
+                    }
+                }
+                if (!empty($neighborhood->amenity_icon3)) {
+                    $file_path = public_path('uploads/neighborhoods/' . $neighborhood->amenity_icon3);
+                    if (file_exists($file_path)) {
+                        unlink($file_path);
+                    }
                 }
                 if (!empty($neighborhood->images)) {
                     $images = json_decode($neighborhood->images);
