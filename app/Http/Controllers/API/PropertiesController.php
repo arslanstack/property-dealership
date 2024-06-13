@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\City;
 use App\Models\Feature;
+use App\Models\Neighborhood;
 use Illuminate\Http\Request;
 use App\Models\Property;
 use App\Models\PropertyFeature;
@@ -208,6 +209,18 @@ class PropertiesController extends Controller
             $this->refine($property);
         }
         return response()->json(['message' => 'Properties retrieved successfully.', 'data' => $properties, 'records_count' => $total], 200);
+    }
+    public function allWithNeighbor($id)
+    {
+        $neighborhood = Neighborhood::find($id);
+        if (empty($neighborhood)) {
+            return response()->json(['message' => 'Neighborhood not found.'], 404);
+        }
+        $properties = Property::where('neighborhood_id', $id)->paginate(6);
+        foreach ($properties as $property) {
+            $this->refine($property);
+        }
+        return response()->json(['message' => 'Properties retrieved successfully.', 'data' => $properties], 200);
     }
     public function refine($property)
     {

@@ -52,6 +52,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         Route::get('filters', [PropertiesController::class, 'filters']);
         Route::post('all-filtered', [PropertiesController::class, 'all']);
         Route::post('all-city-filtered', [PropertiesController::class, 'allWithCities']);
+        Route::get('all-neighborhood/{id}', [PropertiesController::class, 'allWithNeighbor']);
         Route::get('details/{id}', [PropertiesController::class, 'show']);
     });
     Route::group(['prefix' => 'search'], function () {

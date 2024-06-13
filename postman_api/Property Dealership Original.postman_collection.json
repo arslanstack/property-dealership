@@ -510,6 +510,25 @@
 					"response": []
 				},
 				{
+					"name": "Get All  With Neighborhood ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/properties/all-neighborhood/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"properties",
+								"all-neighborhood",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get One",
 					"request": {
 						"method": "GET",
