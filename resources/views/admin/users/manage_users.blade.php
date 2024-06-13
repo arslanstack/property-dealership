@@ -57,19 +57,19 @@
                                     <td>{{$item->email}}</td>
                                     <td>
                                         @if($item->is_blocked == 1)
-                                        <label class="label label-warning text-dark"> Blocked </label>
+                                        <label class="label label-dark text-dark"> Blocked </label>
                                         @else
                                         <label class="label label-primary"> Active </label>
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ url('admin/users/detail') }}/{{ $item->id }}" class="btn btn-primary btn-sm" data-placement="top" title="Details"> Details </a>
+                                        <a href="{{ url('admin/users/detail') }}/{{ $item->id }}" class="btn btn-primary btn-sm" data-placement="top" title="Details"><i class="fa-solid fa-edit"></i> Edit </a>
+                                        <button class="btn btn-danger btn-sm btn_delete" data-id="{{$item->id}}" data-text="You want to delete this user!" type="button" data-placement="top" title="Delete">Delete</button>
                                         @if ($item->is_blocked==1)
                                         <button class="btn btn-success btn-sm btn_update_status" data-id="{{$item->id}}" data-status="0" data-text="You want to unblock this user!" type="button" data-placement="top" title="Inactivate">Unblock</button>
                                         @else
-                                        <button class="btn btn-warning text-dark btn-sm btn_update_status" data-id="{{$item->id}}" data-status="1" data-text="You want to block this user!" type="button" data-placement="top" title="Activate">Block</button>
+                                        <button class="btn btn-dark btn-sm btn_update_status" data-id="{{$item->id}}" data-status="1" data-text="You want to block this user!" type="button" data-placement="top" title="Activate">Block</button>
                                         @endif
-                                        <button class="btn btn-danger btn-sm btn_delete" data-id="{{$item->id}}" data-text="You want to delete this user!" type="button" data-placement="top" title="Delete">Delete</button>
                                     </td>
                                 </tr>
                                 @endforeach

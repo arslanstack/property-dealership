@@ -1,5 +1,7 @@
 @extends('admin.admin_app')
 @push('styles')
+
+<script src="{{asset('admin_assets/css/plugins/select2/select2.min.css')}}"></script>
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
 <style>
@@ -93,7 +95,7 @@
                                     </div>
                                     <label class="col-sm-2 col-form-label"><strong>City/Town <a data-toggle="modal" data-target="#add_modalbox" class="text-navy ml-1" style="text-decoration: underline;" type="button">Add New</a></strong></label>
                                     <div class="col-sm-4">
-                                        <select name="city" id="cities_select" required class="form-control" style="height: 2.22rem !important;" id="">
+                                        <select name="city" id="cities_select" required class="select2 form-control" style="height: 2.22rem !important;" id="">
                                             @foreach($cities as $city)
                                             <option value="{{$city->name}}" {{$city->name == "Rosarito" ? 'selected' : ''}}>{{$city->name}}</option>
                                             @endforeach
@@ -266,7 +268,6 @@
                         <label class="col-sm-4 col-form-label"><strong>Country</strong></label>
                         <div class="col-sm-8">
                             <select name="country" required class="form-control" style="height: 2.22rem !important;" id="">
-                                <option value="" selected disabled>Please select a country</option>
                                 <option value="Albania">Albania</option>
                                 <option value="Algeria">Algeria</option>
                                 <option value="American Samoa">American Samoa</option>
@@ -510,6 +511,14 @@
 @endsection
 @push('scripts')
 <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<script src="{{asset('admin_assets/js/plugins/select2/select2.full.min.js')}}"></script>
+
+<script>
+    $(".select2").select2({
+        placeholder: "Select an option",
+        allowClear: true
+    });
+</script>
 <script>
     gallery_images = [];
     let myDropzone = new Dropzone("#myDropzone", {

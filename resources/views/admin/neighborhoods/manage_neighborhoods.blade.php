@@ -42,7 +42,6 @@
                             <thead>
                                 <tr>
                                     <th>Sr #</th>
-                                    <th>Code</th>
                                     <th>Title</th>
                                     <th>Zip</th>
                                     <th>City</th>
@@ -56,7 +55,6 @@
                                 @foreach($neighborhoods as $item)
                                 <tr class="gradeX">
                                     <td>{{ $i++ }}</td>
-                                    <td>{{ $item->code  }}</td>
                                     <td>{{ $item->title  }}</td>
                                     <td>{{ $item->zip  }}</td>
                                     <td>{{ $item->city  }}</td>

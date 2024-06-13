@@ -1,5 +1,6 @@
 @extends('admin.admin_app')
 @push('styles')
+<script src="{{asset('admin_assets/css/plugins/select2/select2.min.css')}}"></script>
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
 <style>
@@ -156,7 +157,7 @@
                                     </div>
                                     <label class="col-sm-2 col-form-label"><strong>City/Town <a data-toggle="modal" data-target="#add_modalbox" class="text-navy ml-1" style="text-decoration: underline;" type="button">Add New</a></strong></label>
                                     <div class="col-sm-4">
-                                        <select name="city" id="cities_select" required class="form-control" style="height: 2.22rem !important;" id="">
+                                        <select name="city" id="cities_select" required class="select2 form-control" style="height: 2.22rem !important;" id="">
                                             @foreach($cities as $city)
                                             <option value="{{$city->name}}" {{$city->name == $neighborhood->city ? 'selected' : ''}}>{{$city->name}}</option>
                                             @endforeach
@@ -588,6 +589,14 @@
 @push('scripts')
 
 <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<script src="{{asset('admin_assets/js/plugins/select2/select2.full.min.js')}}"></script>
+
+<script>
+    $(".select2").select2({
+        placeholder: "Select an option",
+        allowClear: true
+    });
+</script>
 <script>
     images_array_string = $('#images').val();
     images_array = images_array_string ? JSON.parse(images_array_string) : [];
