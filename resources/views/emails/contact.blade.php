@@ -62,8 +62,8 @@
                                                             <br>
                                                         </span>
                                                         <strong>Phone:</strong>
-                                                        <a href="tel:033141252122" target="_blank" style="color: #EF5A00;">
-                                                            {{$data['phone']}}
+                                                        <a href="tel:+{{$data['phone']}}" target="_blank" style="color: #EF5A00;">
+                                                            +{{$data['phone']}}
                                                         </a>
                                                         <br> <br>
                                                     </p>
