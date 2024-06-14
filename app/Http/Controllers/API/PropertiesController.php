@@ -66,7 +66,7 @@ class PropertiesController extends Controller
     }
     public function featured(Request $request)
     {
-        $properties = Property::where('is_featured', 2)->get();
+        $properties = Property::where('is_featured', 2)->orderBy('created_at', 'desc')->get();
         foreach ($properties as $property) {
             $this->refine($property);
         }
@@ -105,7 +105,9 @@ class PropertiesController extends Controller
         $properties = Property::query();
 
         if ($sorting) {
-            if ($sorting == 2) {
+            if ($sorting == 1) {
+                $properties = $properties->orderBy('created_at', 'desc');
+            } else if ($sorting == 2) {
                 $properties = $properties->orderBy('is_featured', 'desc');
             } else if ($sorting == 3) {
                 $properties = $properties->orderBy('views', 'desc');
@@ -118,6 +120,8 @@ class PropertiesController extends Controller
             } else if ($sorting == 7) {
                 $properties = $properties->orderBy('created_at', 'desc'); // Descending order
             }
+        } else {
+            $properties = $properties->orderBy('created_at', 'desc');
         }
 
         if ($listing_status) {
@@ -184,7 +188,6 @@ class PropertiesController extends Controller
         }
         $properties = Property::query();
         $properties = $properties->where('city', $city->name);
-
         if ($sorting) {
             if ($sorting == 2) {
                 $properties = $properties->orderBy('is_featured', 'desc');
@@ -199,6 +202,8 @@ class PropertiesController extends Controller
             } else if ($sorting == 7) {
                 $properties = $properties->orderBy('created_at', 'desc'); // Descending order
             }
+        } else {
+            $properties = $properties->orderBy('created_at', 'desc');
         }
 
         $total = $properties->count();
@@ -216,7 +221,7 @@ class PropertiesController extends Controller
         if (empty($neighborhood)) {
             return response()->json(['message' => 'Neighborhood not found.'], 404);
         }
-        $properties = Property::where('neighborhood_id', $id)->paginate(6);
+        $properties = Property::where('neighborhood_id', $id)->orderBy('created_at', 'desc')->paginate(6);
         foreach ($properties as $property) {
             $this->refine($property);
         }

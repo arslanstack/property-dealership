@@ -224,7 +224,9 @@ class SearchController extends Controller
             $properties = $properties->where('bedrooms', '>=', intval($request->min_bed));
             $properties = $properties->where('bathrooms', '>=', intval($request->min_bath));
             if ($request->sorting) {
-                if ($request->sorting == 2) {
+                if ($request->sorting == 1) {
+                    $properties = $properties->orderBy('created_at', 'desc');
+                } else if ($request->sorting == 2) {
                     $properties = $properties->orderBy('is_featured', 'desc');
                 } elseif ($request->sorting == 3) {
                     $properties = $properties->orderBy('views', 'desc');
@@ -237,6 +239,8 @@ class SearchController extends Controller
                 } elseif ($request->sorting == 7) {
                     $properties = $properties->orderBy('created_at', 'desc');
                 }
+            } else {
+                $properties = $properties->orderBy('created_at', 'desc');
             }
             if ($request->listing_status) {
                 $properties = $properties->where('listing_status', $request->listing_status);
@@ -296,7 +300,9 @@ class SearchController extends Controller
             $properties = $properties->where('bedrooms', '>=', intval($request->min_bed));
             $properties = $properties->where('bathrooms', '>=', intval($request->min_bath));
             if ($request->sorting) {
-                if ($request->sorting == 2) {
+                if ($request->sorting == 1) {
+                    $properties = $properties->orderBy('created_at', 'desc');
+                } else if ($request->sorting == 2) {
                     $properties = $properties->orderBy('is_featured', 'desc');
                 } elseif ($request->sorting == 3) {
                     $properties = $properties->orderBy('views', 'desc');
@@ -309,6 +315,8 @@ class SearchController extends Controller
                 } elseif ($request->sorting == 7) {
                     $properties = $properties->orderBy('created_at', 'desc');
                 }
+            } else {
+                $properties = $properties->orderBy('created_at', 'desc');
             }
             if ($request->listing_status) {
                 $properties = $properties->where('listing_status', $request->listing_status);
@@ -396,6 +404,8 @@ class SearchController extends Controller
             } elseif ($search_query->sorting == 6) {
                 $properties = $properties->orderBy('created_at', 'asc');
             } elseif ($search_query->sorting == 7) {
+                $properties = $properties->orderBy('created_at', 'desc');
+            } else {
                 $properties = $properties->orderBy('created_at', 'desc');
             }
         }
