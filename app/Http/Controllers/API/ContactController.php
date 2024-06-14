@@ -30,7 +30,7 @@ class ContactController extends Controller
             'email' => 'required|email',
             'phone' => 'required|string',
             'message' => 'required|string',
-            'property_id' => 'required|integer',
+            'property_id' => 'required',
         ]);
         if ($validator->fails()) {
             $missing_fields = [];
@@ -41,15 +41,16 @@ class ContactController extends Controller
         }
 
         $data = $request->all();
-        $property = Property::where('id', $data['property_id'])->first();
-        if (!$property) {
-            return response()->json(['message' => 'Property not found.'], 404);
+        $properties_ids = json_decode($request->property_id); //["1", "2", "3"] in this format
+        $properties = Property::whereIn('id', $properties_ids)->get();
+        if (!$properties) {
+            return response()->json(['message' => 'Properties not found.'], 404);
         }
         $headers = "From: webmaster@example.com\r\n";
         $headers .= "Reply-To: webmaster@example.com\r\n";
         $headers .= "Content-Type: text/html\r\n";
         $subject = 'New Contact Submission Received from ' . $data['name'];
-        $emailTemplate = view('emails.contact', compact(['data', 'property']))->render();
+        $emailTemplate = view('emails.contact', compact(['data', 'properties']))->render();
         $sendMail = mail(env('ADMIN_EMAIL'), $subject, $emailTemplate, $headers);
 
         if ($sendMail) {

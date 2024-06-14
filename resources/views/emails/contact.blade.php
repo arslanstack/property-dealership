@@ -40,15 +40,17 @@
                                             <tr>
                                                 <td style="text-align:start;padding:0 35px">
                                                     <p>Hi , <br><strong style="color: #83AE3E;"> {{$data['name']}} </strong>is
-                                                        interested to get more info about this property:
+                                                        interested to get more info about these properties:
                                                     </p>
-                                                    <strong>Property Details:</strong>
+                                                    @foreach($properties as $property)
+                                                    <strong>Propert Details:</strong>
                                                     <p style="margin:8px 10px">
                                                         Property Code : <strong> {{$property->code}} </strong> <br>
                                                         Property Title : <a href="{{url('admin/property-listings/details/' . $property->id )}}"><strong> {{$property->title}} </strong></a> <br>
                                                         Property Neighborhood : <strong> {{$property->neighborhood->title}} </strong> <br>
                                                     </p>
                                                     <br>
+                                                    @endforeach
 
                                                     <strong>Client Details:</strong>
                                                     <p style="margin:8px 10px">
