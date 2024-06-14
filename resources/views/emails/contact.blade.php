@@ -12,7 +12,7 @@
         <tbody>
             <tr>
                 <td>
-                    <table style="background-color:#f2f3f8;max-width:470px;margin:0 auto" width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                    <table style="background-color:#f2f3f8;width:650px;margin:0 auto" width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
                         <tbody>
                             <tr>
                                 <td style="height:80px">&nbsp;</td>

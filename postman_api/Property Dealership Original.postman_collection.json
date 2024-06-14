@@ -428,9 +428,8 @@
 							"formdata": [
 								{
 									"key": "sorting",
-									"value": "2",
-									"type": "text",
-									"disabled": true
+									"value": "4",
+									"type": "text"
 								},
 								{
 									"key": "listing_status",
@@ -447,7 +446,8 @@
 								{
 									"key": "is_featured",
 									"value": "0",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "feature",
@@ -492,7 +492,8 @@
 								{
 									"key": "sorting",
 									"value": "2",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								}
 							]
 						},
@@ -515,14 +516,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/properties/all-neighborhood/1",
+							"raw": "{{base_url}}/properties/all-neighborhood/5",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"properties",
 								"all-neighborhood",
-								"1"
+								"5"
 							]
 						}
 					},
@@ -695,47 +696,47 @@
 							"formdata": [
 								{
 									"key": "title",
-									"value": "Excellence villa",
+									"value": "",
 									"type": "text"
 								},
 								{
 									"key": "type_id",
-									"value": "1",
+									"value": "",
 									"type": "text"
 								},
 								{
 									"key": "min_bed",
-									"value": "3",
+									"value": "0",
 									"type": "text"
 								},
 								{
 									"key": "min_bath",
-									"value": "1",
+									"value": "0",
 									"type": "text"
 								},
 								{
 									"key": "min_price",
-									"value": "500",
+									"value": "300",
 									"type": "text"
 								},
 								{
 									"key": "max_price",
-									"value": "1001",
+									"value": "8000000",
 									"type": "text"
 								},
 								{
 									"key": "min_size",
-									"value": "1288",
+									"value": "500",
 									"type": "text"
 								},
 								{
 									"key": "max_size",
-									"value": "1290",
+									"value": "4500",
 									"type": "text"
 								},
 								{
 									"key": "neighborhood_id",
-									"value": "1",
+									"value": "4",
 									"type": "text"
 								},
 								{
@@ -745,7 +746,7 @@
 								},
 								{
 									"key": "listing_status",
-									"value": "1",
+									"value": "",
 									"type": "text"
 								},
 								{
@@ -957,7 +958,7 @@
 								},
 								{
 									"key": "phone",
-									"value": "+14567821281",
+									"value": "14567821281",
 									"type": "text"
 								},
 								{
@@ -967,7 +968,7 @@
 								},
 								{
 									"key": "property_id",
-									"value": "2",
+									"value": "[\"10\", \"12\", \"14\", \"9\"]",
 									"type": "text"
 								},
 								{

@@ -198,175 +198,135 @@ class SearchController extends Controller
     }
     public function index(Request $request)
     {
-        try {
-            if ($request->page)
-                throw new JWTException();
+        $properties = Property::query();
+        $min_price = $request->min_price ? intval($request->min_price) : 0;
+        $max_price = $request->max_price ? intval($request->max_price) : 0;
+        $min_bed = $request->min_bed ? intval($request->min_bed) : 0;
+        $min_bath = $request->min_bath ? intval($request->min_bath) : 0;
+        $min_size = $request->min_size ? intval($request->min_size) : 0;
+        $max_size = $request->max_size ? intval($request->max_size) : 0;
+        $neighborhood_id = $request->neighborhood_id;
+        $city_id = $request->city_id;
+        $type_id = $request->type_id;
+        $features_id_array = $request->features_id_array;
+        $listing_status = $request->listing_status;
+        $title = $request->title;
+        $sorting = $request->sorting ? $request->sorting : 1;
 
-            $user = JWTAuth::parseToken()->authenticate();
-            if ($user) {
-                $user = auth()->user();
-                $search = SearchSave::where('user_id', $user->id)->where('search_query', json_encode($request->all()))->first();
-                if (!$search) {
-                    $search = new SearchSave();
-                    $search->user_id = $user->id;
-                    $search->title = $request->title;
-                    $search->search_query = json_encode($request->all());
-                    $search->save();
-                } else {
-                    $search->touch();
-                }
+        $city = $request->city_id != null ? City::where('id', $request->city_id)->first() : null;
+        if ($min_price > 0) {
+            $properties = $properties->where('price', '>=', $min_price);
+        }
+
+        if ($max_price > 0) {
+            $properties = $properties->where('price', '<=', $max_price);
+        }
+
+        if ($min_bed > 0) {
+            $properties = $properties->where('bedrooms', '>=', $min_bed);
+        }
+
+        if ($min_bath > 0) {
+            $properties = $properties->where('bathrooms', '>=', $min_bath);
+        }
+
+        if ($min_size > 0) {
+            $properties = $properties->where('size', '>=', $min_size);
+        }
+
+        if ($max_size > 0) {
+            $properties = $properties->where('size', '<=', $max_size);
+        }
+
+        if ($listing_status != '' && $listing_status != null) {
+            $properties = $properties->where('listing_status', $request->listing_status);
+        }
+        if ($neighborhood_id != '' && $neighborhood_id != null) {
+            $neighborhood = Neighborhood::where('id', $request->neighborhood_id)->first();
+            if (!$neighborhood) {
+                return response()->json(['message' => 'Neighborhood not found.'], 404);
             }
-            $properties = Property::query();
-            $properties = $properties->where('price', '>=', intval($request->min_price));
-            $properties = $properties->where('price', '<=', intval($request->max_price));
-            $properties = $properties->where('size', '>=', intval($request->min_size));
-            $properties = $properties->where('size', '<=', intval($request->max_size));
-            $properties = $properties->where('bedrooms', '>=', intval($request->min_bed));
-            $properties = $properties->where('bathrooms', '>=', intval($request->min_bath));
-            if ($request->sorting) {
-                if ($request->sorting == 1) {
-                    $properties = $properties->orderBy('created_at', 'desc');
-                } else if ($request->sorting == 2) {
-                    $properties = $properties->orderBy('is_featured', 'desc');
-                } elseif ($request->sorting == 3) {
-                    $properties = $properties->orderBy('views', 'desc');
-                } elseif ($request->sorting == 4) {
-                    $properties = $properties->orderBy('price', 'asc');
-                } elseif ($request->sorting == 5) {
-                    $properties = $properties->orderBy('price', 'desc');
-                } elseif ($request->sorting == 6) {
-                    $properties = $properties->orderBy('created_at', 'asc');
-                } elseif ($request->sorting == 7) {
-                    $properties = $properties->orderBy('created_at', 'desc');
-                }
+            $properties = $properties->where('neighborhood_id', $neighborhood->id);
+        }
+        if ($city_id != '' && $city_id != null) {
+            $city = City::where('id', $city_id)->first();
+            if (!$city) {
+                return response()->json(['message' => 'City not found.'], 404);
+            }
+            $properties = $properties->where('city', $city->name);
+        }
+        if ($type_id != '' && $type_id != null) {
+            $type = Types::where('id', $request->type_id)->first();
+            if (!$type) {
+                return response()->json(['message' => 'Type not found.'], 404);
+            }
+            $property_types = PropertyType::where('type_id', $type->id)->get();
+            $property_ids = [];
+            foreach ($property_types as $property_type) {
+                $property_ids[] = $property_type->property_id;
+            }
+            $properties = $properties->whereIn('id', $property_ids);
+        }
+
+        if ($features_id_array != '' && $features_id_array != null) {
+            // features_id_array input is like [1,56,12]
+            $features_id_array = json_decode($request->features_id_array);
+            $property_features = PropertyFeature::whereIn('feature_id', $features_id_array)->get();
+            $property_ids = [];
+            foreach ($property_features as $property_feature) {
+                $property_ids[] = $property_feature->property_id;
+            }
+            $properties = $properties->whereIn('id', $property_ids);
+        }
+
+        if ($title != '' && $title != null) {
+            $properties = $properties->where('title', 'like', '%' . $request->title . '%');
+        }
+
+        if ($sorting) {
+            if ($sorting == 2) {
+                $properties = $properties->sortByDesc('is_featured');
+            } elseif ($sorting == 3) {
+                $properties = $properties->sortByDesc('views');
+            } elseif ($sorting == 4) {
+                $properties = $properties->sortBy('price');
+            } elseif ($sorting == 5) {
+                $properties = $properties->sortByDesc('price');
+            } elseif ($sorting == 6) {
+                $properties = $properties->sortBy('created_at');
+            } elseif ($sorting == 7) {
+                $properties = $properties->sortByDesc('created_at');
             } else {
-                $properties = $properties->orderBy('created_at', 'desc');
+                $properties = $properties->sortByDesc('created_at');
             }
-            if ($request->listing_status) {
-                $properties = $properties->where('listing_status', $request->listing_status);
-            }
-            if ($request->city_id) {
-                $city = City::where('id', $request->city_id)->first();
-                if (!$city) {
-                    return response()->json(['message' => 'City not found.'], 404);
-                }
-                $properties = $properties->where('city', $city->name);
-            }
-            if ($request->neighborhood_id) {
-                $neighborhood = Neighborhood::where('id', $request->neighborhood_id)->first();
-                if (!$neighborhood) {
-                    return response()->json(['message' => 'Neighborhood not found.'], 404);
-                }
-                $properties = $properties->where('neighborhood_id', $neighborhood->id);
-            }
-            if ($request->type_id) {
-                $type = Types::where('id', $request->type_id)->first();
-                if (!$type) {
-                    return response()->json(['message' => 'Type not found.'], 404);
-                }
-                $property_types = PropertyType::where('type_id', $type->id)->get();
-                $property_ids = [];
-                foreach ($property_types as $property_type) {
-                    $property_ids[] = $property_type->property_id;
-                }
-                $properties = $properties->whereIn('id', $property_ids);
-            }
-            if ($request->features_id_array) {
-                // features_id_array input is like [1,56,12]
-                $features_id_array = json_decode($request->features_id_array);
-                $property_features = PropertyFeature::whereIn('feature_id', $features_id_array)->get();
-                $property_ids = [];
-                foreach ($property_features as $property_feature) {
-                    $property_ids[] = $property_feature->property_id;
-                }
-                $properties = $properties->whereIn('id', $property_ids);
-            }
-            if ($request->title) {
-                $properties = $properties->where('title', 'like', '%' . $request->title . '%');
-            }
+        }
+        $properties = $properties->paginate(6);
 
-            $properties->paginate(6);
-            $properties = $properties->get();
-            $properties = $properties->map(function ($property) {
-                return $this->refine($property);
-            });
-            return response()->json(['message' => 'Search results retreived successfully', 'data' => $properties], 200);
-        } catch (JWTException $e) {
-            $properties = Property::query();
-            $properties = $properties->where('price', '>=', intval($request->min_price));
-            $properties = $properties->where('price', '<=', intval($request->max_price));
-            $properties = $properties->where('size', '>=', intval($request->min_size));
-            $properties = $properties->where('size', '<=', intval($request->max_size));
-            $properties = $properties->where('bedrooms', '>=', intval($request->min_bed));
-            $properties = $properties->where('bathrooms', '>=', intval($request->min_bath));
-            if ($request->sorting) {
-                if ($request->sorting == 1) {
-                    $properties = $properties->orderBy('created_at', 'desc');
-                } else if ($request->sorting == 2) {
-                    $properties = $properties->orderBy('is_featured', 'desc');
-                } elseif ($request->sorting == 3) {
-                    $properties = $properties->orderBy('views', 'desc');
-                } elseif ($request->sorting == 4) {
-                    $properties = $properties->orderBy('price', 'asc');
-                } elseif ($request->sorting == 5) {
-                    $properties = $properties->orderBy('price', 'desc');
-                } elseif ($request->sorting == 6) {
-                    $properties = $properties->orderBy('created_at', 'asc');
-                } elseif ($request->sorting == 7) {
-                    $properties = $properties->orderBy('created_at', 'desc');
+        $properties = $properties->map(function ($property) {
+            return $this->refine($property);
+        });
+        if ($request->page) {
+            return response()->json(['message' => 'Properties retrieved successfully.', 'data' => $properties], 200);
+        } else {
+            try {
+                $user = JWTAuth::parseToken()->authenticate();
+                if ($user) {
+                    $user = auth()->user();
+                    $search = SearchSave::where('user_id', $user->id)->where('search_query', json_encode($request->all()))->first();
+                    if (!$search) {
+                        $search = new SearchSave();
+                        $search->user_id = $user->id;
+                        $search->title = $request->title;
+                        $search->search_query = json_encode($request->all());
+                        $search->save();
+                    } else {
+                        $search->touch();
+                    }
                 }
-            } else {
-                $properties = $properties->orderBy('created_at', 'desc');
+                return response()->json(['message' => 'Properties retrieved successfully.', 'data' => $properties], 200);
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Properties retrieved successfully.', 'data' => $properties], 200);
             }
-            if ($request->listing_status) {
-                $properties = $properties->where('listing_status', $request->listing_status);
-            }
-            if ($request->city_id) {
-                $city = City::where('id', $request->city_id)->first();
-                if (!$city) {
-                    return response()->json(['message' => 'City not found.'], 404);
-                }
-                $properties = $properties->where('city', $city->name);
-            }
-            if ($request->neighborhood_id) {
-                $neighborhood = Neighborhood::where('id', $request->neighborhood_id)->first();
-                if (!$neighborhood) {
-                    return response()->json(['message' => 'Neighborhood not found.'], 404);
-                }
-                $properties = $properties->where('neighborhood_id', $neighborhood->id);
-            }
-            if ($request->type_id) {
-                $type = Types::where('id', $request->type_id)->first();
-                if (!$type) {
-                    return response()->json(['message' => 'Type not found.'], 404);
-                }
-                $property_types = PropertyType::where('type_id', $type->id)->get();
-                $property_ids = [];
-                foreach ($property_types as $property_type) {
-                    $property_ids[] = $property_type->property_id;
-                }
-                $properties = $properties->whereIn('id', $property_ids);
-            }
-            if ($request->features_id_array) {
-                // features_id_array input is like [1,56,12]
-                $features_id_array = json_decode($request->features_id_array);
-                $property_features = PropertyFeature::whereIn('feature_id', $features_id_array)->get();
-                $property_ids = [];
-                foreach ($property_features as $property_feature) {
-                    $property_ids[] = $property_feature->property_id;
-                }
-                $properties = $properties->whereIn('id', $property_ids);
-            }
-            if ($request->title) {
-                $properties = $properties->where('title', 'like', '%' . $request->title . '%');
-            }
-
-            $properties->paginate(6);
-            $properties = $properties->get();
-            $properties = $properties->map(function ($property) {
-                return $this->refine($property);
-            });
-            return response()->json(['message' => 'Search results retreived successfully', 'data' => $properties], 200);
         }
     }
 
@@ -385,48 +345,65 @@ class SearchController extends Controller
             return response()->json(['message' => 'Search not found.'], 404);
         }
         $search_query = json_decode($search->search_query);
+
         $properties = Property::query();
-        $properties = $properties->where('price', '>=', intval($search_query->min_price));
-        $properties = $properties->where('price', '<=', intval($search_query->max_price));
-        $properties = $properties->where('size', '>=', intval($search_query->min_size));
-        $properties = $properties->where('size', '<=', intval($search_query->max_size));
-        $properties = $properties->where('bedrooms', '>=', intval($search_query->min_bed));
-        $properties = $properties->where('bathrooms', '>=', intval($search_query->min_bath));
-        if ($search_query->sorting) {
-            if ($search_query->sorting == 2) {
-                $properties = $properties->orderBy('is_featured', 'desc');
-            } elseif ($search_query->sorting == 3) {
-                $properties = $properties->orderBy('views', 'desc');
-            } elseif ($search_query->sorting == 4) {
-                $properties = $properties->orderBy('price', 'asc');
-            } elseif ($search_query->sorting == 5) {
-                $properties = $properties->orderBy('price', 'desc');
-            } elseif ($search_query->sorting == 6) {
-                $properties = $properties->orderBy('created_at', 'asc');
-            } elseif ($search_query->sorting == 7) {
-                $properties = $properties->orderBy('created_at', 'desc');
-            } else {
-                $properties = $properties->orderBy('created_at', 'desc');
-            }
+        $min_price = $search_query->min_price ? intval($search_query->min_price) : 0;
+        $max_price = $search_query->max_price ? intval($search_query->max_price) : 0;
+        $min_bed = $search_query->min_bed ? intval($search_query->min_bed) : 0;
+        $min_bath = $search_query->min_bath ? intval($search_query->min_bath) : 0;
+        $min_size = $search_query->min_size ? intval($search_query->min_size) : 0;
+        $max_size = $search_query->max_size ? intval($search_query->max_size) : 0;
+        $neighborhood_id = $search_query->neighborhood_id;
+        $city_id = $search_query->city_id;
+        $type_id = $search_query->type_id;
+        $features_id_array = $search_query->features_id_array;
+        $listing_status = $search_query->listing_status;
+        $title = $search_query->title;
+        $sorting = $search_query->sorting ? $search_query->sorting : 1;
+
+        $city = $search_query->city_id != null ? City::where('id', $search_query->city_id)->first() : null;
+        if ($min_price > 0) {
+            $properties = $properties->where('price', '>=', $min_price);
         }
-        if ($search_query->listing_status) {
+
+        if ($max_price > 0) {
+            $properties = $properties->where('price', '<=', $max_price);
+        }
+
+        if ($min_bed > 0) {
+            $properties = $properties->where('bedrooms', '>=', $min_bed);
+        }
+
+        if ($min_bath > 0) {
+            $properties = $properties->where('bathrooms', '>=', $min_bath);
+        }
+
+        if ($min_size > 0) {
+            $properties = $properties->where('size', '>=', $min_size);
+        }
+
+        if ($max_size > 0) {
+            $properties = $properties->where('size', '<=', $max_size);
+        }
+
+        if ($listing_status != '' && $listing_status != null) {
             $properties = $properties->where('listing_status', $search_query->listing_status);
         }
-        if ($search_query->city_id) {
-            $city = City::where('id', $search_query->city_id)->first();
-            if (!$city) {
-                return response()->json(['message' => 'City not found.'], 404);
-            }
-            $properties = $properties->where('city', $city->name);
-        }
-        if ($search_query->neighborhood_id) {
+        if ($neighborhood_id != '' && $neighborhood_id != null) {
             $neighborhood = Neighborhood::where('id', $search_query->neighborhood_id)->first();
             if (!$neighborhood) {
                 return response()->json(['message' => 'Neighborhood not found.'], 404);
             }
             $properties = $properties->where('neighborhood_id', $neighborhood->id);
         }
-        if ($search_query->type_id) {
+        if ($city_id != '' && $city_id != null) {
+            $city = City::where('id', $city_id)->first();
+            if (!$city) {
+                return response()->json(['message' => 'City not found.'], 404);
+            }
+            $properties = $properties->where('city', $city->name);
+        }
+        if ($type_id != '' && $type_id != null) {
             $type = Types::where('id', $search_query->type_id)->first();
             if (!$type) {
                 return response()->json(['message' => 'Type not found.'], 404);
@@ -438,7 +415,8 @@ class SearchController extends Controller
             }
             $properties = $properties->whereIn('id', $property_ids);
         }
-        if ($search_query->features_id_array) {
+
+        if ($features_id_array != '' && $features_id_array != null) {
             // features_id_array input is like [1,56,12]
             $features_id_array = json_decode($search_query->features_id_array);
             $property_features = PropertyFeature::whereIn('feature_id', $features_id_array)->get();
@@ -448,16 +426,35 @@ class SearchController extends Controller
             }
             $properties = $properties->whereIn('id', $property_ids);
         }
-        if ($search_query->title) {
+
+        if ($title != '' && $title != null) {
             $properties = $properties->where('title', 'like', '%' . $search_query->title . '%');
         }
 
-        $properties->paginate(6);
-        $properties = $properties->get();
+        // if ($sorting) {
+        //     if ($sorting == 2) {
+        //         $properties = $properties->sortByDesc('is_featured');
+        //     } elseif ($sorting == 3) {
+        //         $properties = $properties->sortByDesc('views');
+        //     } elseif ($sorting == 4) {
+        //         $properties = $properties->sortBy('price');
+        //     } elseif ($sorting == 5) {
+        //         $properties = $properties->sortByDesc('price');
+        //     } elseif ($sorting == 6) {
+        //         $properties = $properties->sortBy('created_at');
+        //     } elseif ($sorting == 7) {
+        //         $properties = $properties->sortByDesc('created_at');
+        //     } else {
+        //         $properties = $properties->sortByDesc('created_at');
+        //     }
+        // }
+
+        $properties = $properties->paginate(6);
         $properties = $properties->map(function ($property) {
             return $this->refine($property);
         });
-        return response()->json(['message' => 'Search results retreived successfully', 'data' => $properties], 200);
+
+        return response()->json(['message' => 'Properties from saved search retrieved successfully.', 'data' => $properties], 200);
     }
     public function refine($property)
     {
