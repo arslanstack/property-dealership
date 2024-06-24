@@ -12,12 +12,6 @@ use App\Models\Feature;
 use App\Models\PropertyFeature;
 use App\Models\PropertyType;
 use App\Models\SearchSave;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Exceptions\TokenExpiredException;
-use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class SearchController extends Controller
@@ -198,6 +192,7 @@ class SearchController extends Controller
     }
     public function index(Request $request)
     {
+        // dd($request->all());
         $properties = Property::query();
         $min_price = $request->min_price ? intval($request->min_price) : 0;
         $max_price = $request->max_price ? intval($request->max_price) : 0;
@@ -283,28 +278,36 @@ class SearchController extends Controller
             $properties = $properties->where('title', 'like', '%' . $request->title . '%');
         }
 
-        if ($sorting) {
-            if ($sorting == 2) {
-                $properties = $properties->sortByDesc('is_featured');
-            } elseif ($sorting == 3) {
-                $properties = $properties->sortByDesc('views');
-            } elseif ($sorting == 4) {
-                $properties = $properties->sortBy('price');
-            } elseif ($sorting == 5) {
-                $properties = $properties->sortByDesc('price');
-            } elseif ($sorting == 6) {
-                $properties = $properties->sortBy('created_at');
-            } elseif ($sorting == 7) {
-                $properties = $properties->sortByDesc('created_at');
-            } else {
-                $properties = $properties->sortByDesc('created_at');
-            }
+        switch ($sorting) {
+            case 2:
+                $properties = $properties->orderBy('is_featured', 'desc');
+                break;
+            case 3:
+                $properties = $properties->orderBy('views', 'desc');
+                break;
+            case 4:
+                $properties = $properties->orderBy('price');
+                break;
+            case 5:
+                $properties = $properties->orderBy('price', 'desc');
+                break;
+            case 6:
+                $properties = $properties->orderBy('created_at');
+                break;
+            case 7:
+                $properties = $properties->orderBy('created_at', 'desc');
+                break;
+            default:
+                $properties = $properties->orderBy('created_at', 'desc');  // Default sorting
+                break;
         }
+
         $properties = $properties->paginate(6);
 
-        $properties = $properties->map(function ($property) {
-            return $this->refine($property);
-        });
+        foreach ($properties as $property) {
+            $property = $this->refine($property);
+        }
+
         if ($request->page) {
             return response()->json(['message' => 'Properties retrieved successfully.', 'data' => $properties], 200);
         } else {
@@ -329,6 +332,7 @@ class SearchController extends Controller
             }
         }
     }
+
 
 
     public function savedSearches(Request $request)
@@ -433,19 +437,19 @@ class SearchController extends Controller
 
         // if ($sorting) {
         //     if ($sorting == 2) {
-        //         $properties = $properties->sortByDesc('is_featured');
+        //         $properties = $properties->orderByDesc('is_featured');
         //     } elseif ($sorting == 3) {
-        //         $properties = $properties->sortByDesc('views');
+        //         $properties = $properties->orderByDesc('views');
         //     } elseif ($sorting == 4) {
-        //         $properties = $properties->sortBy('price');
+        //         $properties = $properties->orderBy('price');
         //     } elseif ($sorting == 5) {
-        //         $properties = $properties->sortByDesc('price');
+        //         $properties = $properties->orderByDesc('price');
         //     } elseif ($sorting == 6) {
-        //         $properties = $properties->sortBy('created_at');
+        //         $properties = $properties->orderBy('created_at');
         //     } elseif ($sorting == 7) {
-        //         $properties = $properties->sortByDesc('created_at');
+        //         $properties = $properties->orderByDesc('created_at');
         //     } else {
-        //         $properties = $properties->sortByDesc('created_at');
+        //         $properties = $properties->orderByDesc('created_at');
         //     }
         // }
 
@@ -458,7 +462,6 @@ class SearchController extends Controller
     }
     public function refine($property)
     {
-
         $property->banner = asset('uploads/properties/' . $property->banner);
         $gallery = json_decode($property->gallery);
         foreach ($gallery as $key => $image) {
@@ -488,8 +491,6 @@ class SearchController extends Controller
         } elseif ($property->is_featured == 1) {
             $property->is_featured = false;
         }
-
-
         $property->listing_status = mapListingStatus($property->listing_status);
         $property->rent_cycle = mapRentCycle($property->rent_cycle);
         $interior_features = Feature::where('type', 1)->get();

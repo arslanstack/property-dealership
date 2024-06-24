@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('title');
             $table->string('slug');
-            $table->string('price');
+            $table->double('price', 20, 2);
             $table->unsignedBigInteger('neighborhood_id');
             $table->tinyInteger('listing_status')->comment('1: For Sale, 2: For Rent, 3: Rented, 4: Sale Pending, 5: Sold');
             $table->string('size');
