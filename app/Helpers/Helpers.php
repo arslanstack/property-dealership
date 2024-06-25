@@ -256,6 +256,22 @@ if (!function_exists('mapRentCycle')) {
 		}
 	}
 }
+if (!function_exists('mapRentCycleAPI')) {
+	function mapRentCycleAPI($tinyint)
+	{
+		if ($tinyint == 0) {
+			return 'Day';
+		} elseif ($tinyint == 1) {
+			return 'Month';
+		} elseif ($tinyint == 2) {
+			return '3 Month';
+		} elseif ($tinyint == 3) {
+			return '6 Month';
+		} elseif ($tinyint == 4) {
+			return 'Year';
+		}
+	}
+}
 if (!function_exists('developmentlvl')) {
 	function developmentlvl($tinyint)
 	{
@@ -281,7 +297,7 @@ if (!function_exists('mapListingStatus')) {
 			return 'Rented';
 		} elseif ($tinyint == 4) {
 			return 'Sale Pending';
-		} elseif ($tinyint == 4) {
+		} elseif ($tinyint == 5) {
 			return 'Sold';
 		}
 	}

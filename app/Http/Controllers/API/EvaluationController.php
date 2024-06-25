@@ -89,7 +89,6 @@ class EvaluationController extends Controller
             'basement_type' => 'required',
             'dev_lvl' => 'required',
             'move_plan' => 'required',
-            'notes' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json(['message' => $validator->errors()], 422);
@@ -115,7 +114,7 @@ class EvaluationController extends Controller
         $homeEval->basement_type = $request->basement_type;
         $homeEval->dev_lvl = $request->dev_lvl;
         $homeEval->move_plan = $request->move_plan;
-        $homeEval->notes = $request->notes;
+        $homeEval->notes = $request->notes ?? '';
         $query = $homeEval->save();
         if (!$query) {
             return response()->json(['message' => 'Something went wrong!'], 500);

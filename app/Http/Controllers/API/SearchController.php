@@ -492,7 +492,7 @@ class SearchController extends Controller
             $property->is_featured = false;
         }
         $property->listing_status = mapListingStatus($property->listing_status);
-        $property->rent_cycle = mapRentCycle($property->rent_cycle);
+        $property->rent_cycle = mapRentCycleAPI($property->rent_cycle);
         $interior_features = Feature::where('type', 1)->get();
         $exterior_finish = Feature::where('type', 2)->get();
         $featured_amenities = Feature::where('type', 3)->get();
