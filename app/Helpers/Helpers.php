@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\DB;
 
-
 if (!function_exists('admin_url')) {
 	function admin_url()
 	{
@@ -179,7 +178,6 @@ if (!function_exists('count_total_records')) {
 		return $query->count();
 	}
 }
-
 if (!function_exists('check_permissions')) {
 	function check_permissions($where_value)
 	{
@@ -196,7 +194,6 @@ if (!function_exists('check_permissions')) {
 		}
 	}
 }
-
 if (!function_exists('find_records')) {
 	function find_records($table_name, $where_value, $column_name)
 	{
@@ -213,7 +210,6 @@ if (!function_exists('find_records')) {
 		}
 	}
 }
-
 if (!function_exists('mapfeaturetype')) {
 	function mapfeaturetype($tinyint)
 	{
@@ -447,8 +443,6 @@ if (!function_exists('PropertyCode')) {
 		}
 	}
 }
-
-
 if (!function_exists('country_select')) {
 	function country_select()
 	{
