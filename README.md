@@ -1,9 +1,7 @@
 # Laravel REST APIs and Admin Panel for Property Dealership Web App
 
 This repository provides a Laravel 10 REST APIs and Bootstrap based admin dashboard for a property dealership web application.
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
+
 ## Getting Started
 
 ### Clone the Repository
